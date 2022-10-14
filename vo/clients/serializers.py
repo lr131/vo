@@ -1,10 +1,13 @@
+from unittest.util import _MAX_LENGTH
 from rest_framework import serializers
 from .models import State, Client, ClientProducts, ClientMailing, ClientInterest
 
 class StateSerializer(serializers.ModelSerializer):
+    """Класс-сериализатор статусов клиента"""
+    ##TODO здесь доступны и создание, и удаление, и обновление!
     class Meta:
         model = State
-        fields = '__all__'
+        fields = ('id', 'name', 'description')
         
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,6 +15,8 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class ClientExtraSerializer(serializers.Serializer):
+    """Сериализатор для представления 
+    данных клиента в общей таблице"""
     id = serializers.IntegerField()
     family = serializers.CharField(max_length=250)
     name = serializers.CharField(max_length=250)
@@ -23,6 +28,7 @@ class ClientExtraSerializer(serializers.Serializer):
     state_id = serializers.IntegerField()
     comment = serializers.CharField()
     note = serializers.CharField()
+    group = serializers.CharField(max_length=10)
 
     viber_group = serializers.BooleanField(default=False)
     tg_group = serializers.BooleanField(default=False)
@@ -36,17 +42,20 @@ class ClientExtraSerializer(serializers.Serializer):
     
     interest = serializers.CharField()   
         
-class ClientProductsSerializer(serializers.ModelSerializer):
+class ProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientProducts
-        fields = '__all__'
+        fields = ('id','client', 'is_assisting', 'future_assisting',
+                  'is_base_course', 'course_candidate', 'is_school_level_1',
+                  'is_school_level_2', 'is_school_level_3', 'tg')
         
-class ClientMailingSerializer(serializers.ModelSerializer):
+class MailingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientMailing
-        fields = '__all__'
+        fields = ('id','client', 'viber_group', 'wa_group', 'tg_group',
+                  'tg', 'wa', 'viber', 'sms', 'call', 'comment')
         
-class ClientInterestSerializer(serializers.ModelSerializer):
+class InterestSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientInterest
-        fields = '__all__'
+        fields = ('id', 'client', 'event', 'comment')

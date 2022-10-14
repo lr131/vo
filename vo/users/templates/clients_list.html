@@ -1,5 +1,6 @@
-
 {% extends 'base.html' %}
+
+{% load static%}
 
 {% block content %}
 
@@ -8,42 +9,26 @@
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="home"></span>
-              Сводка 
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file"></span>
-              Заказы
-            </a>
-          </li>
+           
           <li class="nav-item">
             <a class="nav-link" href="#">
               <span data-feather="shopping-cart"></span>
-              Тренинги
+              CRM
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="#">
+            <a class="nav-link active" href="{% url 'clients' %}">
               <span data-feather="users"></span>
-              База <span class="sr-only">(current)</span>
+              База <span class="sr-only">(current)</span></span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Отчеты
+              <span data-feather="file-text"></span>
+              Контент-план
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="layers"></span>
-              Задачи
-            </a>
-          </li>
+
         </ul>
 
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -64,19 +49,7 @@
               <span data-feather="file-text"></span>
               Мои отчеты
             </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Контент-план
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              CRM
-            </a>
-          </li>
+          </li>          
         </ul>
       </div>
     </nav>
@@ -84,8 +57,11 @@
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
 
       <h2>База</h2>
-      <span id='states'></span>
-      <span id='clientUrl' data-url="{% url 'client' 1 %}"></span>
+      <span id='states' data-url="{% url 'clients:router:states-list' %}"></span>
+      <span id='clientUrl' data-url="{% url 'client' 1 %}" 
+                           data-page='{{page}}'
+                           data-extra="{% url 'clients:extra' %}?page={{page}}">
+                          </span>
       <div class="table-responsive">
         <table class="table table-striped table-sm" id='tableClients'>
           <thead>
@@ -108,15 +84,10 @@
           </tbody>
         </table>
       </div>
-      <div id="nav_buttons"> </div>
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <li class="page-item" id='previousBtn'>
-            <a class="page-link" href="#" tabindex="-1">Назад</a>
-          </li>
-          <li class="page-item" id='nextBtn'>
-            <a class="page-link" href="#">Далее</a>
-          </li>
+      
+      <nav aria-label="Page navigation" >
+        <ul class="pagination justify-content-center" id="nav_buttons">
+          
         </ul>
       </nav>
 
@@ -124,207 +95,7 @@
   </div>
 </div>
 
-<script>
-
-  var pagination_listener = function (event) {
-    event.preventDefault();
-    url = event.target.href;
-    get_clients_list(url);
-  }; 
-
-  function create_client_td(value) {
-    var td = document.createElement('td');
-    if (String(value) != "null") {
-      td.innerHTML = value;
-    }
-    return td;
-  };
-
-  function create_client_bool_td(value) {
-    var td = document.createElement('td');
-    if (value) {
-      td.textContent = '+';
-    }
-    return td;
-  };
-
-  function get_states(url) {
-    var statesElem= document.getElementById('states');
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState !== 4 || xhr.status !== 200) {
-          return;
-      }
-      const response = xhr.response;
-      var resp = JSON.parse(response);
-      console.log(resp)
-      for (let i = 0; i < resp['results']['length']; i += 1) {
-        stateId = resp['results'][i]['id'];
-        statesElem.setAttribute('data-state' + stateId, resp['results'][i]['name']);
-      }
-    }
-    xhr.send();
-  }
-
-  function get_clients_list(url) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState !== 4 || xhr.status !== 200) {
-          return;
-      }
-      const response = xhr.response;
-      var resp = JSON.parse(response);
-      var clientsTable = document.getElementById('clientsTable');
-      clientsTable.innerHTML ='';
-      var statesData= document.getElementById('states');
-      var clientUrl = document.getElementById('clientUrl').dataset.url;
-      for (let i = 0; i < resp['results'].length; i += 1) {
-        let tr = document.createElement('tr');
-        tr.setAttribute('id', resp['results'][i]['id']);
-        stateClient = resp['results'][i]['state_id'];
-        state = ''
-        var url = clientUrl.replace('1', resp['results'][i]['id'])
-        tr.setAttribute('data-url', url);
-        tr.addEventListener('click', function(event) {
-          var link = event.currentTarget.dataset.url;
-          location.href = link;
-        })
-
-        if (stateClient == 1) {
-          tr.classList.add('table-success');
-          state = statesData.dataset.state1;
-          
-        }
-        if (stateClient == 2) {
-          tr.classList.add('table-warning');
-          state = statesData.dataset.state2;
-        }
-
-        if (stateClient == 3) {
-          tr.classList.add('table-secondary');
-          state = statesData.dataset.state3;
-        }
-
-        if (stateClient == 4) {
-          tr.classList.add('table-primary');
-          state = statesData.dataset.state4;
-        }
-
-        if (stateClient == 5) {
-          tr.classList.add('table-danger');
-          state = statesData.dataset.state5;
-        }
-
-        if (stateClient == 6) {
-          tr.classList.add('bg-danger');
-          state = statesData.dataset.state6;
-        }
-
-        let family = resp['results'][i]['family'];
-        let name = resp['results'][i]['name'];
-        let patr = resp['results'][i]['patr'];
-        let birthday = resp['results'][i]['birthday'];
-        let city = resp['results'][i]['city'];
-        let phone = resp['results'][i]['phone'] ? resp['results'][i]['phone'] : '';
-        let comment = resp['results'][i]['comment'];
-        let note = resp['results'][i]['note'];         
-        
-        
-        family = family ? family : '';
-        name = name ? name : '';
-        patr = patr ? patr : '';
-
-        if (birthday) {
-          var birthdayList = birthday.slice(0,10).split('-');
-          console.log(birthdayList);
-          birthday = ([birthdayList[2], birthdayList[1], birthdayList[0]]).join('.');
-        } else {
-          birthday = '';
-        }
-        
-
-        isGroupViber = resp['results'][i]['viber_group'] ? '<span class="badge badge-pill badge-danger">Viber</span><br />' : '';
-        isGroupWa = resp['results'][i]['wa_group'] ? '<span class="badge badge-pill badge-success">WhatsApp</span> <br />' : '';
-        isGroupTg = resp['results'][i]['tg_group'] ? '<span class="badge badge-pill badge-primary">Telegram</span>' : '';
-
-        gropus = isGroupViber + isGroupWa + isGroupTg;
-
-
-        isViber = resp['results'][i]['viber']  ? '<span class="badge badge-pill badge-danger">Viber</span><br />' : '';
-        isWa = resp['results'][i]['wa'] ? '<span class="badge badge-pill badge-success">WhatsApp</span> <br />' : '';
-        isTg = resp['results'][i]['tg'] ? '<span class="badge badge-pill badge-primary">Telegram</span><br />' : '';
-        isSms = resp['results'][i]['sms'] ? '<span class="badge badge-pill badge-info">Смс</span><br />' : '';
-        isCall = resp['results'][i]['call'] ? '<span class="badge badge-pill badge-secondary">Звонки</span>' : '';
-
-
-        contact = isViber + isWa + isTg + isSms + isCall;
-
-        mailing = resp['results'][i]['mailing'] ? resp['results'][i]['mailing'] : '';
-
-        interest = resp['results'][i]['interest'] ? resp['results'][i]['interest'] : '';
-
-        tr.append(create_client_td(state));
-        tr.append(create_client_td([family, name, patr].join(' ')));
-        tr.append(create_client_td(birthday));
-        tr.append(create_client_td(city));
-        tr.append(create_client_td(phone.replace(';',' <br />')));
-        tr.append(create_client_td(comment));
-        tr.append(create_client_td(note));
-
-        tr.append(create_client_td(gropus));
-
-        tr.append(create_client_td(contact));
-
-        tr.append(create_client_td(mailing));
-        tr.append(create_client_td(interest));
-
-        clientsTable.append(tr);
-      }
-      var mainContainer = document.getElementById('nav_buttons');
-      mainContainer.innerHTML = ''
-
-      previousBtn = document.getElementById('previousBtn');
-      previousLink = previousBtn.firstElementChild;
-      nextBtn = document.getElementById('nextBtn');
-      nextLink = nextBtn.firstElementChild;
-
-      previousLink.removeEventListener('click', pagination_listener);
-      nextLink.removeEventListener('click', pagination_listener);
-
-      console.log(nextLink);
-
-      if (resp['previous']) {
-
-        previousBtn.classList.remove('disabled');
-        previousLink.setAttribute('href', resp['previous']);
-
-        previousLink.addEventListener('click', pagination_listener)
-
-      } else {
-        previousBtn.classList.add('disabled');
-      }
-      if (resp['next']) {
-
-        nextBtn.classList.remove('disabled');
-        nextLink.setAttribute('href', resp['next']);
-        nextLink.addEventListener('click', pagination_listener);
-      } else {
-        nextBtn.classList.add('disabled');
-      }
-    }
-    xhr.send();
-  }
-
-  document.addEventListener("DOMContentLoaded", function(event) { 
-    var states_url = 'http://127.0.0.1:8000/api/clients/states/';
-    var url_get_extra = 'http://127.0.0.1:8000/api/clients/clients/extra2';
-    get_states(states_url);
-    get_clients_list(url_get_extra);
-  });
-  
-</script>
+<script src={% static 'js/clients/clients_table.js' %}></script>
   
 {% endblock %}
 

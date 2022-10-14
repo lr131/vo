@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+           
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="shopping-cart"></span>
+              CRM
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'clients' %}">
+              <span data-feather="users"></span>
+              База</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active">
+              <span data-feather="users"></span>
+              Новый клиент <span class="sr-only">(current)</span>
+            </a>
+          </li>
+
+
+        </ul>
+
+      </div>
+    </nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
+
+      <span id='urls' data-states="{% url 'clients:router:states-list' %}" 
+                      data-main="{% url 'clients:router:client-list' %}" >
+                    </span>
+      <span id='states'></span>
+      <span id='events'></span>
+      <div class="alert alert-success hidden" role="alert" id='alertRes'>
+        Данные успешно обновлены
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <form class='row' id="client">
+            {% csrf_token %}
+            <legend>Новый клиент:</legend>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="family"><strong>Фамилия <span class='required'>*</span></strong></label>
+                <input type="text" class="form-control" id="family" name='family' placeholder="Фамилия" required>
+              </div>
+              <div class="form-group">
+                <label for="name"><strong>Имя <span class='required'>*</span></strong></label>
+                <input type="text" class="form-control" id="name" name='name' placeholder="Имя" required>
+              </div>
+              <div class="form-group">
+                <label for="patr">Отчество</label>
+                <input type="text" class="form-control" id="patr" name='patr' placeholder="Отчество">
+              </div>
+              <div class="form-group">
+                <label for="birthday"><strong>Дата рождения <span class='required'>*</span></strong></label>
+                <input type="text" class="form-control" id="birthday" name='bday' placeholder="ДД.ММ.ГГГГ" required> 
+                <p><a href='#' id='birthdayPlug'>Поставить 01.01.1900</a></p>
+              </div>
+            </div>
+    
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="state">Статус</label>
+                <select class="form-control" id="state" name="state"></select>
+              </div>
+              <div class="form-group">
+                <label for="city"><strong>Город <span class='required'>*</span></strong></label>
+                <input type="text" class="form-control" id="city" name='city' placeholder="Город" required>
+              </div>
+              <div class='form-group'>
+                <label for="state">База</label>
+                <select class="form-control" id="group" name="group">
+                  <option value="irk">Иркутск</option>
+                  <option value="angsk">Ангарск</option>
+                  <option value="ykt">Якутск</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="phone"><strong>Телефон <span class='required'>*</span></strong></label>
+                <div id="phones">
+                  <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="79027775533"  id="phone" name='phone' aria-label="phone" aria-describedby="phoneAddIcon" required>
+                    <span class="input-group-text" id="phoneAddIcon"><i class="material-icons">add</i></span>
+                  </div>
+                </div>
+              </div>              
+            </div>
+
+            <div class="col-sm-5">
+              <div class="form-group">
+                <label for="email">Email </label>
+                <input type="email" class="form-control" id="email" name='email' placeholder="name@example.com">
+              </div>
+              <div class="form-group">
+                <label for="comment">Комментарий</label>
+                <textarea class="form-control" id="comment" name='comment' rows="3"></textarea>
+             </div>
+             <div class="form-group">
+                <label for="note">Заметки</label>
+                <textarea class="form-control" id="note" name='note' rows="3"></textarea>
+             </div>
+             <div class="form-group">
+                <div class="form-check">
+                  <label class="in_black_list">
+                    <input class="form-check-input" type="checkbox" id="in_black_list" name='in_black_list'> Клиент в черном списке
+                  </label>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success">
+                <span class="material-icons">check_circle</span> Создать
+              </button>
+              <div id="loader" class="hidden">Отправляем...</div>
+
+          </form>
+        </div>
+
+        {% comment %} col-md-8 {% endcomment %}
+        {% comment %} col-md-4 {% endcomment %}
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src={% static 'js/form.js' %}></script>
+<script src={% static 'js/clients/new_client.js' %}></script>
+  
+{% endblock %}
+

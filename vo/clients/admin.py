@@ -2,12 +2,14 @@ from django.contrib import admin
 from .models import ClientInterest, ClientMailing, ClientProducts, State, Client
 
 class ClientAdmin(admin.ModelAdmin):
-    ordering = ['family', 'name', 'city']
+    ordering = ['family', 'name', 'city', 'group']
+    search_fields = ('family','name', 'city', 'phone', 'group')
     list_display = ('get_state', 'get_abbr_fio', 'get_city', 'get_phone', 'get_notes')
 
 
 class ClientProductsAdmin(admin.ModelAdmin):
     ordering = ['course_candidate']
+    search_fields = ('client_id',)
     list_display = ('client', 'is_assisting', 
                     'future_assisting', 
                     'is_base_course',

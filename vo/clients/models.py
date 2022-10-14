@@ -25,7 +25,7 @@ class Client(models.Model):
     state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
     note = models.TextField(null=True, blank=True) # заметки, дополнительно
-
+    group = models.CharField(max_length=10, default='irk')
     class Meta:
         verbose_name = 'База клиентов'
         verbose_name_plural = 'База клиентов'

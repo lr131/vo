@@ -1,3 +1,16 @@
 #clientsTable tr {
     cursor: pointer;
 }
+
+
+.hidden {
+    display:none;
+  }
+
+.required {
+    color: red;
+}
+
+#phoneAddIcon, .phone-remove-icon {
+    cursor: pointer;
+}

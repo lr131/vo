@@ -9,195 +9,336 @@
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="home"></span>
-              Сводка 
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file"></span>
-              Заказы
-            </a>
-          </li>
+           
           <li class="nav-item">
             <a class="nav-link" href="#">
               <span data-feather="shopping-cart"></span>
-              Тренинги
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="#">
-              <span data-feather="users"></span>
-              База <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Отчеты
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="layers"></span>
-              Задачи
-            </a>
-          </li>
-        </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Мой профиль</span>
-          <a class="d-flex align-items-center text-muted" href="#">
-            <span data-feather="plus-circle"></span>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Мои задачи
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Мои отчеты
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Контент-план
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
               CRM
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'clients' %}">
+              <span data-feather="users"></span>
+              База</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active">
+              <span data-feather="users"></span>
+              Клиент <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'clients' %}?page={{back_page}}">
+              <span data-feather="users"></span>
+              Назад</span>
+            </a>
+          </li>
+
+
         </ul>
+
       </div>
     </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
 
-      <span id='urls' data-states='http://127.0.0.1:8000/api/clients/states/' 
-                      data-main='http://127.0.0.1:8000/api/clients/clients/{{pk}}'
-                      data-mailing='http://127.0.0.1:8000/api/clients/mailing/{{pk}}'
-                      data-products='http://127.0.0.1:8000/api/clients/products/{{pk}}'
-                      data-interest='http://127.0.0.1:8000/api/clients/interest/products/{{pk}}'
-                      data-events='http://127.0.0.1:8000/api/events/events/'>
+      <span id='urls' data-states="{% url 'clients:router:states-list' %}" 
+                      data-main="{% url 'clients:router:client-detail' pk %}" 
+                      data-connect="{% url 'clients:connect' pk %}"
+                      data-mailing="{% url 'clients:router:mailing-list' %}" 
+                      data-interests="{% url 'clients:interests' pk %}"
+                      data-interest="{% url 'clients:router:interest-list' %}" 
+                      data-history="{% url 'clients:history' pk %}"
+                      data-products="{% url 'clients:router:products-list' %}" 
+                      data-events="{% url 'events:router:events-list' %}">
                     </span>
       <span id='states'></span>
       <span id='events'></span>
-      
-      <form class='row'>
-        <legend>Основные данные:</legend>
-        <div class="form-group col-sm-3">
-          <label for="family">Фамилия*</label>
-          <input type="text" class="form-control" id="family" placeholder="Фамилия">
-          <label for="name">Имя*</label>
-          <input type="text" class="form-control" id="name" placeholder="Имя">
-          <label for="patr">Отчество</label>
-          <input type="text" class="form-control" id="patr" placeholder="Отчество">
-          <label for="birthday">Дата рождения*</label>
-          <input type="text" class="form-control" id="birthday" placeholder="ДД.ММ.ГГГГ">
-          <p><a href='#' id='birthdayPlug'>Поставить 01.01.1900</a></p>
-        </div>
-        <div class="form-group  col-sm-3">
-          <label for="state">Статус</label>
-          <select class="form-control" id="state"></select>
-          <label for="city">Город*</label>
-          <input type="text" class="form-control" id="city" placeholder="Город">
-          <label for="phone">Телефон*</label>
-          <input type="text" class="form-control" id="phone" placeholder="79027775533">
-          <label for="email">email </label>
-          <input type="text" class="form-control" id="email" placeholder="name@example.com">
-          
-        </div>
-        <div class="form-group col-sm-6">
-          <label for="comment">Комментарий</label>
-          <textarea class="form-control" id="comment" rows="3"></textarea>
-          <label for="note">Заметки</label>
-          <textarea class="form-control" id="note" rows="3"></textarea>
-          <div class="form-check">
-            <label class="in_black_list">
-              <input class="form-check-input" type="checkbox" id="in_black_list"> Клиент в черном списке
-            </label>
-          </div>
-        </div>
-      </form>
+      <div class="alert alert-success hidden" role="alert" id='alertRes'>
+        Данные успешно обновлены
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <form class='row' id="client">
+            {% csrf_token %}
+            <legend>Основные данные:</legend>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="family"><strong>Фамилия <span class='required'>*</span></strong></label>
+                <input type="text" class="form-control" id="family" name='family' placeholder="Фамилия" required>
+              </div>
+              <div class="form-group">
+                <label for="name"><strong>Имя <span class='required'>*</span></strong></label>
+                <input type="text" class="form-control" id="name" name='name' placeholder="Имя" required>
+              </div>
+              <div class="form-group">
+                <label for="patr">Отчество</label>
+                <input type="text" class="form-control" id="patr" name='patr' placeholder="Отчество">
+              </div>
+              <div class="form-group">
+                <label for="birthday"><strong>Дата рождения <span class='required'>*</span></strong></label>
+                <input type="text" class="form-control" id="birthday" name='bday' placeholder="ДД.ММ.ГГГГ" required> 
+                <p><a href='#' id='birthdayPlug'>Поставить 01.01.1900</a></p>
+              </div>
+            </div>
+    
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="state">Статус</label>
+                <select class="form-control" id="state" name="state"></select>
+              </div>
+              <div class="form-group">
+                <label for="city"><strong>Город <span class='required'>*</span></strong></label>
+                <input type="text" class="form-control" id="city" name='city' placeholder="Город" required>
+              </div>
+              <div class='form-group'>
+                <label for="state">База</label>
+                <select class="form-control" id="group" name="group">
+                  <option value="irk">Иркутск</option>
+                  <option value="angsk">Ангарск</option>
+                  <option value="ykt">Якутск</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="phone"><strong>Телефон <span class='required'>*</span></strong></label>
+                <div id="phones">
+                  <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="79027775533"  id="phone" name='phone' aria-label="phone" aria-describedby="phoneAddIcon" required>
+                    <span class="input-group-text" id="phoneAddIcon"><i class="material-icons">add</i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="email">Email </label>
+                <input type="email" class="form-control" id="email" name='email' placeholder="name@example.com">
+              </div>              
+            </div>
 
-      <form class='row'>
-        <legend>Способ связи:</legend>
-        <table class="table table-striped table-sm">
-            <thead>
-              <tr>
-                <th>Состоит в группе в Viber</th>
-                <th>Состоит в группе в WhatsApp</th>
-                <th>Состоит в группе в Telegram</th>
-                <th>Viber</th>
-                <th>WhatsApp</th>
-                <th>Telegram</th>
-                <th>СМС</th>
-                <th>Звонить</th>
-              </tr>
-            </thead>
-            <tbody class="table-hover" id="mailingTable">
-                <tr>
-                    <td><input class="form-check" type="checkbox" value="" id="viber_group"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="wa_group"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="tg_group"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="viber"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="wa"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="tg"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="sms"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="call"></td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="form-group col-sm-6">
-            <label for="commentMailing">Комментарий к способам связи:</label>
-            <textarea class="form-control" id="commentMailing" rows="3"></textarea>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="comment">Комментарий</label>
+                <textarea class="form-control" id="comment" name='comment' rows="3"></textarea>
+             </div>
+             <div class="form-group">
+                <label for="note">Заметки</label>
+                <textarea class="form-control" id="note" name='note' rows="3"></textarea>
+             </div>
+             <div class="form-group">
+                <div class="form-check">
+                  <label class="in_black_list">
+                    <input class="form-check-input" type="checkbox" id="in_black_list" name='in_black_list'> Клиент в черном списке
+                  </label>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success hidden" id='clientBtn'>
+                <span class="material-icons">check_circle</span>
+              </button>
+              <div id="loader" class="hidden">Отправляем...</div>
+            </div>
+
+          </form>
         </div>
-      </form>
-      <form class='row'>
-        <legend>Что проходил: </legend>
-        <table class="table table-striped table-sm">
-            <thead>
-              <tr>
-                <th>Базовый Курс</th>
-                <th>Ассистировал на БК</th>
-                <th>Хочет ассистировать</th>
-                <th>ИШ 1</th>
-                <th>ИШ 2</th>
-                <th>ИШ 3</th>
-                <th>Выпускник терапевтической группы</th>
-              </tr>
-            </thead>
-            <tbody class="table-hover" id="mailingTable">
-                <tr>
-                    <td><input class="form-check" type="checkbox" value="" id="is_base_course"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="is_assisting"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="future_assisting"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="is_school_level_1"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="is_school_level_2"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="is_school_level_3"></td>
-                    <td><input class="form-check" type="checkbox" value="" id="ter_gr"></td>
+
+        {% comment %} col-md-8 {% endcomment %}
+        <div class="col-md-4">
+          <form id='mailing'>
+            {% csrf_token %}
+            <legend>Способ связи:</legend>
+            <table class="table table-striped table-sm">
+              <tbody class="table-hover" id="mailingTable">
+                <tr> 
+                  <td> 
+                  <label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name='viber_group' id="viber_group">
+                      <label class="form-check-label" for="viber_group">
+                        Состоит в группе в Viber
+                      </label>
+                    </div>
+                  </td> 
                 </tr>
-            </tbody>
-        </table>
-        <div class="form-group col-sm-6">
-            <label for="course_candidate">Кандидаты на курс:</label>
-            <textarea class="form-control" id="course_candidate" rows="3"></textarea>
+                <tr>
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name='wa_group' id="wa_group">
+                      <label class="form-check-label" for="wa_group">
+                        Состоит в группе в WhatsApp
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+                <tr> 
+                  <td> 
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name='tg_group' id="tg_group">
+                      <label class="form-check-label" for="tg_group">
+                        Состоит в группе в Telegram
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name='tg' id="tg">
+                      <label class="form-check-label" for="tg_group">
+                        Telegram
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td> 
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name='viber' id="viber">
+                      <label class="form-check-label" for="tg_group">
+                        Viber
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td> 
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name='wa' id="wa">
+                      <label class="form-check-label" for="tg_group">
+                        WhatsApp
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td> 
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name='call' id="call">
+                      <label class="form-check-label" for="tg_group">
+                        Звонить
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td> 
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name='sms' id="sms">
+                      <label class="form-check-label" for="tg_group">
+                        СМС
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+              </tbody>
+            </table>
+    
+            <div class="form-group col-sm-10">
+                <label for="commentMailing">Комментарий к способам связи:</label>
+                <textarea class="form-control" id="commentMailing" name='comment' data-client={{pk}} rows="3"></textarea>
+            </div>
+            <input class='hidden' id='mailing-id' name="id">
+            <button class='hidden' type="submit" id='mailingBtn'>
+          </form>
         </div>
-      </form>
-      <form class='row'>
-        <legend>Что интересно: </legend>
-        <table class="table table-striped table-sm">
+        {% comment %} col-md-4 {% endcomment %}
+      </div>
+      
+      <div class="row">
+        <div class="col-md-4">
+          <form class='row' id='history'>
+            {% csrf_token %}
+            <legend>Что проходил: </legend>
+            <table class="table table-striped table-sm">
+              <tbody class="table-hover" id="historyTable">
+                <tr> 
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name="is_base_course" id="is_base_course">
+                      <label class="form-check-label" for="is_base_course">
+                        Базовый Курс
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name="is_assisting" id="is_assisting">
+                      <label class="form-check-label" for="is_assisting">
+                        Ассистировал на БК
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name="future_assisting" id="future_assisting">
+                      <label class="form-check-label" for="future_assisting">
+                        Хочет ассистировать
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name="is_school_level_1" id="is_school_level_1">
+                      <label class="form-check-label" for="is_school_level_1">
+                        ИШ 1
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name="is_school_level_2" id="is_school_level_2">
+                      <label class="form-check-label" for="is_school_level_2">
+                        ИШ 2
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name="is_school_level_3" id="is_school_level_3">
+                      <label class="form-check-label" for="is_school_level_3">
+                        ИШ 3
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+                <tr> 
+                  <td>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" name="tg" id="ter_gr">
+                      <label class="form-check-label" for="ter_gr">
+                        Выпускник терапевтической группы
+                      </label>
+                    </div>
+                  </td> 
+                </tr>
+              </tbody>
+            </table>
+            <div class="form-group col-sm-10">
+              <label for="course_candidate">Кандидаты на курс:</label>
+              <textarea class="form-control form-group" name="course_candidate" id="course_candidate" rows="2"></textarea>
+              <input class='hidden' id='history-id' name="id">
+              <input class='hidden' id='history-client' name="client" value="{{pk}}">
+            </div>
+            <button class='hidden' type="submit" id='historyBtn'>
+          </form>
+          <button type="button" class="btn btn-success form-group" id='save'>
+            <span class="material-icons">check_circle</span> Сохранить
+          </button>
+          <div id="loader" class="hidden">Отправляем...</div>
+        </div>
+        {% comment %} col-md-4 {% endcomment %}
+
+        <div class="col-md-8">
+          <legend>Что интересно: </legend>
+          <table class="table table-striped table-sm">
             <thead>
               <tr>
                 <th>Мероприятие</th>
@@ -206,30 +347,37 @@
               </tr>
             </thead>
             <tbody class="table-hover" id="eventTable">
-                <tr>
+                <tr id='trForm'>
+                  <form class='row' id="interestCreateForm">
+                    {% csrf_token %}
+                    <input class='hidden' name='client' value='{{pk}}'>
                     <td class='col-sm-6'>
-                        <select class="form-control" id="event">
-                            <option> - </option>
-                        </select>
+                      <select class="form-control" id="event" name='event'>
+                        <option> - </option>
+                      </select>
                     </td>
                     <td>
-                        <textarea class="form-control" id="commentEvent" rows="2"></textarea>
+                        <textarea class="form-control" id="commentEvent" name="comment" rows="2"></textarea>
                     </td>
                     <td>
-                      <button type="button" class="btn btn-success">
+                      <button type="submit" class="btn btn-success">
                         <span class="material-icons">check_circle</span>
                       </button>
-                      <td>
+                    <td>
+                  </form>
                 </tr>
             </tbody>
-        </table>
-      </form>
+          </table>
+        </div>
+        {% comment %} col-md-4 {% endcomment %}
+      </div>
 
     </main>
   </div>
 </div>
 
-<script src={% static 'js/client.js' %}></script>
+<script src={% static 'js/form.js' %}></script>
+<script src={% static 'js/clients/client.js' %}></script>
   
 {% endblock %}
 
