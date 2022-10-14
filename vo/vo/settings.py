@@ -33,7 +33,7 @@ DEBUG = True
 # DEBUG = False
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ravnovesie.pythonanywhere.com']
 # ALLOWED_HOSTS = ['a0723700.xsph.ru']
 
 
