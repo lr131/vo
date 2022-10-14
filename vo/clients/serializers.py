@@ -40,7 +40,7 @@ class ClientExtraSerializer(serializers.Serializer):
     call = serializers.BooleanField(default=False)
     mailing = serializers.CharField(default=False)
     
-    interest = serializers.CharField()   
+    state_name = serializers.CharField()   
         
 class ProductsSerializer(serializers.ModelSerializer):
     class Meta:

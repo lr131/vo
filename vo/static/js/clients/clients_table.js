@@ -175,7 +175,7 @@ var pagination_listener = function (event) {
         let tr = document.createElement('tr');
         tr.setAttribute('id', resp['results'][i]['id']);
         stateClient = resp['results'][i]['state_id'];
-        state = ''
+        state = resp['results'][i]['state_name'] ? resp['results'][i]['state_name'] : '';
         var url = clientUrl.replace('1', resp['results'][i]['id']) + '?back_page=' + document.getElementById('clientUrl').dataset.page
         tr.setAttribute('data-url', url);
         tr.addEventListener('click', function(event) {
@@ -185,32 +185,26 @@ var pagination_listener = function (event) {
 
         if (stateClient == 1) {
           tr.classList.add('table-success');
-          state = statesData.dataset.state1;
           
         }
         if (stateClient == 2) {
           tr.classList.add('table-warning');
-          state = statesData.dataset.state2;
         }
 
         if (stateClient == 3) {
           tr.classList.add('table-secondary');
-          state = statesData.dataset.state3;
         }
 
         if (stateClient == 4) {
           tr.classList.add('table-primary');
-          state = statesData.dataset.state4;
         }
 
         if (stateClient == 5) {
           tr.classList.add('table-danger');
-          state = statesData.dataset.state5;
         }
 
         if (stateClient == 6) {
           tr.classList.add('bg-danger');
-          state = statesData.dataset.state6;
         }
 
         let family = resp['results'][i]['family'];
@@ -253,8 +247,6 @@ var pagination_listener = function (event) {
 
         mailing = resp['results'][i]['mailing'] ? resp['results'][i]['mailing'] : '';
 
-        interest = resp['results'][i]['interest'] ? resp['results'][i]['interest'] : '';
-
         tr.append(create_client_td(state));
         tr.append(create_client_td([family, name, patr].join(' ')));
         tr.append(create_client_td(birthday));
@@ -268,7 +260,6 @@ var pagination_listener = function (event) {
         tr.append(create_client_td(contact));
 
         tr.append(create_client_td(mailing));
-        tr.append(create_client_td(interest));
 
         clientsTable.append(tr);
       }

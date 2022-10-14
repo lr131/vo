@@ -23,8 +23,28 @@ class ClientExtraView(generics.ListAPIView):
     # pagination_class = CustomPagination
     serializer_class = ClientExtraSerializer
     
-    queryset = Client.objects.all().extra(
-            select={'interest': 'client_interest.comment',
+    # queryset = Client.objects.all().extra(
+    #         select={'interest': 'client_interest.comment',
+    #                 'viber_group': 'client_mailing.viber_group',
+    #                 'tg_group': 'client_mailing.tg_group',
+    #                 'wa_group': 'client_mailing.wa_group',
+    #                 'viber': 'client_mailing.viber',
+    #                 'tg': 'client_mailing.tg',
+    #                 'wa': 'client_mailing.wa',
+    #                 'sms': 'client_mailing.sms',
+    #                 'call': 'client_mailing.call',
+    #                 'mailing': 'client_mailing.comment'},
+    #         tables=['client_interest','client_mailing'],
+    #         where=['clients_client.id=client_interest.client_id',
+    #             'clients_client.id=client_mailing.client_id']
+    #         ).order_by('family','name').values()
+    
+    def get_queryset(self):
+        user = self.request.user
+        groups = list(map(lambda x: x['name'],user.groups.all().values()))
+        print(groups)
+        return Client.objects.filter(group__in=groups).extra(
+            select={'state_name': 'client_state.name',
                     'viber_group': 'client_mailing.viber_group',
                     'tg_group': 'client_mailing.tg_group',
                     'wa_group': 'client_mailing.wa_group',
@@ -34,10 +54,16 @@ class ClientExtraView(generics.ListAPIView):
                     'sms': 'client_mailing.sms',
                     'call': 'client_mailing.call',
                     'mailing': 'client_mailing.comment'},
-            tables=['client_interest','client_mailing'],
-            where=['clients_client.id=client_interest.client_id',
+            tables=['client_state','client_mailing'],
+            where=['clients_client.state_id=client_state.id',
                 'clients_client.id=client_mailing.client_id']
             ).order_by('family','name').values()
+    
+    # def list(self, request):
+    #     # Note the use of `get_queryset()` instead of `self.queryset`
+    #     queryset = self.get_queryset()
+    #     serializer = ClientExtraSerializer(queryset, many=True)
+    #     return Response(serializer.data)
 
 
 class ClientProductsView(generics.RetrieveAPIView):

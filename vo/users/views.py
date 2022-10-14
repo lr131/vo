@@ -22,6 +22,7 @@ def clients(request):
         'page': request.GET.get("page", 1)
     } 
     user = request.user
+    print(user.groups.filter(name__in=['irk', 'angsk']).exists())    
     return render(request, 'clients_list.html', context=context)
 
 @login_required
