@@ -13,7 +13,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from argparse import Namespace
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
@@ -22,14 +21,16 @@ from clients import views as client_views
 from events import views as evens_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', user_views.profile, name='profile'),
+    path('admin/', admin.site.urls, name='admin'),
+    # path('', user_views.profile, name='profile'),
+    path('', user_views.clients, name='clients'),
     path('clients/', user_views.clients, name='clients'),
     path('client/<int:pk>/', user_views.client, name="client"),
     path('client/create/', user_views.create_client, name="create_client"),
     path('api/clients/', include(('clients.urls', 'clients'), namespace='clients')),
     path('api/events/', include(('events.urls', 'events'), namespace='events'), name='events'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    # path('login/', user_views.LoginView.as_view()),
+    # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework'))
 ]

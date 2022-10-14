@@ -21,5 +21,3 @@ urlpatterns = [
     path('interests/<int:client_id>/', views.ClientInterestView.as_view(), name="interests"),
     path('product/<int:event_id>/', views.ProductInterestView.as_view(), name="product"),    
 ]
-
-print(urlpatterns)

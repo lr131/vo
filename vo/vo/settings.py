@@ -29,8 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-f4n70$iei+8(*ajj_y(yfwvpbppenz2njygvid_i@#qg@a3=-2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+DEBUG = False
 
 
 ALLOWED_HOSTS = ['ravnovesie.pythonanywhere.com']
@@ -174,4 +173,4 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'admin'
+LOGIN_REDIRECT_URL = '/'

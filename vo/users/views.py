@@ -1,8 +1,14 @@
-from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from rest_framework import permissions
+from rest_framework import views
+from rest_framework.response import Response
 
+from . import serializers
+
+def login(request):
+    return render(request, 'login.html')
 
 @login_required
 def profile(request):
