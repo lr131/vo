@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from rest_framework import viewsets, serializers, generics
+from rest_framework import viewsets, serializers, generics, filters
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
@@ -22,8 +22,9 @@ class ClientViewSet(viewsets.ModelViewSet):
 class ClientExtraView(generics.ListAPIView):
     # pagination_class = CustomPagination
     serializer_class = ClientExtraSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['state__name', 'city', 'group', ]
+    search_fields = ['family', 'name', 'phone']
     
     def get_queryset(self):
         user = self.request.user

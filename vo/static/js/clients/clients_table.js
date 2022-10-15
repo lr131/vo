@@ -24,13 +24,36 @@ var pagination_listener = function (event) {
     return td;
   };
 
+  function searchInput(event) {
+    event.preventDefault()
+    console.log(event.target)
+  }
+
+  function searchClient(event) {
+    event.preventDefault()
+    console.log(event.target.action)
+    var url = new URL(event.target.action)
+    //если не цифры, то сделать капиталайз
+    var value = document.getElementById('search').value
+    if (!(/^\d+$/.test(value))) {
+      console.log("Не Цифры!")
+      value = capitalize(value)
+    }
+    url.searchParams.set('search', value)
+
+    console.log(url.href)
+    document.getElementById('clientUrl').dataset.extra = url.href
+    document.getElementById('clientUrl').dataset.page = 1
+    get_clients_list(url.href);
+  }
+
   function create_pagination_button(pageCount, 
                                     pageCurrent, 
                                     url) {
     console.log(pageCount)
     var container = document.getElementById('nav_buttons');
     container.innerHTML = ''
-    
+
     if (pageCount < 2) {
         return 
     }
@@ -249,7 +272,6 @@ var pagination_listener = function (event) {
   }
 
   function filter_data(event) {
-    console.log(event.target.href)
     document.getElementById('clientUrl').dataset.extra = event.target.href
     document.getElementById('clientUrl').dataset.page = 1
     get_clients_list(event.target.href);
@@ -262,4 +284,6 @@ var pagination_listener = function (event) {
     for (let element of document.getElementById('filters').children) {
       element.addEventListener('click', filter_data)
     }
+    document.getElementById('search').addEventListener('click', searchInput)
+    document.getElementById('searchForm').addEventListener('submit', searchClient)
   });
