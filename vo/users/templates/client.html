@@ -9,7 +9,12 @@
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
-           
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Мой профиль
+            </a>
+          </li> 
           <li class="nav-item">
             <a class="nav-link" href="#">
               <span data-feather="shopping-cart"></span>
@@ -17,11 +22,26 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'clients' %}">
+            <a class="nav-link active" href="{% url 'clients' %}">
               <span data-feather="users"></span>
-              База</span>
+              База <span class="sr-only">(current)</span></span>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Контент-план
+            </a>
+          </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>База</span>
+          <a class="d-flex align-items-center text-muted" href="#">
+            <span data-feather="plus-circle"></span>
+          </a>
+        </h6>
+        <ul class="nav flex-column mb-2">
           <li class="nav-item">
             <a class="nav-link active">
               <span data-feather="users"></span>
@@ -30,12 +50,16 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'clients' %}?page={{back_page}}">
-              <span data-feather="users"></span>
-              Назад</span>
+              <span data-feather="file-text"></span>
+              Назад к списку клиентов
             </a>
           </li>
-
-
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'create_client' %}">
+              <span data-feather="file-text"></span>
+              Добавить клиента
+            </a>
+          </li>          
         </ul>
 
       </div>
@@ -55,9 +79,7 @@
                     </span>
       <span id='states'></span>
       <span id='events'></span>
-      <div class="alert alert-success hidden" role="alert" id='alertRes'>
-        Данные успешно обновлены
-      </div>
+      <div class="alert alert-success hidden" role="alert" id='alertRes'></div>
       <div class="row">
         <div class="col-md-8">
           <form class='row' id="client">
@@ -104,7 +126,7 @@
                 <label for="phone"><strong>Телефон <span class='required'>*</span></strong></label>
                 <div id="phones">
                   <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="79027775533"  id="phone" name='phone' aria-label="phone" aria-describedby="phoneAddIcon" required>
+                    <input type="text" class="form-control" placeholder="79XXXXXXXXX"  id="phone" name='phone' aria-label="phone" aria-describedby="phoneAddIcon" required>
                     <span class="input-group-text" id="phoneAddIcon"><i class="material-icons">add</i></span>
                   </div>
                 </div>
@@ -182,7 +204,7 @@
                   <td>
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" value="" name='tg' id="tg">
-                      <label class="form-check-label" for="tg_group">
+                      <label class="form-check-label" for="tg">
                         Telegram
                       </label>
                     </div>
@@ -192,7 +214,7 @@
                   <td> 
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" value="" name='viber' id="viber">
-                      <label class="form-check-label" for="tg_group">
+                      <label class="form-check-label" for="viber">
                         Viber
                       </label>
                     </div>
@@ -202,7 +224,7 @@
                   <td> 
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" value="" name='wa' id="wa">
-                      <label class="form-check-label" for="tg_group">
+                      <label class="form-check-label" for="wa">
                         WhatsApp
                       </label>
                     </div>
@@ -212,7 +234,7 @@
                   <td> 
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" value="" name='call' id="call">
-                      <label class="form-check-label" for="tg_group">
+                      <label class="form-check-label" for="call">
                         Звонить
                       </label>
                     </div>
@@ -222,7 +244,7 @@
                   <td> 
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" value="" name='sms' id="sms">
-                      <label class="form-check-label" for="tg_group">
+                      <label class="form-check-label" for="sms">
                         СМС
                       </label>
                     </div>
@@ -377,6 +399,7 @@
 </div>
 
 <script src={% static 'js/form.js' %}></script>
+<script src={% static 'js/clients/main.js' %}></script>
 <script src={% static 'js/clients/client.js' %}></script>
   
 {% endblock %}

@@ -105,39 +105,12 @@ var pagination_listener = function (event) {
       if (phones.length > 1) {
         document.getElementById('phones').innerHTML = ''
         phones.forEach(phone => {
+
           var container = document.getElementById('phones')
 
-          var div = document.createElement('div')
-          div.classList.add('input-group')
-          div.classList.add('mb-3')
-
-          var inputPhone = document.createElement('input')
-          var span = document.createElement('span')
-          var icon = document.createElement('span')
-
-          var basicID = "id" + phone
-
-          icon.classList.add("material-icons")
-          icon.classList.add("phone-remove-icon")
-          icon.innerHTML='clear'
-
-          span.classList.add("input-group-text")
-          span.setAttribute("id", basicID)
-
-          span.append(icon)
-
-          inputPhone.setAttribute('type', 'text')
-          inputPhone.setAttribute('name', 'phone')
-          inputPhone.classList.add('form-control')
-          inputPhone.setAttribute('placeholder', '79027775533')
-          inputPhone.setAttribute('aria-label', 'phone')
-          inputPhone.setAttribute('aria-describedby', basicID)
-
-          inputPhone.value = phone
-          div.append(inputPhone)
-          div.append(span)
+          var inputGroup = createPhoneInputGroupWithIcon(phone, "clear", clearPhoneField, false) 
           
-          container.append(div)
+          container.append(inputGroup)
         })
 
       } else {
@@ -163,6 +136,14 @@ var pagination_listener = function (event) {
 
     const data = serializeForm(event.target)
     const response = await sendData(url, 'PATCH', data)
+    if ((response.status == 200) && (response.ok)) {
+      alertRes.innerHTML += "\n Способы связи успешно обновлены"
+      
+    } else {
+      alertRes+= "\n В обновлении способах связи произошла ошибка"
+      alertRes.setAttribute("class", "alert alert-warning")
+    }
+    alertRes.classList.remove("hidden")
   }
 
   async function update_client_history(event) {
@@ -172,6 +153,16 @@ var pagination_listener = function (event) {
 
     const data = serializeForm(event.target)
     const response = await sendData(url, 'PATCH', data)
+    console.log("update_client", response)
+    if ((response.status == 200) && (response.ok)) {
+      alertRes.innerHTML += "\n Путь клиента успешно обновлен"
+    
+    } else {
+      alertRes+= "\n В обновлении пути клиента произошла ошибка"
+      alertRes.setAttribute("class", "alert alert-warning")
+    }
+    alertRes.classList.remove("hidden")       
+    
     
   }
 
@@ -201,7 +192,17 @@ var pagination_listener = function (event) {
     var url = document.getElementById('urls').dataset.main;
     const data = serializeForm(event.target)
     const response = await sendData(url, 'PATCH', data)
-    console.log(response)
+    console.log("update_client", response)
+    var alertRes = document.getElementById('alertRes');
+    if ((response.status == 200) && (response.ok)) {
+      alertRes.innerHTML += "\n Персональные данные успешно обновлены"
+      
+    } else {
+      alertRes+= "\n В обновлении персональных данных произошла ошибка"
+      alertRes.setAttribute("class", "alert alert-warning")
+    }
+    alertRes.classList.remove("hidden")
+    
   }
 
   function get_client_connect(url) {
@@ -246,7 +247,7 @@ var pagination_listener = function (event) {
                 document.getElementById(key).checked = true;
               }
         }
-        if (key == 'tg') {
+        if ((key == 'tg') && (resp[key])) {
             document.getElementById('ter_gr').checked = true;
         }
       }
@@ -263,6 +264,11 @@ var pagination_listener = function (event) {
     document.getElementById('mailingBtn').click()
     document.getElementById('historyBtn').click()
     document.getElementById('clientBtn').click()
+
+    setTimeout(function () {
+      document.getElementById('alertRes').classList.add("hidden")
+    }, 5000); // 5 sec
+    
   }
 
   function get_client_interest(url) {
@@ -319,6 +325,85 @@ var pagination_listener = function (event) {
     document.getElementById(id).value = val;
   }
 
+  function createPhoneInputGroupWithIcon(value, text, listener, required) {
+    var div = document.createElement('div')
+    div.classList.add('input-group')
+    div.classList.add('mb-3')
+
+    var inputPhone = document.createElement('input')
+    var span = document.createElement('span')
+    var icon = document.createElement('span')
+
+    icon.classList.add("material-icons")
+    icon.classList.add("phone-remove-icon")
+    icon.innerHTML=text
+
+    span.classList.add("input-group-text")
+
+    span.append(icon)
+
+    inputPhone.setAttribute('type', 'text')
+    inputPhone.setAttribute('name', 'phone')
+    inputPhone.classList.add('form-control')
+    inputPhone.setAttribute('placeholder', '79XXXXXXXXX')
+
+    inputPhone.value = value
+    if (required) {
+      inputPhone.setAttribute('required', 'True')
+    }
+    div.append(inputPhone)
+    div.append(span)
+
+    span.addEventListener('click', listener)
+
+    return div
+  }
+
+  function clearPhoneField(event) {
+    element = event.target
+    var container = document.getElementById('phones')
+
+    while (element.parentNode.id != "phones") {
+      element = element.parentNode
+    }
+    console.log(element.parentNode)
+    element.parentNode.removeChild(element);
+
+    if (container.children.length == 1) {
+      console.log ("Остался один телефон")
+      var currentValue = container.getElementsByTagName('input')[0].value
+      console.log(container.getElementsByTagName('input')[0])
+      container.innerHTML = ''
+      var inputGroup = createPhoneInputGroupWithIcon(currentValue, 'add', addPhoneField, true)
+      container.append(inputGroup)
+    }
+
+  }
+
+  function addPhoneField(event) {
+    var container = document.getElementById('phones')
+    var values = []
+    for (var i = 0; i < container.children.length; i++) {
+      var value = container.children[i].getElementsByTagName('input')[0].value
+      values.push(value)
+    }
+
+     console.log(values)
+
+    // var currentValue = document.getElementById('phone').value
+
+    container.innerHTML = ''
+
+    for (var i = 0; i < values.length; i++) {
+      var inputGroup1 = createPhoneInputGroupWithIcon(values[i], 'clear', clearPhoneField, false)
+      container.append(inputGroup1)
+    }
+
+    var inputGroup2 = createPhoneInputGroupWithIcon('', 'clear', clearPhoneField, false)
+    container.append(inputGroup2)
+
+  }
+
   document.addEventListener("DOMContentLoaded", function(event) { 
     var urls = document.getElementById('urls');
 
@@ -334,6 +419,7 @@ var pagination_listener = function (event) {
     document.getElementById('interestCreateForm').addEventListener('submit', create_client_interest)
     document.getElementById('client').addEventListener('submit', update_client)
     document.getElementById('save').addEventListener('click', save_updates)
+    document.getElementById('phoneAddIcon').addEventListener('click', addPhoneField)
 
   });
 

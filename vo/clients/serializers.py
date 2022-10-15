@@ -1,6 +1,8 @@
+from cgitb import lookup
 from unittest.util import _MAX_LENGTH
 from rest_framework import serializers
 from .models import State, Client, ClientProducts, ClientMailing, ClientInterest
+from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 
 class StateSerializer(serializers.ModelSerializer):
     """Класс-сериализатор статусов клиента"""
@@ -13,6 +15,50 @@ class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = '__all__'
+        validators = [
+                    UniqueTogetherValidator(
+                        queryset=Client.objects.all(),
+                        fields=['family', 'name', 'patr', 'birthday']
+                    )
+                ]
+        extra_kwargs = {
+            'phone': {
+                'validators': [
+                    UniqueValidator(
+                        queryset = Client.objects.all(),
+                        lookup = "contains"
+                    ),
+                ]
+            }
+        }
+
+        
+    def create(self, validated_data):
+        print(validated_data)
+        # Проверка на дубли
+        phones = validated_data.get('phone').split(';')
+        print(phones)
+        # clients = []
+
+        # for phone in phones:
+        #     client = Client.objects.filter(phone__contains=phone).values()
+        #     print("clients", client)
+        #     if client:
+        #         clients.append(client)
+
+        # if len(clients):
+        #     raise UniqueValidator 
+        # else:
+        #     client = Client.objects.create(**validated_data)
+        #     ClientMailing.objects.create(client=client)
+        #     ClientProducts.objects.create(client=client)
+        #     return client
+        client = Client.objects.create(**validated_data)
+        ClientMailing.objects.create(client=client)
+        ClientProducts.objects.create(client=client)
+        return client
+            
+            
         
 class ClientExtraSerializer(serializers.Serializer):
     """Сериализатор для представления 
