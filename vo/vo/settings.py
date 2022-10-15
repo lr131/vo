@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'crm.apps.CrmConfig',
     'rest_framework',
     'corsheaders',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

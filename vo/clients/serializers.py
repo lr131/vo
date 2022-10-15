@@ -40,7 +40,18 @@ class ClientExtraSerializer(serializers.Serializer):
     call = serializers.BooleanField(default=False)
     mailing = serializers.CharField(default=False)
     
-    state_name = serializers.CharField()   
+    state_name = serializers.CharField() 
+    
+    course_candidate = serializers.CharField() 
+    
+    is_assisting = serializers.BooleanField(default=False)
+    future_assisting = serializers.BooleanField(default=False)
+    is_base_course = serializers.BooleanField(default=False)
+    is_school_level_1 = serializers.BooleanField(default=False)
+    is_school_level_2 = serializers.BooleanField(default=False)
+    is_school_level_3 = serializers.BooleanField(default=False)
+    ter_gr = serializers.BooleanField(default=False)
+      
         
 class ProductsSerializer(serializers.ModelSerializer):
     class Meta:

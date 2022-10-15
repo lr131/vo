@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework import viewsets, serializers, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from users.views import client
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import State, Client, ClientProducts, ClientMailing, ClientInterest
 from .serializers import ClientExtraSerializer, StateSerializer, ProductsSerializer, MailingSerializer, InterestSerializer, ClientSerializer
@@ -22,28 +22,15 @@ class ClientViewSet(viewsets.ModelViewSet):
 class ClientExtraView(generics.ListAPIView):
     # pagination_class = CustomPagination
     serializer_class = ClientExtraSerializer
-    
-    # queryset = Client.objects.all().extra(
-    #         select={'interest': 'client_interest.comment',
-    #                 'viber_group': 'client_mailing.viber_group',
-    #                 'tg_group': 'client_mailing.tg_group',
-    #                 'wa_group': 'client_mailing.wa_group',
-    #                 'viber': 'client_mailing.viber',
-    #                 'tg': 'client_mailing.tg',
-    #                 'wa': 'client_mailing.wa',
-    #                 'sms': 'client_mailing.sms',
-    #                 'call': 'client_mailing.call',
-    #                 'mailing': 'client_mailing.comment'},
-    #         tables=['client_interest','client_mailing'],
-    #         where=['clients_client.id=client_interest.client_id',
-    #             'clients_client.id=client_mailing.client_id']
-    #         ).order_by('family','name').values()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['state__name', 'city', 'group', ]
     
     def get_queryset(self):
         user = self.request.user
         groups = list(map(lambda x: x['name'],user.groups.all().values()))
-        print(groups)
-        return Client.objects.filter(group__in=groups).extra(
+        filter = self.request.query_params.get('filter', None)
+        
+        qs = Client.objects.filter(group__in=groups).extra(
             select={'state_name': 'client_state.name',
                     'viber_group': 'client_mailing.viber_group',
                     'tg_group': 'client_mailing.tg_group',
@@ -53,17 +40,33 @@ class ClientExtraView(generics.ListAPIView):
                     'wa': 'client_mailing.wa',
                     'sms': 'client_mailing.sms',
                     'call': 'client_mailing.call',
-                    'mailing': 'client_mailing.comment'},
-            tables=['client_state','client_mailing'],
+                    'mailing': 'client_mailing.comment',
+                    'is_assisting': 'client_products.is_assisting',
+                    'future_assisting': 'client_products.future_assisting',
+                    'is_base_course': 'client_products.is_base_course',
+                    'course_candidate': 'client_products.course_candidate',
+                    'is_school_level_1': 'client_products.is_school_level_1',
+                    'is_school_level_2': 'client_products.is_school_level_2',
+                    'is_school_level_3': 'client_products.is_school_level_3',
+                    'ter_gr': 'client_products.tg'},
+            tables=['client_state','client_mailing', 'client_products'],
             where=['clients_client.state_id=client_state.id',
-                'clients_client.id=client_mailing.client_id']
-            ).order_by('family','name').values()
-    
-    # def list(self, request):
-    #     # Note the use of `get_queryset()` instead of `self.queryset`
-    #     queryset = self.get_queryset()
-    #     serializer = ClientExtraSerializer(queryset, many=True)
-    #     return Response(serializer.data)
+                'clients_client.id=client_mailing.client_id',
+                'clients_client.id=client_products.client_id']
+            ).order_by('family','name')
+        if filter:
+            print("filter", filter)
+            if filter == 'is_base_course':
+                qs = qs.filter(products__is_base_course=True)
+            if filter == 'is_assisting':
+                qs = qs.filter(products__is_assisting=True)
+            if filter == 'future_assisting':
+                qs = qs.filter(products__future_assisting=True)
+            if filter == 'is_school_level_1':
+                qs = qs.filter(products__is_school_level_1=True)
+            if filter == 'is_school_level_2':
+                qs = qs.filter(products__is_school_level_2=True)
+        return qs.values()
 
 
 class ClientProductsView(generics.RetrieveAPIView):

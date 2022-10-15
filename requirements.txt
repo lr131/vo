@@ -3,6 +3,7 @@ astroid==2.12.7
 dill==0.3.5.1
 Django==4.0
 django-cors-headers==3.13.0
+django-filter==22.1
 djangorestframework==3.13.1
 isort==5.10.1
 lazy-object-proxy==1.7.1

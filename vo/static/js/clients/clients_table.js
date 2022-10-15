@@ -24,38 +24,20 @@ var pagination_listener = function (event) {
     return td;
   };
 
-  function get_states(url) {
-    var statesElem= document.getElementById('states');
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState !== 4 || xhr.status !== 200) {
-          return;  
-      }
-
-      const response = xhr.response;
-      var resp = JSON.parse(response);
-      console.log(resp)
-      for (let i = 0; i < resp['results']['length']; i += 1) {
-        stateId = resp['results'][i]['id'];
-        statesElem.setAttribute('data-state' + stateId, resp['results'][i]['name']);
-      }
-      
-    }
-    xhr.send();
-  }
-
   function create_pagination_button(pageCount, 
                                     pageCurrent, 
                                     url) {
+    console.log(pageCount)
+    var container = document.getElementById('nav_buttons');
+    container.innerHTML = ''
+    
     if (pageCount < 2) {
         return 
     }
 
-    var objURL = new URL(url, document.location.protocol + "//" + document.location.host)
+    console.log(pageCount)
 
-    var container = document.getElementById('nav_buttons');
-    container.innerHTML = ''
+    var objURL = new URL(url, document.location.protocol + "//" + document.location.host)
 
     var previousBtn = document.createElement('li');
     previousBtn.setAttribute("id", "previousBtn")
@@ -155,7 +137,6 @@ var pagination_listener = function (event) {
       var resp = JSON.parse(response);
       var clientsTable = document.getElementById('clientsTable');
       clientsTable.innerHTML ='';
-      var statesData= document.getElementById('states');
       var clientUrl = document.getElementById('clientUrl').dataset.url;
       
       let countInPage = resp['results'].length
@@ -267,9 +248,18 @@ var pagination_listener = function (event) {
     xhr.send();
   }
 
+  function filter_data(event) {
+    console.log(event.target.href)
+    document.getElementById('clientUrl').dataset.extra = event.target.href
+    document.getElementById('clientUrl').dataset.page = 1
+    get_clients_list(event.target.href);
+  }
+
   document.addEventListener("DOMContentLoaded", function(event) { 
-    var states_url = document.getElementById('states').dataset.url;
     var url_get_extra = document.getElementById("clientUrl").dataset.extra
-    get_states(states_url);
     get_clients_list(url_get_extra);
+    console.log(document.getElementById('filters').children);
+    for (let element of document.getElementById('filters').children) {
+      element.addEventListener('click', filter_data)
+    }
   });
