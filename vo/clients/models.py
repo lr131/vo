@@ -22,7 +22,7 @@ class Client(models.Model):
     phone = models.CharField(max_length=250, null=True)
     email = models.CharField(max_length=250, null=True, blank=True)
     in_black_list = models.BooleanField(default=False)
-    state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True)
+    state = models.ForeignKey(State, on_delete=models.SET_NULL, null=True, blank=True, default=8)
     comment = models.TextField(null=True, blank=True)
     note = models.TextField(null=True, blank=True) # заметки, дополнительно
     group = models.CharField(max_length=10, default='irk')
@@ -56,7 +56,7 @@ class Client(models.Model):
 class ClientProducts(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='products')
     is_assisting = models.BooleanField(default=False,verbose_name="Клиент ассистировал") # Клиент уже ассистировал на БК
-    future_assisting = models.BooleanField(default=True, verbose_name="Хочет на ассистирование") # клиент хочет на будущие ассистирования
+    future_assisting = models.BooleanField(default=False, verbose_name="Хочет на ассистирование") # клиент хочет на будущие ассистирования
     is_base_course = models.BooleanField(default=False,verbose_name="Курсовой")
     course_candidate = models.TextField(null=True, blank=True,verbose_name="Кандидаты на курс")
     is_school_level_1 = models.BooleanField(default=False,verbose_name="Выпускник ИШ1")

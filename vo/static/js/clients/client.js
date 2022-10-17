@@ -49,31 +49,6 @@ var pagination_listener = function (event) {
     document.getElementById('birthday').value = '01.01.1900';
   }
 
-  function get_states(url) {
-    var statesElem= document.getElementById('states');
-    var state = document.getElementById('state');
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState !== 4 || xhr.status !== 200) {
-          return;
-      }
-      const response = xhr.response;
-      var resp = JSON.parse(response);
-      for (let i = 0; i < resp['results']['length']; i += 1) {
-        var option = document.createElement('option');
-        option.setAttribute('value', resp['results'][i]['id']);
-        option.textContent = resp['results'][i]['name'];
-        state.append(option);
-
-        stateId = resp['results'][i]['id'];
-        statesElem.setAttribute('data-state' + stateId, resp['results'][i]['name']);
-      }
-    }
-    xhr.send();
-  }
-
   function get_client_data(url) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url);
@@ -407,7 +382,6 @@ var pagination_listener = function (event) {
   document.addEventListener("DOMContentLoaded", function(event) { 
     var urls = document.getElementById('urls');
 
-    get_states(urls.dataset.states);
     get_events(urls.dataset.events);
     get_client_data(urls.dataset.main);
     get_client_connect(urls.dataset.connect)

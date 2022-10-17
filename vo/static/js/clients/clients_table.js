@@ -272,6 +272,7 @@ var pagination_listener = function (event) {
   }
 
   function filter_data(event) {
+    event.preventDefault();
     document.getElementById('clientUrl').dataset.extra = event.target.href
     document.getElementById('clientUrl').dataset.page = 1
     get_clients_list(event.target.href);
