@@ -47,51 +47,16 @@ var pagination_listener = function (event) {
     get_clients_list(url.href);
   }
 
-  function create_pagination_button(pageCount, 
-                                    pageCurrent, 
-                                    url) {
-    console.log(pageCount)
-    var container = document.getElementById('nav_buttons');
-    container.innerHTML = ''
-
-    if (pageCount < 2) {
-        return 
-    }
-
-    console.log(pageCount)
-
-    var objURL = new URL(url, document.location.protocol + "//" + document.location.host)
-
-    var previousBtn = document.createElement('li');
-    previousBtn.setAttribute("id", "previousBtn")
-    previousBtn.classList.add("page-item")
-
-    var previousLink = document.createElement("a")
-
-    previousLink.classList.add("page-link")
-    previousLink.setAttribute("tabindex", "-1")
-    previousLink.removeEventListener('click', pagination_listener);
-    previousLink.textContent = "Назад"
-
-    previousBtn.append(previousLink)
-      
-
-    if (pageCurrent > 1) {
-    
-        objURL.searchParams.set('page', parseInt(pageCurrent) - 1)
-
-        previousBtn.classList.remove('disabled');
-        previousLink.setAttribute('href', objURL.href);
-
-        previousLink.addEventListener('click', pagination_listener)
-
-    } else {
-        previousBtn.classList.add('disabled');
-    }
-
-    container.append(previousBtn)
-
-    for (let i = 1; i <= pageCount; i += 1) {
+  function print_numeric_pagination_buttons(startValuePage,
+                                            pageCurrent,
+                                            endValuePage,
+                                            objURL,
+                                            container) {
+    console.log("startValuePage", startValuePage)
+    console.log("pageCurrent", pageCurrent)
+    console.log("endValuePage", endValuePage)
+    console.log("objURL", objURL)
+    for (let i = startValuePage; i <= endValuePage; i += 1) {
         objURL.searchParams.set('page', i)
         var li = document.createElement('li');
         li.classList.add("page-item")
@@ -116,9 +81,80 @@ var pagination_listener = function (event) {
             a.addEventListener('click', pagination_listener)
             li.append(a)
         }
-        container.append(li)
-        
+        container.append(li)  
+      }
+
+  }
+
+  function create_pagination_button(pageCount, 
+                                    pageCurrent, 
+                                    url) {
+    console.log("pageCount", pageCount)
+    var container = document.getElementById('nav_buttons');
+    container.innerHTML = ''
+
+    if (pageCount < 2) {
+        return 
     }
+
+
+    var objURL = new URL(url, document.location.protocol + "//" + document.location.host)
+
+    var previousBtn = document.createElement('li');
+    previousBtn.setAttribute("id", "previousBtn")
+    previousBtn.classList.add("page-item")
+
+    var previousLink = document.createElement("a")
+
+    previousLink.classList.add("page-link")
+    previousLink.setAttribute("tabindex", "-1")
+    previousLink.removeEventListener('click', pagination_listener);
+    previousLink.textContent = "Назад"
+
+    previousBtn.append(previousLink)
+
+    var printPageCount = pageCount
+      
+
+    if (pageCurrent > 1) {
+    
+        objURL.searchParams.set('page', parseInt(pageCurrent) - 1)
+
+        previousBtn.classList.remove('disabled');
+        previousLink.setAttribute('href', objURL.href);
+
+        previousLink.addEventListener('click', pagination_listener)
+
+    } else {
+        previousBtn.classList.add('disabled');
+    }
+
+    var spanDotsStart = document.createElement('span');
+    var spanDotsEnd = document.createElement('span');
+    spanDotsStart.textContent = '...';
+    spanDotsEnd.textContent = '...';
+    container.append(previousBtn)
+
+    if (pageCount > 15) {
+      console.log(((pageCurrent >= 4) && ((pageCount - pageCurrent) > 5)))
+      if (pageCurrent < 4) {
+        print_numeric_pagination_buttons(1, pageCurrent, 5, objURL, container);
+        container.append(spanDotsEnd)
+      } else if ((pageCurrent >= 4) && ((pageCount - pageCurrent) > 5)) {
+        console.log("Печатаем с точками")
+        // печатаем с точками
+        container.append(spanDotsStart)
+        print_numeric_pagination_buttons(Number(pageCurrent) - 2, pageCurrent, Number(pageCurrent) + 2, objURL, container);
+        container.append(spanDotsEnd)
+      } else {
+        // печатаем точки и последние 5 кнопок
+        container.append(spanDotsStart)
+        print_numeric_pagination_buttons(pageCount - 5, pageCurrent, pageCount, objURL, container);
+      }
+    } else {
+      print_numeric_pagination_buttons(1, pageCurrent, pageCount, objURL, container);
+    }
+    
 
     var nextBtn = document.createElement('li');
     nextBtn.setAttribute("id", "nextBtn")
