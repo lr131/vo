@@ -254,12 +254,14 @@ var pagination_listener = function (event) {
         let city = resp['results'][i]['city'];
         let phone = resp['results'][i]['phone'] ? resp['results'][i]['phone'] : '';
         let comment = resp['results'][i]['comment'];
-        let note = resp['results'][i]['note'];         
+        let note = resp['results'][i]['note'];     
+        let course_candidate = resp['results'][i]['course_candidate'];      
         
         
         family = family ? family : '';
         name = name ? name : '';
         patr = patr ? patr : '';
+        course_candidate = course_candidate ? course_candidate : '';
 
         if (birthday) {
           var birthdayList = birthday.slice(0,10).split('-');
@@ -300,6 +302,7 @@ var pagination_listener = function (event) {
         tr.append(create_client_td(contact));
 
         tr.append(create_client_td(mailing));
+        tr.append(create_client_td(course_candidate));
 
         clientsTable.append(tr);
       }
