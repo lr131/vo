@@ -21,6 +21,18 @@
               База клиентов<span class="sr-only">(current)</span></span>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'knbase:get_articles'  %}">
+              <span data-feather="file-text"></span>
+              База знаний
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'users' %}">
+              <span data-feather="file-text"></span>
+              Штат
+            </a>
+          </li> 
         </ul>
 
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -83,12 +95,6 @@
           <li class="nav-item">
             <span class="nav-link text-secondary">
               <span data-feather="file-text"></span>
-              База знаний
-            </span>
-          </li> 
-          <li class="nav-item">
-            <span class="nav-link text-secondary">
-              <span data-feather="file-text"></span>
               SMM
             </span>
           </li> 
@@ -96,12 +102,6 @@
             <span class="nav-link text-secondary">
               <span data-feather="file-text"></span>
               Telegram-bot
-            </span>
-          </li> 
-          <li class="nav-item">
-            <span class="nav-link text-secondary">
-              <span data-feather="file-text"></span>
-              Штат
             </span>
           </li> 
           <li class="nav-item disabled">

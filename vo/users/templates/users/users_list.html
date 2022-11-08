@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                <span>Виртуальный офис</span>
+                <a class="d-flex align-items-center text-muted" href="#">
+                  <span data-feather="plus-circle"></span>
+                </a>
+              </h6>
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'clients' %}">
+                    <span data-feather="users"></span>
+                    База клиентов</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'knbase:get_articles'  %}">
+                      <span data-feather="file-text"></span>
+                      База знаний
+                    </a>
+                  </li>
+                <li class="nav-item">
+                    <span class="nav-link active">
+                      <span data-feather="file-text"></span>
+                      Штат<span class="sr-only">(current)</span>
+                    </span>
+                  </li> 
+              </ul>
+      
+              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                <span>Разделы в разработке</span>
+                <a class="d-flex align-items-center text-muted" href="#">
+                  <span data-feather="plus-circle"></span>
+                </a>
+              </h6>
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <span class="nav-link text-secondary">
+                    <span data-feather="file-text"></span>
+                    Рассылки
+                  </span>
+                </li> 
+                <li class="nav-item">
+                  <span class="nav-link text-secondary">
+                    <span data-feather="shopping-cart"></span>
+                    CRM
+                  </span>
+                </li>
+                <li class="nav-item">
+                  <span class="nav-link text-secondary">
+                    <span data-feather="file-text"></span>
+                    Контент-план
+                  </span>
+                </li>
+                <li class="nav-item">
+                  <span class="nav-link text-secondary">
+                    <span data-feather="file-text"></span>
+                    Менеджер задач
+                  </span>
+                </li> 
+                <li class="nav-item">
+                  <span class="nav-link text-secondary">
+                    <span data-feather="file-text"></span>
+                    Календарь мероприятий
+                  </span>
+                </li>
+                <li class="nav-item">
+                  <span class="nav-link text-secondary">
+                    <span data-feather="file-text"></span>
+                    База знаний
+                  </span>
+                </li> 
+                <li class="nav-item">
+                  <span class="nav-link text-secondary">
+                    <span data-feather="file-text"></span>
+                    SMM
+                  </span>
+                </li> 
+                <li class="nav-item">
+                  <span class="nav-link text-secondary">
+                    <span data-feather="file-text"></span>
+                    Telegram-bot
+                  </span>
+                </li> 
+                <li class="nav-item disabled">
+                  <span class="nav-link text-secondary">
+                    <span data-feather="file-text"></span>
+                    Мой профиль
+                  </span>
+                </li> 
+      
+              </ul>
+            </div>
+        </nav>
+      
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
+    
+            <h2>Штат</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{user.last_name}}</td>
+                            <td>{{user.first_name}}</td>
+                        
+                        
+                        </tr>
+                    {% endfor %}
+                    
+                </tbody>
+                </table>
+            </div>
+    
+        </main>
+    </div>
+</div>
+
+<script src={% static 'js/form.js' %}></script>
+<script src={% static 'js/clients/main.js' %}></script>
+<script src={% static 'js/clients/client.js' %}></script>
+  
+{% endblock %}
+

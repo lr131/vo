@@ -8,4 +8,5 @@ router.register(r'events', views.EventViewSet, basename='events')
 
 urlpatterns = [
     path('', include((router.urls, "router"), namespace="router")),
+    path('plan', views.get_plan)
     ]

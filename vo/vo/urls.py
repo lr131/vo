@@ -30,5 +30,8 @@ urlpatterns = [
     path('api/clients/', include(('clients.urls', 'clients'), namespace='clients')),
     path('api/events/', include(('events.urls', 'events'), namespace='events'), name='events'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    path('api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework'))
+    path('api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
+    path('events', evens_views.get_plan, name="events"),
+    path('users', user_views.get_users, name='users'),
+    path('kn/', include(('knbase.urls', 'knbase'), namespace="knbase"), name="knbase")
 ]

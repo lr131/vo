@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'events.apps.EventsConfig',
     'plan.apps.PlanConfig',
     'crm.apps.CrmConfig',
+    'knbase.apps.KnbaseConfig',
     'rest_framework',
     'corsheaders',
     'django_filters',
