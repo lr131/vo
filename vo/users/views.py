@@ -40,11 +40,3 @@ def client(request, pk):
         'back_page': request.GET.get("back_page", 1)
     } 
     return render(request, 'client.html', context=context)
-
-@login_required
-def create_client(request):
-    context = {
-        'user': request.user,
-        'back_page': request.GET.get("back_page", 1)
-    } 
-    return render(request, 'new_client.html', context=context)

@@ -44,11 +44,6 @@ var pagination_listener = function (event) {
     xhr.send();
   }
 
-  function get_bday_plug(event) {
-    event.preventDefault();
-    document.getElementById('birthday').value = '01.01.1900';
-  }
-
   function get_client_data(url) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url);
@@ -387,7 +382,6 @@ var pagination_listener = function (event) {
     get_client_connect(urls.dataset.connect)
     get_client_products(urls.dataset.history)
     get_client_interest(urls.dataset.interests)
-    document.getElementById('birthdayPlug').addEventListener('click', get_bday_plug)
     document.getElementById('mailing').addEventListener('submit', update_client_mailing)
     document.getElementById('history').addEventListener('submit', update_client_history)
     document.getElementById('interestCreateForm').addEventListener('submit', create_client_interest)

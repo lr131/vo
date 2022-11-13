@@ -1,3 +1,6 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+
 from rest_framework.views import APIView
 from rest_framework import viewsets, serializers, generics, filters
 from rest_framework.response import Response
@@ -109,3 +112,23 @@ class ProductInterestView(generics.ListAPIView):
     def get_queryset(self):
         event = self.kwargs.get('event_id', None)
         return ClientInterest.objects.filter(event=event)
+
+
+@login_required
+def client(request, pk):
+    context = {
+        'user': request.user,
+        'pk': pk,
+        'back_page': request.GET.get("back_page", 1),
+        'states': State.objects.all().order_by('name')
+    } 
+    return render(request, 'client.html', context=context)
+
+@login_required
+def create_client(request):
+    context = {
+        'user': request.user,
+        'back_page': request.GET.get("back_page", 1),
+        'states': State.objects.all().order_by('name')
+    } 
+    return render(request, 'new_client.html', context=context)
