@@ -102,3 +102,6 @@ pip freeze > requirements.txt
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+*.sqlilte3
+
