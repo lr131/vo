@@ -11,6 +11,6 @@
     color: red;
 }
 
-#phoneAddIcon, .phone-remove-icon {
+#phoneAddIcon, .phone-remove-icon, .search-result {
     cursor: pointer;
 }

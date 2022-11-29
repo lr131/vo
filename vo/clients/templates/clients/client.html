@@ -54,6 +54,8 @@
       </div>
     </nav>
 
+    
+
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
 
       <span id='urls' data-states="{% url 'clients:router:states-list' %}" 
@@ -70,10 +72,19 @@
       <span id='events'></span>
       <div class="alert alert-success hidden" role="alert" id='alertRes'></div>
       <div class="row">
-        <div class="col-md-8">
+        <legend>Основные данные:</legend>
+        <div class="col-sm-6">
+          <p class="text-muted text-left" id="cdate">Добавлено: </p>
+        </div>
+
+        <div class="col-sm-5">
+          <p class="text-muted text-right" id="mdate">Обновлено: </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-7">
           <form class='row' id="client">
             {% csrf_token %}
-            <legend>Основные данные:</legend>
             <div class="col-sm-3">
               <div class="form-group">
                 <label for="family"><strong>Фамилия <span class='required'>*</span></strong></label>
@@ -131,6 +142,25 @@
             </div>
 
             <div class="col-sm-6">
+              <div class="form-group">
+                <label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" name="have_kids" id="have_kids">
+                    <label class="form-check-label" for="have_kids">
+                      Есть дети
+                    </label>
+                  </div>
+                </label>
+             </div>
+             
+              <div class="form-group">
+                <label for="kids">Если есть, то подробности</label>
+                <input type="text" class="form-control" id="kids" name='kids' placeholder="Тут про детей пишем">
+             </div>
+             <div class="form-group">
+              <label for="working">Сфера деятельности</label>
+              <input type="text" class="form-control" id="working" name='working' placeholder="Кем или в какой сфере работает">
+           </div>
               <div class="form-group">
                 <label for="comment">Комментарий</label>
                 <textarea class="form-control" id="comment" name='comment' rows="3"></textarea>
@@ -392,6 +422,7 @@
 </div>
 
 <script src={% static 'js/form.js' %}></script>
+<script src={% static 'js/utils.js' %}></script>
 <script src={% static 'js/clients/main.js' %}></script>
 <script src={% static 'js/clients/client.js' %}></script>
   

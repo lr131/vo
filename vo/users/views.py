@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 
 from . import serializers
 
+@login_required
 def get_users(request):
     context = {
         "users": User.objects.all()
@@ -21,22 +22,3 @@ def login(request):
 def profile(request):
     user = request.user
     return render(request, 'start.html', {'user':user})
-
-@login_required
-def clients(request):
-    context = {
-        'user': request.user,
-        'page': request.GET.get("page", 1)
-    } 
-    user = request.user
-    print(user.groups.filter(name__in=['irk', 'angsk']).exists())    
-    return render(request, 'clients_list.html', context=context)
-
-@login_required
-def client(request, pk):
-    context = {
-        'user': request.user,
-        'pk': pk,
-        'back_page': request.GET.get("back_page", 1)
-    } 
-    return render(request, 'client.html', context=context)

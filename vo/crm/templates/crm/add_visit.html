@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    {% block menu %}
+      {% with active='crm' page='add_visit' %}
+        {% include '_menu.html' %}
+      {% endwith %}
+    {% endblock %}
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
+
+      <div class="row">
+        <div class="col-md-8">
+          <h4> Поиск клиента в базе </h4>
+          <form class="form-inline" id="searchForm" action="{% url 'clients:extra' %}"
+            data-result="searchClientResults" data-target='id_client_id'>
+            <input class="form-control col-sm-6 mr-sm-2 border border-secondary" type="search" id='search' name="search" placeholder="Поиск по фамилии, имени, номеру телефона" aria-h4="Search">
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">Искать</button>
+            <small class="form-text text-muted">
+              Вводите что-то одно. Телефон пишите в формате 79xxxxxxxxx (то есть, 7 и последние 10 цифр без пробелов, скобок и других знаков)
+            </small>
+          </form>
+          <div id="searchClientResults">
+              
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <h4> Поиск мероприятия в базе </h4>
+          <form class="form-inline" id="searchEvent" action="{% url 'events:extra' %}" 
+            data-result="searchEventResults" data-target='id_event_plan_id'>
+            <input class="form-control col-sm-6 mr-sm-2 border border-secondary" type="search" id='search'  name="search" placeholder="Поиск по названию" aria-label="Search">
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">Искать</button>
+            <small class="form-text text-muted">
+              Вводите назвние с соблюдением регистра. Можно ввести часть названия. Например, по запросу "курс" без кавычек найдется базовый курс
+            </small>
+          </form>
+          <div id="searchEventResults">
+              
+          </div>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col-md-8">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="hidden">
+                    {{form.client_id}}
+                    {{form.event_plan_id}}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Примечание</label>
+                    <input type="text" class="form-control" id="note" name="note" maxlength="512">
+                  </div>
+                <button type="submit" class="btn btn-success">Сохранить</button>
+              </form>
+
+              
+        </div>
+
+        {% comment %} col-md-8 {% endcomment %}
+        {% comment %} col-md-4 {% endcomment %}
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src={% static 'js/utils.js' %}></script>
+<script src={% static 'js/crm/add.js' %}></script>
+
+{% endblock %}
+

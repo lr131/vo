@@ -1,0 +1,193 @@
+<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+  <div class="sidebar-sticky">
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      <span>Виртуальный офис</span>
+      <a class="d-flex align-items-center text-muted" href="#">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+      
+    <ul class="nav flex-column">
+       <li class="nav-item">
+        <a {% if active == 'client_list' %} class="nav-link active"
+           {% else %} class="nav-link"
+           {% endif %} href="{% url 'clients' %}">
+          <span data-feather="users"></span>
+          База клиентов {% if active == 'client_list' %} <span class="sr-only">(current)</span></span>{% endif %} 
+        </a>
+      </li>
+      <li class="nav-item">
+        
+        <a {% if active == 'kn_articles' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'knbase:get_articles' %}">
+          <span data-feather="file-text"></span>
+          База знаний
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a {% if active == 'staff' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'users' %}">
+          <span data-feather="file-text"></span>
+          Штат
+        </a>
+      </li> 
+      <li class="nav-item">
+        <a {% if active == 'events' %} class="nav-link active"
+            {% else %} class="nav-link"
+            {% endif %} href="{% url 'events' %}">
+          Календарь мероприятий
+      </a>
+      </li>
+      {% if user.username == 'lr131' %}
+      <li class="nav-item">
+        <a {% if active == 'crm' %} class="nav-link active"
+            {% else %} class="nav-link"
+            {% endif %} href="{% url 'crm:get_list' %}">
+          CRM (Всё ещё в разработке, пока не трогать!)
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      {% if active == 'client_list' %}
+        <span>База клиентов</span> 
+      {% endif %} 
+      
+      {% if active == 'kn_articles' %}
+        <span>База знаний</span> 
+      {% endif %}   
+      {% if active == 'events' %}
+        <span>Мероприятия и расписание</span> 
+      {% endif %} 
+      {% if active == 'crm' %}
+        <span>CRM</span> 
+      {% endif %} 
+        <a class="d-flex align-items-center text-muted" href="#">
+          <span data-feather="plus-circle"></span>
+        </a>
+      
+    </h6>
+    <ul class="nav flex-column mb-2">
+      {% if active == 'client_list' %}
+      <li class="nav-item">
+        <a {% if active == 'client_list' %} class="nav-link active"
+          {% else %} class="nav-link"
+          {% endif %} href="{% url 'clients' %}">
+          <span data-feather="file-text"></span>
+          Список клиентов
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href={% url 'create_client' %}>
+          <span data-feather="file-text"></span>
+          Добавить клиента
+        </a>
+      </li>  
+      {% endif %}
+
+      {% if active == 'kn_articles' %}
+      <li class="nav-item">
+        <a {% if active == 'kn_articles' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'knbase:get_articles' %}">
+          <span data-feather="file-text"></span>
+          Материалы
+        </a>
+      </li>
+      {% endif %}  
+      {% if active == 'events' %}
+      <li class="nav-item">
+        <a {% if active == 'events' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'events' %}">
+          <span data-feather="file-text"></span>
+          Текущий сезон
+        </a>
+      </li>
+      {% endif %}  
+      {% if active == 'crm' %}
+      <li class="nav-item">
+        <a {% if page == 'history' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'crm:get_list' %}">
+          <span data-feather="file-text"></span>
+          История посещений
+        </a>
+      </li>
+      <li class="nav-item">
+        <a {% if page == 'add_visit' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'crm:visit_add' %}">
+          <span data-feather="file-text"></span>
+          Добавить посещение
+        </a>
+      </li>
+      <li class="nav-item">
+        <a {% if page == 'lids' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'crm:get_list' %}">
+          <span data-feather="file-text"></span>
+          Заявки (Входящие)
+        </a>
+      </li>
+      <li class="nav-item">
+        <a {% if page == 'prev_list' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'crm:get_list' %}">
+          <span data-feather="file-text"></span>
+          Списки клиентов (Исходящие)
+        </a>
+      </li>
+      {% endif %}  
+    </ul>
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      <span>Разделы в разработке</span>
+      <a class="d-flex align-items-center text-muted" href="#">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <span class="nav-link text-secondary">
+          <span data-feather="file-text"></span>
+          Рассылки
+        </span>
+      </li> 
+      <li class="nav-item">
+        <span class="nav-link text-secondary">
+          <span data-feather="file-text"></span>
+          Контент-план
+        </span>
+      </li>
+      <li class="nav-item">
+        <span class="nav-link text-secondary">
+          <span data-feather="file-text"></span>
+          Менеджер задач
+        </span>
+      </li> 
+      <li class="nav-item">
+        <span class="nav-link text-secondary">
+          <span data-feather="file-text"></span>
+            SMM
+        </span>
+      </li> 
+      <li class="nav-item">
+        <span class="nav-link text-secondary">
+          <span data-feather="file-text"></span>
+          Telegram-bot
+        </span>
+      </li> 
+      <li class="nav-item disabled">
+        <span class="nav-link text-secondary">
+          <span data-feather="file-text"></span>
+          Мой профиль
+        </span>
+      </li> 
+
+    </ul>
+  </div>
+</nav>

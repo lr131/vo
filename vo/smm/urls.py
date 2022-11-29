@@ -1,5 +1,5 @@
 from django.urls import path
 from . import views
 urlpatterns = [
-    path('', views.smm, name="smm")
+    path('', views.mailing_new, name="mailing_new")
 ]

@@ -1,15 +1,16 @@
 from django.shortcuts import render
 
-def smm(request):
-    projectsList = [
-        {'id':'1',
-            'title':'Онлайн-кинотеатр',
-            'description':'Кинотеатр с самой полной библиотекой фильмов.'},
-        {'id':'2',
-        'title':'Платформа с ИТ-курсами',
-        'description':'Курсы по фронтенду, бэкенду и мобильной разработке.'},
-        {'id':'3',
-        'title':'Рекрутинговый портал',
-        'description':'Вакансии для специалистов экстра-класса.'},
-      ]
-    return render(request, 'projects.html', {'projects':projectsList})
+from .forms import MailingForm
+
+def mailing_new(request):
+    if request.method == "POST":
+        form = MailingForm(request.POST)
+        if form.is_valid():
+            mailing = form.save(commit=False)
+            # mailing.author = request.user
+            # mailing.published_date = timezone.now()
+            mailing.save()
+    else:
+        form = MailingForm()
+    return render(request, 'smm/mailing/mailing_new.html', {'form': form})
+

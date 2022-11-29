@@ -34,25 +34,11 @@ class ClientSerializer(serializers.ModelSerializer):
 
         
     def create(self, validated_data):
-        print(validated_data)
+        print("validated_data", validated_data)
         # Проверка на дубли
         phones = validated_data.get('phone').split(';')
         print(phones)
-        # clients = []
 
-        # for phone in phones:
-        #     client = Client.objects.filter(phone__contains=phone).values()
-        #     print("clients", client)
-        #     if client:
-        #         clients.append(client)
-
-        # if len(clients):
-        #     raise UniqueValidator 
-        # else:
-        #     client = Client.objects.create(**validated_data)
-        #     ClientMailing.objects.create(client=client)
-        #     ClientProducts.objects.create(client=client)
-        #     return client
         client = Client.objects.create(**validated_data)
         ClientMailing.objects.create(client=client)
         ClientProducts.objects.create(client=client)
@@ -67,7 +53,8 @@ class ClientExtraSerializer(serializers.Serializer):
     family = serializers.CharField(max_length=250)
     name = serializers.CharField(max_length=250)
     patr = serializers.CharField(max_length=250)
-    birthday = serializers.CharField()
+    birthday = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S", required=False, read_only=True)
+    email = serializers.CharField()
     city = serializers.CharField(max_length=250)
     phone = serializers.CharField(max_length=250)
     in_black_list = serializers.BooleanField(default=False)

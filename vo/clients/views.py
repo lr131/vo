@@ -21,6 +21,13 @@ class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all().order_by('family', 'name')
     serializer_class = ClientSerializer
     
+    def perform_create(self, serializer):
+        serializer.save(cuser=self.request.user, 
+                        muser=self.request.user)
+        
+    def perform_update(self, serializer):
+        serializer.save(muser=self.request.user)
+    
     
 class ClientExtraView(generics.ListAPIView):
     # pagination_class = CustomPagination
@@ -113,7 +120,6 @@ class ProductInterestView(generics.ListAPIView):
         event = self.kwargs.get('event_id', None)
         return ClientInterest.objects.filter(event=event)
 
-
 @login_required
 def client(request, pk):
     context = {
@@ -122,7 +128,7 @@ def client(request, pk):
         'back_page': request.GET.get("back_page", 1),
         'states': State.objects.all().order_by('name')
     } 
-    return render(request, 'client.html', context=context)
+    return render(request, 'clients/client.html', context=context)
 
 @login_required
 def create_client(request):
@@ -131,4 +137,15 @@ def create_client(request):
         'back_page': request.GET.get("back_page", 1),
         'states': State.objects.all().order_by('name')
     } 
-    return render(request, 'new_client.html', context=context)
+    return render(request, 'clients/new_client.html', context=context)
+
+@login_required
+def clients(request):
+    context = {
+        'user': request.user,
+        'page': request.GET.get("page", 1)
+    } 
+    user = request.user
+    print(user.groups.filter(name__in=['irk', 'angsk']).exists())    
+    return render(request, 'clients/clients_list.html', context=context)
+

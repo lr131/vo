@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import AuthData, UTMSource, Medium, Links, Target, Rubric
+from .models import AuthData, Mailing, UTMSource, Medium, Links, Target, Rubric
 from .models import PostType, Post, PostPlan, ContentFormat, ContentForm
 from .models import ContentType, SocialPlace, ContentPlace, Tag
+from .models import  Mailing, MailingDetail, SourceMailing
 
 class ContentTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
@@ -38,3 +39,5 @@ admin.site.register(ContentType,ContentTypeAdmin)
 admin.site.register(SocialPlace, SocialPlaceAdmin)
 admin.site.register(ContentPlace)
 admin.site.register(Tag)
+admin.site.register(Mailing)
+admin.site.register(SourceMailing)

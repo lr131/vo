@@ -6,108 +6,11 @@
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-            <div class="sidebar-sticky">
-              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Виртуальный офис</span>
-                <a class="d-flex align-items-center text-muted" href="#">
-                  <span data-feather="plus-circle"></span>
-                </a>
-              </h6>
-              <ul class="nav flex-column">
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'clients' %}">
-                    <span data-feather="users"></span>
-                    База клиентов</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <span class="nav-link active">
-                    <span data-feather="file-text"></span>
-                    Календарь мероприятий<span class="sr-only">(current)</span>
-                  </span>
-                </li>
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Штат
-                  </span>
-                </li> 
-              </ul>
-      
-              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Расписание</span>
-                <a class="d-flex align-items-center text-muted" href="#">
-                  <span data-feather="plus-circle"></span>
-                </a>
-              </h6>
-              <ul class="nav flex-column mb-2">
-                <li class="nav-item">
-                  <a class="nav-link active" href="#">
-                    <span data-feather="file-text"></span>
-                    Текущий сезон
-                  </a>
-                </li>       
-              </ul>
-              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Разделы в разработке</span>
-                <a class="d-flex align-items-center text-muted" href="#">
-                  <span data-feather="plus-circle"></span>
-                </a>
-              </h6>
-              <ul class="nav flex-column">
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Рассылки
-                  </span>
-                </li> 
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="shopping-cart"></span>
-                    CRM
-                  </span>
-                </li>
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Контент-план
-                  </span>
-                </li>
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Менеджер задач
-                  </span>
-                </li> 
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    База знаний
-                  </span>
-                </li> 
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    SMM
-                  </span>
-                </li> 
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Telegram-bot
-                  </span>
-                </li> 
-                <li class="nav-item disabled">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Мой профиль
-                  </span>
-                </li> 
-      
-              </ul>
-            </div>
-        </nav>
+      {% block menu %}
+        {% with 'events' as active %}
+          {% include '_menu.html' %}
+        {% endwith %}
+      {% endblock %}
       
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
     
@@ -126,10 +29,17 @@
                 <tbody>
                     {% for event in events %}
                         <tr>
-                        <td>{{event.event.name}}</td>
-                        <td>{{event.start_date}} - {{event.end_date}}</td>
+                        <td>"{{event.event.name}}" ({{ event.event.event_type }}) </td>
+                        {% if event.start_date|date:"m" == event.end_date|date:"m" %}
+                          <td>{{event.start_date|date:"d" }}-{{event.end_date|date:"d.m Y" }}</td>
+                        {% else %}  
+                          <td>{{event.start_date|date:"d.m" }}-{{event.end_date|date:"d.m Y" }}</td>
+                        {% endif %}
                         <td>{{event.place}}</td>
-                        <td>{{event.user.name}}</td>
+                        <td> {% for us in  event.user.all %} 
+                          {{us.first_name}} {{us.last_name}} </br>
+                          {% endfor %}
+                        </td>
                         <td>{{event.country}}</td>
                         </tr>
                     {% endfor %}
@@ -142,9 +52,7 @@
     </div>
 </div>
 
-<script src={% static 'js/form.js' %}></script>
-<script src={% static 'js/clients/main.js' %}></script>
-<script src={% static 'js/clients/client.js' %}></script>
+
   
 {% endblock %}
 

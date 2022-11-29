@@ -53,6 +53,7 @@ var pagination_listener = function (event) {
       }
       const response = xhr.response;
       var resp = JSON.parse(response);
+      console.log(resp)
       document.getElementById('family').value = resp['family'];
       document.getElementById('name').value = resp['name'];
       document.getElementById('patr').value = resp['patr'] ? resp['patr'] : '';
@@ -67,8 +68,12 @@ var pagination_listener = function (event) {
       setSelectValue('group', resp['group']);
 
       document.getElementById('city').value = resp['city'] ? resp['city'] : '';
+      document.getElementById('email').value = resp['email'] ? resp['email'] : '';
       document.getElementById('note').value = resp['note'] ? resp['note'] : '';
       document.getElementById('comment').value = resp['comment'] ? resp['comment'] : '';
+
+      document.getElementById('cdate').textContent += formatDate(new Date(resp['cdate']));
+      document.getElementById('mdate').textContent += formatDate(new Date(resp['mdate']));
 
       var phones =  resp['phone'] ? resp['phone'].split(';') : []     
       console.log("phones", phones)

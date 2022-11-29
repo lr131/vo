@@ -5,8 +5,9 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'events', views.EventViewSet, basename='events')
+router.register(r'plan', views.EventPlanViewSet, basename='plan')
 
 urlpatterns = [
     path('', include((router.urls, "router"), namespace="router")),
-    path('plan', views.get_plan)
+    path('extra/', views.EventPlanExtraView.as_view(), name='extra'),
     ]

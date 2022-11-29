@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    {% block menu %}
+    
+      {% with active='smm' page='m_list' %}
+        {% include '_menu.html' %}
+      {% endwith %}
+    {% endblock %}
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
+
+      <div class="row">
+        <div class="col-md-12">
+            {% for obj in mailing %}
+            {{obj.name}} {{obj.description}} {{obj.source_type}} {{obj.date}}
+            {% endfor %}
+        </div>
+
+        {% comment %} col-md-8 {% endcomment %}
+        {% comment %} col-md-4 {% endcomment %}
+      </div>
+
+    </main>
+  </div>
+</div>
+  
+{% endblock %}
+
