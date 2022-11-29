@@ -33,7 +33,7 @@ class ClientExtraView(generics.ListAPIView):
     # pagination_class = CustomPagination
     serializer_class = ClientExtraSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['state__name', 'city', 'group', ]
+    filterset_fields = ['state__name', 'city', 'group', 'have_kids']
     search_fields = ['family', 'name', 'phone']
     
     def get_queryset(self):

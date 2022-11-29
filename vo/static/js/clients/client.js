@@ -69,6 +69,13 @@ var pagination_listener = function (event) {
 
       document.getElementById('city').value = resp['city'] ? resp['city'] : '';
       document.getElementById('email').value = resp['email'] ? resp['email'] : '';
+      document.getElementById('kids').value = resp['kids'] ? resp['kids'] : '';
+
+      if ((resp['have_kids'])) {
+        document.getElementById('have_kids').checked = true;
+    }
+
+      document.getElementById('working').value = resp['working'] ? resp['working'] : '';
       document.getElementById('note').value = resp['note'] ? resp['note'] : '';
       document.getElementById('comment').value = resp['comment'] ? resp['comment'] : '';
 
