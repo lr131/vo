@@ -17,7 +17,38 @@
 
       <div class="row">
         <div class="col-md-12">
-            История
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Список / заявка </th>
+                <th scope="col">Клиент</th>
+                <th scope="col">Этап </th>
+                <th scope="col">Действие </th>
+                <th scope="col">Описание </th>
+                <th scope="col">Резюме общения</th>
+                <th scope="col">Создано / Редактировано</th>
+                <th scope="col">Кто работал</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for action in history %}
+                <tr>
+                  <td>{{action.plc|default_if_none:'' }}}} 
+                    {{action.lid|default_if_none:'' }}</td>
+                  <td>ФИО</td>
+                  <td>{{action.stage}}</td>
+                  <td>{{action.action}}</td>
+                  <td>{{action.description}}</td>
+                  <td>{{action.note}}</td>
+                  <td>{{action.cdate|date:"d.m Y"}} / {{action.mdate|date:"d.m Y"}}</td>
+                  <td>{{action.worker.first_name}} {{action.worker.last_name}}</td>
+                 
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
         </div>
 
       </div>

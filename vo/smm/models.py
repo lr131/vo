@@ -1,14 +1,11 @@
-from cgitb import enable, text
 from datetime import datetime
-from os import link
-from tabnanny import verbose    
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-from django.utils import timezone
 from django.conf import settings
 from .const import MAILING_SOURCE_TYPES, MAILING_RESULT_CHOISES, SOURCE_MAILING_STATE
 import uuid
+import urllib.parse
 
 
 class AuthData(models.Model):
@@ -44,8 +41,8 @@ class SocialPlace(models.Model):
     link = models.CharField(max_length=150, null=True, blank=True)
     social = models.CharField(max_length=20)
     class Meta:
-        verbose_name = 'Место размещения (соцсеть)'
-        verbose_name_plural = 'Места размещения (соцсети)'
+        verbose_name = 'Место размещения (соцсеть или лэндинг)'
+        verbose_name_plural = 'Места размещения (соцсети и сайты)'
         db_table = 'social_place'
 
     def __str__(self):
@@ -261,6 +258,93 @@ class SourceMailing(models.Model):
     def __str__(self):
         return f"{self.name} ({self.social_place})"
 
+class State(models.Model):
+    name = models.CharField(max_length=30)
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        managed = False
+        db_table = 'client_state'
+
+    def __str__(self):
+        return self.name
+
+class Client(models.Model):
+    family = models.CharField(max_length=250, null=True)
+    name = models.CharField(max_length=250, null=True)
+    patr = models.CharField(max_length=250, null=True, blank=True)
+    birthday = models.DateTimeField(blank=True, null=True,
+                                    default=datetime(1900, 1, 1, hour=16))
+    city = models.CharField(max_length=250, null=True)
+    in_black_list = models.BooleanField(default=False,
+                                        verbose_name="В черном списке")
+    state = models.ForeignKey(State, 
+                              on_delete=models.SET_NULL, 
+                              null=True, blank=True, 
+                              default=8,
+                              verbose_name="Статус")
+    comment = models.TextField(null=True, blank=True, verbose_name="Комментарии")
+    note = models.TextField(null=True, blank=True, verbose_name="Заметки") # заметки, дополнительно
+    group = models.CharField(max_length=10, default='irk', verbose_name="База",)
+    working = models.CharField(max_length=250,
+                               null=True, blank=True,
+                               verbose_name="Сфера деятельности",)
+    have_kids = models.BooleanField(default=False, verbose_name="Есть дети",)
+    kids = models.CharField(max_length=1000, 
+                            null=True, blank=True,
+                            verbose_name="Дети, подробности",)
+    class Meta:
+        managed = False
+        db_table = 'clients_client'
+        
+    def __str__(self):
+        return f"{self.family} {self.name} ({self.city})"
+    
+    @property
+    def fio(self):
+        return f"{self.family} {self.name} {self.patr if self.patr else ''}"
+
+class ClientProducts(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='products')
+    is_assisting = models.BooleanField(default=False,verbose_name="Клиент ассистировал") # Клиент уже ассистировал на БК
+    future_assisting = models.BooleanField(default=False, verbose_name="Хочет на ассистирование") # клиент хочет на будущие ассистирования
+    is_base_course = models.BooleanField(default=False,verbose_name="Курсовой")
+    course_candidate = models.TextField(null=True, blank=True,verbose_name="Кандидаты на курс")
+    is_school_level_1 = models.BooleanField(default=False,verbose_name="Выпускник ИШ1")
+    is_school_level_2 = models.BooleanField(default=False,verbose_name="Выпускник ИШ2")
+    is_school_level_3 = models.BooleanField(default=False, verbose_name="Выпускник ИШ3")
+    tg = models.BooleanField(default=False,verbose_name="Выпускник терапевтической группы") # Клиент проходил терапевтическую группу
+    
+    class Meta:
+        managed = False
+        db_table = 'client_products'
+    
+    def __str__(self):
+        return (f" {self.client.family} " if self.client.family else ""
+                f"{self.client.name} " if self.client.name else ""
+                f"{self.course_candidate}" if self.course_candidate else "")
+
+
+class ClientMailing(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='mailing')
+    viber_group = models.BooleanField(default=False, verbose_name="Группа в viber")
+    tg_group = models.BooleanField(default=False, verbose_name="Группа в тг")
+    wa_group = models.BooleanField(default=False, verbose_name="Группа в whatsapp")
+    viber = models.BooleanField(default=False)
+    tg = models.BooleanField(default=False, verbose_name="telegram")
+    wa = models.BooleanField(default=False, verbose_name="whatsapp")
+    sms = models.BooleanField(default=False,verbose_name="смс")
+    call = models.BooleanField(default=False,verbose_name="Звонить")
+    comment = models.TextField(null=True, blank=True,verbose_name="Примечания")
+    
+    class Meta:
+        managed = False
+        db_table = 'client_mailing'
+
+    def __str__(self):
+        return (f" {self.client.family} " if self.client.family else ""
+                f"{self.client.name} " if self.client.name else ""
+                f"{self.comment}" if self.comment else "")
 
 class Mailing(models.Model):
     name = models.CharField(max_length=100, 
@@ -313,8 +397,8 @@ class MailingDetail(models.Model):
     
     link_messeger = models.TextField(null=True, blank=True,
                                      verbose_name="Месседжер")
-    client_id = models.IntegerField(null=True, blank=True,
-                                    verbose_name="Клиент")
+    client = models.ForeignKey(Client, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="Клиент")
     phone = models.CharField(max_length=20, null=True, blank=True,
                                     verbose_name="Номер телефона клиента")
     result = models.CharField(max_length=100,
@@ -328,3 +412,31 @@ class MailingDetail(models.Model):
 
     def __str__(self):
         return f"{self.phone}"
+    
+    @property
+    def link_wa_pc(self):
+        query = {
+            'text': f"{self.outer_text}"
+        }
+        params = urllib.parse.urlencode(query)
+        return f'https://web.whatsapp.com/send/?phone={self.phone}&{params}&type=phone_number&app_absent=0'
+    
+    @property
+    def link_wa(self):
+        query = {
+            'text': f"{self.outer_text}"
+        }
+        params = urllib.parse.urlencode(query)
+        return f"https://wa.me/{self.phone}?{params}"
+    
+    @property
+    def link_vi(self):
+        # https://viber.click/номертелефона
+        # <a href="viber://chat?number=%2B79501476150">Viber</a>
+        return f"viber://chat?number=%2B{self.phone}"
+    
+    @property
+    def link_tg(self):
+        # https://t.me/+79834631106
+        # tg://resolve?domain=username
+        return f"https://t.me/+{self.phone}"

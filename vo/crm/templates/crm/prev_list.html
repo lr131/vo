@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    {% block menu %}
+   
+    {% with active='crm' page='prev_list' %}
+        {% include '_menu.html' %}
+      {% endwith %}
+    {% endblock %}
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
+
+      <div class="row">
+        <div class="col-md-6">
+          <h2>{{list.name}}</h2>
+        </div>
+        <div class="col-md-6">
+          <p class='text-muted'> Создан {{list.date|date:"d.m.Y"}} </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <p class='text-muted'>{{list.description}}</p>
+        </div>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Клиент</th>
+            <th scope="col">Город</th>
+            <th scope="col">Взаимодействие </th>
+            <th scope="col">История общения</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody id="clientsTable">
+          {% for client in clients %}
+          <tr data-client="{{client.client_id}}" 
+              data-url="{% url 'clients:router:client-detail' client.client_id %}" >
+            <td><a name="fio" href="{% url 'client' client.client_id %}" target="_blank">
+              {{client.client_family}} {{client.client_name}} {{client.client_patr}} ({{client.client_state}})</a> </td>
+            <td name="city">{{client.client_city}}</td>
+            <td><a class="btn btn-success" href="{% url 'crm:add_action' %}?plc={{list.pk}}" target="_blank"> Добавить </a></td>
+            <td><a class="btn btn-primary" href="{% url 'crm:history'  %}?plc={{list.pk}}" target="_blank"> Посмотреть </a></td>
+            <td><a class="btn btn-warning" href="#"> Убрать из списка </a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="row mt-3">
+        <div class="col-sm-12">
+          <span id='clientUrl' data-url="{% url 'client' 1 %}" 
+                           data-page='{{page}}'
+                           data-extra="{% url 'clients:extra' %}?page={{page}}">
+                          </span>
+          <form class="form-inline" id="searchForm" action="{% url 'clients:extra' %}">
+            <input class="form-control col-sm-6 mr-sm-2 border border-secondary" type="search" id='search' name="search" placeholder="Поиск по фамилии, имени, номеру телефона" aria-label="Search">
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">Искать</button>
+            <small class="form-text text-muted">
+              Вводите что-то одно. Телефон пишите в формате 79xxxxxxxxx (то есть, 7 и последние 10 цифр без пробелов, скобок и других знаков)
+            </small>
+          </form>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-sm-12">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Клиент</th>
+                <th scope="col">Комментарий</th>
+                <th scope="col">Заметки</th>
+              </tr>
+            </thead>
+            <tbody id='results'>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+    </main>
+    
+  </div>
+</div>
+
+<script src={% static 'js/crm/clients.js' %}></script>
+<script src={% static 'js/clients/search.js' %}></script>
+<script src={% static 'js/crm/prevlist.js' %}></script>
+  
+{% endblock %}
+

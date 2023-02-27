@@ -3,22 +3,26 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class PreviousList(models.Model):
-    date = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=250, blank=True, null=True, verbose_name="Назывние")
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+    name = models.CharField(max_length=250, blank=True, null=True, verbose_name="Название")
     description = models.CharField(max_length=512, blank=True, null=True, verbose_name="Описание")
-    cuser = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Кто создал список")
+    cuser = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, 
+                              verbose_name="Кто создал список")
     
     class Meta:
         verbose_name = "Список на мероприятие"
         verbose_name_plural = "Списки на мероприятия"
         
     def __str__(self):
-        return f" Список {self.name} от {self.date.date().isocalendar()}"
+        return (f" Список {self.name}"
+                f"от {self.date.strftime('%d.%m.%Y')} " 
+                f"(by {self.cuser.first_name} {self.cuser.last_name})")
     
 class PreviousListClient(models.Model):
     prev_list = models.ForeignKey(PreviousList, on_delete=models.CASCADE)
     client_id = models.IntegerField()
-    cuser = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Кто добавил клиента в список")
+    cuser = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, 
+                              verbose_name="Кто добавил клиента в список")
     cdate = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -27,7 +31,7 @@ class PreviousListClient(models.Model):
 
         
     def __str__(self):
-        return self.prev_list
+        return f"{self.prev_list}"
 class Lid(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     lid_code = models.CharField(max_length=50, blank=True, null=True, verbose_name="Код заявки")
@@ -67,13 +71,13 @@ class Action(models.Model):
                             verbose_name="Лид заявки")
     cdate = models.DateTimeField(auto_now_add=True)
     mdate = models.DateTimeField(auto_now=True)
-    worker = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Координатор, кто берётся работать")
     description = models.TextField(null=True, blank=True, verbose_name="Описание")
     action = models.CharField(max_length=250, verbose_name="Действие координатора")
     note = models.TextField(verbose_name="Резюме общения")
     stage = models.CharField(max_length=250, verbose_name="Этап")
-    # сделать редактируемым только для того, кто создал
-    worker = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Координатор, кто берётся работать")
+    # TODO сделать редактируемым только для того, кто создал
+    worker = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, 
+                               verbose_name="Координатор, кто берётся работать, ответственный")
     
     class Meta:
         verbose_name = "История взаимодействий с клиентами"

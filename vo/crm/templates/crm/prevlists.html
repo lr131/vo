@@ -7,8 +7,8 @@
 <div class="container-fluid">
   <div class="row">
     {% block menu %}
-    
-      {% with active='mailing' page='mailing_new' %}
+   
+    {% with active='crm' page='prev_lists' %}
         {% include '_menu.html' %}
       {% endwith %}
     {% endblock %}
@@ -17,25 +17,24 @@
 
       <div class="row">
         <div class="col-md-12">
-          ВНИМАНИЕ! Раздел в разработке, работает только рассылка по базе
+            <h3> Предварительные списки </h3>
         </div>
       </div>
+
+      {% for list in lists %}
       <div class="row">
         <div class="col-md-12">
-            <form method="POST" class="post-form">
-              {% csrf_token %}
-                {{ form.as_p }}
-            <button type="submit" class="save btn btn-default">Сохранить</button>
-            </form>
+            <a href="{% url 'crm:list_detail' pk=list.pk %}">
+                {{list.date|date:"d.m.Y"}} {{list.name}} {{list.description}}
+            </a>
+            
         </div>
-
-        {% comment %} col-md-8 {% endcomment %}
-        {% comment %} col-md-4 {% endcomment %}
       </div>
+
+       {% endfor %}
 
     </main>
   </div>
 </div>
   
 {% endblock %}
-

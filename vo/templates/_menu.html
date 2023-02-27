@@ -25,7 +25,46 @@
           База знаний
         </a>
       </li>
+
+      <li class="nav-item">   
+        <a {% if active == 'mailing' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'smm:mailing_list' %}">
+          <span data-feather="file-text"></span>
+           Рассылки
+        </a>
+      </li>
+
       
+
+      <li class="nav-item">   
+        <a {% if active == 'sp_list' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'smm:sp_list' %}">
+          <span data-feather="file-text"></span>
+          Наши ресурсы для размещения
+        </a>
+      </li>
+
+      <li class="nav-item">   
+        <a {% if active == 'sp_list_out' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'smm:sp_list' %}">
+          <span data-feather="file-text"></span>
+          Не наши ресурсы для размещения (в разработке)
+        </a>
+      </li>
+
+
+      <li class="nav-item">   
+        <a {% if active == 'link_list' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'smm:link_list' %}">
+          <span data-feather="file-text"></span>
+          Ссылки готовые
+        </a>
+      </li>
+
       <li class="nav-item">
         <a {% if active == 'staff' %} class="nav-link active"
         {% else %} class="nav-link"
@@ -45,7 +84,7 @@
       <li class="nav-item">
         <a {% if active == 'crm' %} class="nav-link active"
             {% else %} class="nav-link"
-            {% endif %} href="{% url 'crm:get_list' %}">
+            {% endif %} href="{% url 'crm:get_lists' %}">
           CRM (Всё ещё в разработке, пока не трогать!)
         </a>
       </li>
@@ -55,6 +94,12 @@
     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
       {% if active == 'client_list' %}
         <span>База клиентов</span> 
+      {% endif %} 
+      {% if active == 'mailing' %}
+        <span>Рассылки</span> 
+      {% endif %} 
+      {% if active == 'data_links' %}
+        <span>Ссылки</span> 
       {% endif %} 
       
       {% if active == 'kn_articles' %}
@@ -99,21 +144,32 @@
         </a>
       </li>
       {% endif %}  
-      {% if active == 'events' %}
+      
+      {% if active == 'mailing' %}
       <li class="nav-item">
-        <a {% if active == 'events' %} class="nav-link active"
+        <a {% if page == 'm_list' %} class="nav-link active"
         {% else %} class="nav-link"
-        {% endif %} href="{% url 'events' %}">
+        {% endif %} href="{% url 'smm:mailing_list' %}">
           <span data-feather="file-text"></span>
-          Текущий сезон
+          Список всех рассылок
         </a>
       </li>
-      {% endif %}  
+
+      <li class="nav-item">   
+        <a {% if page == 'mailing_new' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'smm:mailing_new' %}">
+          <span data-feather="file-text"></span>
+          Добавить новую рассылку
+        </a>
+      </li> 
+      {% endif %} 
+      
       {% if active == 'crm' %}
       <li class="nav-item">
         <a {% if page == 'history' %} class="nav-link active"
         {% else %} class="nav-link"
-        {% endif %} href="{% url 'crm:get_list' %}">
+        {% endif %} href="{% url 'crm:history' %}">
           <span data-feather="file-text"></span>
           История посещений
         </a>
@@ -129,17 +185,25 @@
       <li class="nav-item">
         <a {% if page == 'lids' %} class="nav-link active"
         {% else %} class="nav-link"
-        {% endif %} href="{% url 'crm:get_list' %}">
+        {% endif %} href="{% url 'crm:history' %}">
           <span data-feather="file-text"></span>
           Заявки (Входящие)
         </a>
       </li>
       <li class="nav-item">
-        <a {% if page == 'prev_list' %} class="nav-link active"
+        <a {% if page == 'prev_lists' %} class="nav-link active"
         {% else %} class="nav-link"
-        {% endif %} href="{% url 'crm:get_list' %}">
+        {% endif %} href="{% url 'crm:get_lists' %}">
           <span data-feather="file-text"></span>
-          Списки клиентов (Исходящие)
+          Список списков клиентов (Исходящие)
+        </a>
+      </li>
+      <li class="nav-item">
+        <a {% if page == 'add_prevlist' %} class="nav-link active"
+        {% else %} class="nav-link"
+        {% endif %} href="{% url 'crm:add_prevlist' %}">
+          <span data-feather="file-text"></span>
+          Создать предварительный список
         </a>
       </li>
       {% endif %}  

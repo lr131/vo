@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from rest_framework import viewsets, serializers, generics, pagination, filters
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -16,7 +17,7 @@ class EventPlanViewSet(viewsets.ModelViewSet):
     serializer_class = EventPlanSerializer
     pagination_class = pagination.LimitOffsetPagination
     
-
+@login_required
 def get_plan(request):
     context = {
         "events": EventPlan.objects.all().order_by('start_date')

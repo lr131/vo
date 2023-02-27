@@ -1,5 +1,3 @@
-from cgitb import lookup
-from unittest.util import _MAX_LENGTH
 from rest_framework import serializers
 from .models import State, Client, ClientProducts, ClientMailing, ClientInterest
 from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
@@ -37,7 +35,6 @@ class ClientSerializer(serializers.ModelSerializer):
         print("validated_data", validated_data)
         # Проверка на дубли
         phones = validated_data.get('phone').split(';')
-        print(phones)
 
         client = Client.objects.create(**validated_data)
         ClientMailing.objects.create(client=client)

@@ -7,8 +7,7 @@
 <div class="container-fluid">
   <div class="row">
     {% block menu %}
-    
-      {% with active='mailing' page='mailing_new' %}
+      {% with active='crm' page='add_prevlist' %}
         {% include '_menu.html' %}
       {% endwith %}
     {% endblock %}
@@ -16,18 +15,18 @@
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
 
       <div class="row">
-        <div class="col-md-12">
-          ВНИМАНИЕ! Раздел в разработке, работает только рассылка по базе
+        <div class="col-md-8">
+         
         </div>
       </div>
       <div class="row">
-        <div class="col-md-12">
-            <form method="POST" class="post-form">
-              {% csrf_token %}
-                {{ form.as_p }}
-            <button type="submit" class="save btn btn-default">Сохранить</button>
-            </form>
+          <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Сохранить</button>
+          </form>
         </div>
+      </div>
 
         {% comment %} col-md-8 {% endcomment %}
         {% comment %} col-md-4 {% endcomment %}
@@ -36,6 +35,8 @@
     </main>
   </div>
 </div>
-  
+<script src={% static 'js/utils.js' %}></script>
+<script src={% static 'js/crm/add.js' %}></script>
+
 {% endblock %}
 

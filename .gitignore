@@ -86,6 +86,7 @@ target/
 *.pyc
 __pycache__/
 local_settings.py
+config.py
 
 .office
 db.sqlite3
@@ -104,4 +105,3 @@ pip freeze > requirements.txt
 *.vsix
 
 *.sqlilte3
-
