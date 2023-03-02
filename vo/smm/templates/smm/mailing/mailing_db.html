@@ -28,6 +28,7 @@
             <th scope="col">Месседжеры</th>
             <th scope="col">Текущий месседжер</th>
             <th scope="col">Статус</th>
+            <th scope="col">Позвонить</th>
           </tr>
         </thead>
 
@@ -57,6 +58,11 @@
                 </td>
                 <td>{{client.link_messeger}}</td>
                 <td>{{client.result}}</td>
+                <td>
+                  <br/> <br/> 
+                  <a href='tel:+{{client.phone}}' target='_blank'> Позвонить {{client.phone}}</a> 
+                  <br/> <br/> 
+              </td>
                 
                 
             </tr>
