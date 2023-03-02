@@ -39,10 +39,10 @@
                 <td>{{client.pk}}</td>
                 <td>{{client.client.pk}}</td>
                 <td>{{client.client.fio}} ({{client.phone}})</td>
-                <td> {{client.client.state.name}} ({{client.client.city}})</td>
-                <td>{{client.client__client_mailing.comment}}</td>
-                <td>{{client.client.note}} <br/> {{client.client.comment}}</td>
-                <td>{{client.comment}}</td>
+                <td> {{client.client.state.name|default_if_none:""}} ({{client.client.city|default_if_none:""}})</td>
+                <td>{{client.client__client_mailing.comment|default_if_none:""}}</td>
+                <td>{{client.client.note|default_if_none:""}} <br/> {{client.client.comment|default_if_none:""}}</td>
+                <td>{{client.comment|default_if_none:""}}</td>
                 <td>
                     <br/> <br/> 
                     <a href='{{client.link_wa_pc}}' target='_blank'> Вацап Комп</a> 
@@ -56,8 +56,8 @@
                     <a href='#'> Нет в месседжерах</a>
                     <br/> <br/> 
                 </td>
-                <td>{{client.link_messeger}}</td>
-                <td>{{client.result}}</td>
+                <td>{{client.link_messeger|default_if_none:""}}</td>
+                <td>{{client.result|default_if_none:""}}</td>
                 <td>
                   <br/> <br/> 
                   <a href='tel:+{{client.phone}}' target='_blank'> Позвонить {{client.phone}}</a> 
