@@ -31,7 +31,12 @@ def tilda_webhook(request):
             decoded_dict[decoded_key] = decoded_value
             
         pprint(decoded_dict)
-        WebHook.objects.create(body=str(decoded_dict))
+        WebHook.objects.create(body=str(decoded_dict),
+                               formid=decoded_dict.get('formid', None),
+                               formname=decoded_dict.get('formname', None),
+                               tranid=decoded_dict.get('tranid', None),
+                               name=decoded_dict.get('name', None),
+                               phone=decoded_dict.get('phone', None))
         
         return HttpResponse("ok")
     else:

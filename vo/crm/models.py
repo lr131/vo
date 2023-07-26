@@ -1,4 +1,4 @@
-from multiprocessing import Event
+from http import cookies
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -36,10 +36,20 @@ class PreviousListClient(models.Model):
 
 class WebHook(models.Model):
     body = models.TextField()
+    formid = models.CharField(max_length=50, verbose_name="ID формы Тильды", null=True, blank=True)
+    formname = models.CharField(max_length=100, verbose_name="Форма Тильды", null=True, blank=True)
+    tranid = models.CharField(max_length=50, verbose_name="№ заявки", null=True, blank=True)
+    name = models.CharField(max_length=500, verbose_name="Имя", null=True, blank=True)
+    phone = models.CharField(max_length=50, verbose_name="Телефон", null=True, blank=True)
+    cdate = models.DateTimeField(auto_now_add=True,
+                                 verbose_name="Дата добавления")
     
     class Meta:
         verbose_name = "Вебхук"
         verbose_name_plural = "Webhooks"
+    
+    def __str__(self):
+        return f"{self.body}"
 
 class Lid(models.Model):
     date = models.DateTimeField(auto_now_add=True)
