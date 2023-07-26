@@ -2,7 +2,8 @@ from django.contrib import admin
 from .models import AuthData, Mailing, UTMSource, Medium, Links, Target, Rubric
 from .models import PostType, Post, PostPlan, ContentFormat, ContentForm
 from .models import ContentType, SocialPlace, ContentPlace, Tag
-from .models import  Mailing, MailingDetail, SourceMailing
+from .models import  Mailing, MailingDetail, SourceMailing, CampaingUTM
+from .models import UTMs
 
 class ContentTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
@@ -19,6 +20,12 @@ class UTMSourceAdmin(admin.ModelAdmin):
 class MediumAdmin(admin.ModelAdmin):
     list_display = ('type_source', 'utm_medium', 'description', 'enable')
     
+class CampaingUTMAdmin(admin.ModelAdmin):
+    list_display = ('type_source', 'utm_campaing', 'description', 'enable')
+    
+class UTMsAdmin(admin.ModelAdmin):
+    list_display = ('UTMSource', 'UTMMedium', 'UTMCampaing')
+    
 
 class PostTypeAdmin(admin.ModelAdmin):
     list_display = ('post_type', 'name', 'description')
@@ -27,6 +34,8 @@ class PostTypeAdmin(admin.ModelAdmin):
 admin.site.register(AuthData)
 admin.site.register(UTMSource, UTMSourceAdmin)
 admin.site.register(Medium, MediumAdmin)
+admin.site.register(CampaingUTM, CampaingUTMAdmin)
+admin.site.register(UTMs, UTMsAdmin)
 admin.site.register(Links)
 admin.site.register(Target)
 admin.site.register(Rubric)

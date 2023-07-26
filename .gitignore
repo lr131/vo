@@ -89,6 +89,8 @@ local_settings.py
 config.py
 
 .office
+.env/
+venv
 db.sqlite3
 pip freeze > requirements.txt
 .vscode/*

@@ -134,6 +134,24 @@ class Medium(models.Model):
     class Meta:
         verbose_name = 'UTMMedium'
         verbose_name_plural = 'Метки UTMMedium'
+
+class CampaingUTM(models.Model):
+    type_source = models.CharField(max_length=200)
+    utm_campaing = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True, null=True)
+    enable = models.BooleanField(default=True)
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, 
+                              null=True, blank=True,
+                              verbose_name="чья метка (из команды)")
+
+    def __str__(self):
+        return self.utm_campaing
+    
+    class Meta:
+        verbose_name = 'UTMCampaing'
+        verbose_name_plural = 'Метки UTMCampaing'
+        db_table = 'smm_utm_campaign'
+        
     
 class Links(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=True) # Дата создания ссылки
@@ -154,7 +172,21 @@ class Links(models.Model):
         return self.link
     
     
-
+class UTMs(models.Model):
+    UTMSource = models.ForeignKey(UTMSource, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_source (где публикуем)")
+    UTMMedium = models.ForeignKey(Medium, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_medium (как публикуем)")
+    UTMCampaing = models.ForeignKey(CampaingUTM, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_campaing (у кого публикуем)")
+    
+    class Meta:
+        verbose_name = 'Готовый набор UTM меток'
+        verbose_name_plural = 'Готовый набор UTM меток'
+        db_table = 'smm_utms'
+        
+    def __str__(self):
+        return f"{self.UTMSource} {self.UTMMedium} {self.UTMCampaing}"
 
 class PostType(models.Model):
     post_type = models.CharField(max_length=200)
@@ -214,7 +246,7 @@ class Post(models.Model):
         verbose_name_plural = 'База постов'
     
     def __str__(self):
-        return self.name
+        return self.short_content
 
 
 class PostPlan(models.Model):

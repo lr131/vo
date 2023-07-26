@@ -13,7 +13,7 @@ def add_visit(request):
         if form.is_valid():
             print(form)
             history = form.save()
-            return redirect('crm:get_list')
+            return redirect('crm:get_lists')
     else:
         context = {
             "form": ClientEventHistoryForm()
