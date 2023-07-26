@@ -114,6 +114,9 @@ class Medium(models.Model):
     utm_medium = models.CharField(max_length=200)
     description = models.CharField(max_length=200, blank=True, null=True)
     enable = models.BooleanField(default=True)
+    user = models.ForeignKey(User, on_delete=models.RESTRICT, 
+                              null=True, blank=True,
+                              verbose_name="чья метка (из команды)")
 
     def __str__(self):
         return self.utm_medium
@@ -127,9 +130,6 @@ class CampaingUTM(models.Model):
     utm_campaing = models.CharField(max_length=200)
     description = models.CharField(max_length=200, blank=True, null=True)
     enable = models.BooleanField(default=True)
-    user = models.ForeignKey(User, on_delete=models.RESTRICT, 
-                              null=True, blank=True,
-                              verbose_name="чья метка (из команды)")
 
     def __str__(self):
         return self.utm_campaing
