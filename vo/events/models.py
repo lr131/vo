@@ -70,6 +70,7 @@ class EventPlan(models.Model):
     place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Где")
     user = models.ManyToManyField(User, blank=True, verbose_name="Кто ведёт")
     is_period = models.BooleanField(default=False, verbose_name="Это периодичное мероприятие?")
+    site = models.CharField(max_length=500, null=True, blank=True, verbose_name="Ссылка на лендинг (перекроет ссылку тренинга)")
     period = models.IntegerField(null=True,blank=True, verbose_name="Введите период") # через сколько дней если что повторять
     
     class Meta:

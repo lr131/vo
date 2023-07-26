@@ -6,7 +6,7 @@ class PlaceAdmin(admin.ModelAdmin):
     list_display = ('addr', 'source')
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('name', 'state', 'continuance', 'event_type', 'description', 'about', 'payment')
+    list_display = ('name', 'state', 'continuance', 'event_type', 'description', 'about', 'payment', 'site')
 
 class EventStateAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
@@ -16,7 +16,7 @@ class EventTypeAdmin(admin.ModelAdmin):
 
 class EventPlanAdmin(admin.ModelAdmin):
     ordering = ['start_date']
-    list_display = ('get_dates','get_info', 'get_place', 'get_event_type')
+    list_display = ('get_dates','get_info', 'site', 'get_place', 'get_event_type')
 
 admin.site.register(Place, PlaceAdmin)
 admin.site.register(EventType, EventTypeAdmin)
