@@ -24,7 +24,7 @@ class CampaingUTMAdmin(admin.ModelAdmin):
     list_display = ('type_source', 'utm_campaing', 'description', 'enable')
     
 class UTMsAdmin(admin.ModelAdmin):
-    list_display = ('UTMSource', 'UTMMedium', 'UTMCampaing')
+    list_display = ('utm_source', 'utm_type_source', 'utm_medium', 'utm_type_content', 'utm_campaing')
     
 
 class PostTypeAdmin(admin.ModelAdmin):

@@ -45,6 +45,7 @@ class Event(models.Model):
     state = models.ForeignKey(EventState, verbose_name="Статус", null=True, blank=True, on_delete=models.SET_NULL) # проводится, не проводится, в архиве и тд
     event_type = models.ForeignKey(EventType, verbose_name="Тип мероприятия",  null=True, blank=True, on_delete=models.SET_NULL) # Тренинг, программа, марафон и тд
     description = models.TextField(null=True,blank=True, verbose_name="Описание")
+    short = models.CharField(max_length=500, blank=True, null=True, verbose_name="Короткое описание (до 500 знаков)")
     payment = models.CharField(max_length=200,null=True,blank=True, verbose_name="Стоимость")
     continuance = models.CharField(max_length=200,null=True,blank=True, verbose_name="Продолжительность") # продолжительность
     about = models.TextField(null=True,blank=True, verbose_name="Какие боли закрывает?") # какие боли закрывает
@@ -52,6 +53,7 @@ class Event(models.Model):
     next_step = models.TextField(null=True,blank=True, verbose_name="Следующий шаг по продуктам") # следующий шаг по продуктам TODO
     prev_step = models.TextField(null=True,blank=True, verbose_name="Предыдущий шаг по продуктам") # предыдущий шаг / бесплатные материалы TODO
     created_date = models.DateTimeField(auto_now_add=True, blank=True, verbose_name="Дата создания")
+    site = models.CharField(max_length=500, null=True, blank=True, verbose_name="Ссылка на лендинг")
     
     class Meta:
         verbose_name = "Мероприятие"
@@ -63,6 +65,7 @@ class Event(models.Model):
 class EventPlan(models.Model):
     start_date = models.DateTimeField(blank=True, verbose_name="Дата начала")
     end_date = models.DateTimeField(blank=True, null=True, verbose_name="Дата завершения")
+    season = models.CharField(max_length=100, default="2023/2024", verbose_name="Сезон")
     event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name="Мероприятие")
     place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Где")
     user = models.ManyToManyField(User, blank=True, verbose_name="Кто ведёт")

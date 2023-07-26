@@ -21,6 +21,7 @@
                     <tr>
                     <th>Тренинг</th>
                     <th>Даты</th>
+                    <th>Сезон</th>
                     <th>Где</th>
                     <th>Кто ведёт</th>
                     <th>Сколько по плану людей</th>
@@ -35,6 +36,7 @@
                         {% else %}  
                           <td>{{event.start_date|date:"d.m" }}-{{event.end_date|date:"d.m Y" }}</td>
                         {% endif %}
+                        <td>{{event.season}}</td>
                         <td>{{event.place}}</td>
                         <td> {% for us in  event.user.all %} 
                           {{us.first_name}} {{us.last_name}} </br>

@@ -34,19 +34,6 @@ class ContentType(models.Model):
 
     def __str__(self):
         return self.name
-
-# Все наши места, где мы размещаемся
-class SocialPlace(models.Model):
-    name = models.CharField(max_length=50)
-    link = models.CharField(max_length=150, null=True, blank=True)
-    social = models.CharField(max_length=20)
-    class Meta:
-        verbose_name = 'Место размещения (соцсеть или лэндинг)'
-        verbose_name_plural = 'Места размещения (соцсети и сайты)'
-        db_table = 'social_place'
-
-    def __str__(self):
-        return self.name
   
 # где размещаем: сторис, посты, рилс, клипы
 class ContentPlace(models.Model):
@@ -152,33 +139,89 @@ class CampaingUTM(models.Model):
         verbose_name_plural = 'Метки UTMCampaing'
         db_table = 'smm_utm_campaign'
         
+
+class TypeSourceUTM(models.Model):
+    title = models.CharField(max_length=200)
+    utm_type_source = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True, null=True)
+    enable = models.BooleanField(default=True)
+
+
+    def __str__(self):
+        return self.utm_type_source
     
+    class Meta:
+        verbose_name = 'UTM Type Source (тип ресурса, группа, канал, сообщение или что)'
+        verbose_name_plural = 'Метки UTM Type Source'
+        db_table = 'smm_utm_type_source'
+        
+
+class TypeContentUTM(models.Model):
+    title = models.CharField(max_length=200)
+    utm_type_content = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True, null=True)
+    enable = models.BooleanField(default=True)
+
+
+    def __str__(self):
+        return self.utm_type_content
+    
+    class Meta:
+        verbose_name = 'UTM Type Content (post/stories/header)'
+        verbose_name_plural = 'Метки UTM Type Content'
+        db_table = 'smm_utm_type_Content'
+            
+
 class Links(models.Model):
     date = models.DateTimeField(auto_now_add=True, blank=True) # Дата создания ссылки
     link = models.CharField(max_length=200) # длинная ссылка
     short = models.CharField(max_length=200, blank=True, null=True) # сокращенная ссылка
     source = models.CharField(max_length=200) # источник
     utm_source = models.CharField(max_length=200)
+    utm_type_source = models.CharField(max_length=200)
     utm_medium = models.CharField(max_length=200, blank=True, null=True)
     utm_campaign = models.CharField(max_length=200, blank=True, null=True)
     utm_content = models.CharField(max_length=200, blank=True, null=True)
     utm_term = models.CharField(max_length=200, blank=True, null=True)
     
     class Meta:
-        verbose_name = 'Готовые ссылки'
-        verbose_name_plural = 'Готовые ссылки'
+        verbose_name = 'Готовая ссылка с utm-метками'
+        verbose_name_plural = 'Готовые ссылки с utm-метками'
         
     def __str__(self):
         return self.link
     
+# Все наши места, где мы размещаемся
+class SocialPlace(models.Model):
+    name = models.CharField(max_length=50)
+    link = models.CharField(max_length=150, null=True, blank=True)
+    social = models.CharField(max_length=20)
+    utm_source = models.ForeignKey(UTMSource, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_source (Соцсеть или месседжер)")
+    utm_type_source = models.ForeignKey(TypeSourceUTM, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_type_source (группа/страница/канал/чат/direct)",)
+    utm_medium = models.ForeignKey(Medium, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_medium (Тип трафика)")
+   
+    class Meta:
+        verbose_name = 'Место размещения (соцсеть или лэндинг)'
+        verbose_name_plural = 'Места размещения (соцсети и сайты)'
+        db_table = 'social_place'
+
+    def __str__(self):
+        return self.name
     
 class UTMs(models.Model):
-    UTMSource = models.ForeignKey(UTMSource, on_delete=models.RESTRICT,
-                               null=True, blank=True,verbose_name="utm_source (где публикуем)")
-    UTMMedium = models.ForeignKey(Medium, on_delete=models.RESTRICT,
-                               null=True, blank=True,verbose_name="utm_medium (как публикуем)")
-    UTMCampaing = models.ForeignKey(CampaingUTM, on_delete=models.RESTRICT,
-                               null=True, blank=True,verbose_name="utm_campaing (у кого публикуем)")
+    utm_source = models.ForeignKey(UTMSource, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_source (Источник кампании)")
+    utm_type_source = models.ForeignKey(TypeSourceUTM, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_type_source (группа/страница/канал/чат/direct)",)
+    utm_medium = models.ForeignKey(Medium, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_medium (Тип трафика)")
+    utm_type_content = models.ForeignKey(TypeContentUTM, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_type_content (Тип контента)")
+    utm_campaing = models.ForeignKey(CampaingUTM, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_campaing (Название кампании))")
     
     class Meta:
         verbose_name = 'Готовый набор UTM меток'
@@ -186,7 +229,7 @@ class UTMs(models.Model):
         db_table = 'smm_utms'
         
     def __str__(self):
-        return f"{self.UTMSource} {self.UTMMedium} {self.UTMCampaing}"
+        return f"{self.utm_source}-{self.utm_type_source}-{self.utm_medium}-{self.utm_type_content}-{self.utm_campaing}"
 
 class PostType(models.Model):
     post_type = models.CharField(max_length=200)
@@ -267,12 +310,12 @@ class PostPlan(models.Model):
 
 class SourceMailing(models.Model):
     name = models.CharField(max_length=200)
-    social_place = models.ForeignKey(UTMSource, 
-                                     on_delete=models.RESTRICT, 
-                                     verbose_name="Соцсеть или месседжер")
-    utm_medium = models.ForeignKey(Medium, 
-                                   on_delete=models.RESTRICT, 
-                                   verbose_name="метка UTMMedium")
+    utm_source = models.ForeignKey(UTMSource, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_source (Соцсеть или месседжер)")
+    utm_medium = models.ForeignKey(Medium, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_medium (Тип трафика)")
+    utm_campaing = models.ForeignKey(CampaingUTM, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_campaing (Название кампании))")
     price = models.DecimalField(default=0, 
                                 max_digits = 5,
                                 decimal_places = 2,
@@ -288,7 +331,7 @@ class SourceMailing(models.Model):
         verbose_name_plural = 'Внешние ресурсы для размещения'
 
     def __str__(self):
-        return f"{self.name} ({self.social_place})"
+        return f"{self.name} ({self.utm_source})"
 
 class State(models.Model):
     name = models.CharField(max_length=30)
