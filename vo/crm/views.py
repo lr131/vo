@@ -9,7 +9,7 @@ from .serializers import PreviousListClientSerializer
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from urllib.parse import unquote
-import json
+import re
 
 @csrf_exempt
 def tilda_webhook(request):
@@ -29,14 +29,25 @@ def tilda_webhook(request):
             decoded_key = unquote(key)
             decoded_value = unquote(value)
             decoded_dict[decoded_key] = decoded_value
+                
+        phone_number = decoded_dict.get('Phone', None)
+        if phone_number:
+            phone_number = re.sub(r'\D', '', phone_number)
+        
+        name = decoded_dict.get('Name', None)
+        if name:
+            name = name.replace("+", " ")
             
-        pprint(decoded_dict)
+        formname = decoded_dict.get('Name', None)
+        if formname:
+            formname = formname.replace("+", " ")
+            
         WebHook.objects.create(body=str(decoded_dict),
                                formid=decoded_dict.get('formid', None),
                                formname=decoded_dict.get('formname', None),
                                tranid=decoded_dict.get('tranid', None),
                                name=decoded_dict.get('Name', None),
-                               phone=decoded_dict.get('Phone', None))
+                               phone=phone_number)
         
         return HttpResponse("ok")
     else:
