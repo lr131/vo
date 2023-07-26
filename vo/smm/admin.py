@@ -3,7 +3,7 @@ from .models import AuthData, Mailing, UTMSource, Medium, Links, Target, Rubric
 from .models import PostType, Post, PostPlan, ContentFormat, ContentForm
 from .models import ContentType, SocialPlace, ContentPlace, Tag
 from .models import  Mailing, MailingDetail, SourceMailing, CampaingUTM
-from .models import UTMs
+from .models import UTMs, TypeContentUTM, TypeSourceUTM
 
 class ContentTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
@@ -36,6 +36,8 @@ admin.site.register(UTMSource, UTMSourceAdmin)
 admin.site.register(Medium, MediumAdmin)
 admin.site.register(CampaingUTM, CampaingUTMAdmin)
 admin.site.register(UTMs, UTMsAdmin)
+admin.site.register(TypeContentUTM)
+admin.site.register(TypeSourceUTM)
 admin.site.register(Links)
 admin.site.register(Target)
 admin.site.register(Rubric)
