@@ -20,6 +20,7 @@ from users import views as user_views
 from clients import views as client_views
 from events import views as events_views
 from smm import views as smm_views
+from crm import views as crm_views
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
@@ -34,6 +35,7 @@ urlpatterns = [
     path('api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
     path('events', events_views.get_plan, name="events"),
     path('users', user_views.get_users, name='users'),
+    path('webhook/tilda', crm_views.tilda_webhook, name='tilda_webhook'),
     path('kn/', include(('knbase.urls', 'knbase'), namespace="knbase"), name="knbase"),
     path('smm/', include(('smm.urls', 'smm'), namespace="smm"), name="smm"),
     path('crm/', include(('crm.urls', 'crm'), namespace="crm"), name="crm")

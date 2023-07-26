@@ -32,6 +32,15 @@ class PreviousListClient(models.Model):
         
     def __str__(self):
         return f"{self.prev_list}"
+
+
+class WebHook(models.Model):
+    body = models.TextField()
+    
+    class Meta:
+        verbose_name = "Вебхук"
+        verbose_name_plural = "Webhooks"
+
 class Lid(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     lid_code = models.CharField(max_length=50, blank=True, null=True, verbose_name="Код заявки")

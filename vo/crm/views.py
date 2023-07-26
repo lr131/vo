@@ -4,7 +4,38 @@ from rest_framework import viewsets, serializers, generics, filters
 from pprint import pprint
 from .forms import ClientEventHistoryForm, PreviousListForm, ActionForm
 from .models import Action, ClientEventHistory, PreviousList, PreviousListClient
+from .models import WebHook
 from .serializers import PreviousListClientSerializer
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from urllib.parse import unquote
+import json
+
+@csrf_exempt
+def tilda_webhook(request):
+    if request.method == 'POST':
+        pprint(request)
+        raw_string =request.body.decode('utf-8')
+        split_string = raw_string.split('&')
+        
+        data_dict = {}
+        for item in split_string:
+            key, value = item.split('=')
+            data_dict[key] = value
+   
+
+        decoded_dict = {}
+        for key, value in data_dict.items():
+            decoded_key = unquote(key)
+            decoded_value = unquote(value)
+            decoded_dict[decoded_key] = decoded_value
+            
+        pprint(decoded_dict)
+        WebHook.objects.create(body=str(decoded_dict))
+        
+        return HttpResponse("ok")
+    else:
+        return HttpResponse("not allowed")
 
 @login_required
 def add_visit(request):
