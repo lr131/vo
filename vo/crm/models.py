@@ -41,7 +41,7 @@ class WebHook(models.Model):
     tranid = models.CharField(max_length=50, verbose_name="№ заявки", null=True, blank=True)
     name = models.CharField(max_length=500, verbose_name="Имя", null=True, blank=True)
     phone = models.CharField(max_length=50, verbose_name="Телефон", null=True, blank=True)
-    cdate = models.DateTimeField(auto_now_add=True,
+    cdate = models.DateTimeField(auto_now_add=True, null=True,
                                  verbose_name="Дата добавления")
     
     class Meta:
