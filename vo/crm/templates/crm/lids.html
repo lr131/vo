@@ -42,20 +42,12 @@
                   <table class="table">
                     <thead>
                       <tr>
-                        <th scope="col">Код заявки (Тильда) </th>
                         <th scope="col">Дата</th>
                         <th scope="col">Имя</th>
                         <th scope="col">Телефон</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Код клиента в бд</th>
                         <th scope="col">Форма на сайте</th>
-                        <th scope="col">utm_source</th>
-                        <th scope="col">utm_type_source</th>
-                        <th scope="col">utm_medium</th>
-                        <th scope="col">utm_type_content</th>
-                        <th scope="col">utm_campaign</th>
-                        <th scope="col">utm_content</th>
-                        <th scope="col">utm_term</th>
+                        <th scope="col">UTM метки</th>
                         <th scope="col">Первичное действие</th>
                         <th scope="col">Источник связи/ссылка</th>
                         <th scope="col">Целевое действие</th>
@@ -67,20 +59,18 @@
                     <tbody>
                       {% for lid in lids %}
                         <tr>
-                          <td>{{lid.lid_code|default_if_none:'' }}</td>
                           <td>{{lid.date|date:"d.m Y"}} </td>
-                          <td>{{lid.name}}</td>
+                          <td>{{lid.name}} (код {{lid.client_id|default_if_none:'' }}) </td>
                           <td>{{lid.phone}}</td>
                           <td>{{lid.email}}</td>
-                          <td>{{lid.client_id|default_if_none:'' }}</td>
                           <td>{{lid.form_name|default_if_none:'' }}</td>
-                          <td>{{lid.utm_source|default_if_none:'' }}</td>
-                          <td>{{lid.utm_type_source|default_if_none:'' }}</td>
-                          <td>{{lid.utm_medium|default_if_none:'' }}</td>
-                          <td>{{lid.utm_type_content|default_if_none:'' }}</td>
-                          <td>{{lid.utm_campaign|default_if_none:'' }}</td>
-                          <td>{{lid.utm_content|default_if_none:'' }}</td>
-                          <td>{{lid.utm_term|default_if_none:'' }}</td>
+                          <td>utm_source={{lid.utm_source|default_if_none:'' }}<br/>
+                              utm_type_source={{lid.utm_type_source|default_if_none:'' }}<br/>
+                              utm_medium={{lid.utm_medium|default_if_none:'' }}<br/>
+                              utm_type_content={{lid.utm_type_content|default_if_none:'' }}<br/>
+                              utm_campaign={{lid.utm_campaign|default_if_none:'' }}<br/>
+                              utm_content={{lid.utm_content|default_if_none:'' }}<br/>
+                              utm_term={{lid.utm_term|default_if_none:'' }}</td>
                           <td>{{lid.action|default_if_none:'' }}</td>
                           <td>{{lid.source|default_if_none:'' }}</td>
                           <td>{{lid.target|default_if_none:'' }}</td>
