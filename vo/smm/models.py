@@ -127,17 +127,17 @@ class Medium(models.Model):
 
 class CampaingUTM(models.Model):
     type_source = models.CharField(max_length=200)
-    utm_campaing = models.CharField(max_length=200)
+    utm_campaign = models.CharField(max_length=200)
     description = models.CharField(max_length=200, blank=True, null=True)
     enable = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.utm_campaing
+        return self.utm_campaign
     
     class Meta:
-        verbose_name = 'UTMCampaing'
-        verbose_name_plural = 'Метки UTMCampaing'
-        db_table = 'smm_utm_campaign'
+        verbose_name = 'UTMCampaign'
+        verbose_name_plural = 'Метки UTMCampaign'
+        db_table = 'smm_utm_campaing'
         
 
 class TypeSourceUTM(models.Model):
@@ -177,12 +177,13 @@ class Links(models.Model):
     link = models.CharField(max_length=200) # длинная ссылка
     short = models.CharField(max_length=200, blank=True, null=True) # сокращенная ссылка
     source = models.CharField(max_length=200) # источник
-    utm_source = models.CharField(max_length=200)
-    utm_type_source = models.CharField(max_length=200)
-    utm_medium = models.CharField(max_length=200, blank=True, null=True)
-    utm_campaign = models.CharField(max_length=200, blank=True, null=True)
-    utm_content = models.CharField(max_length=200, blank=True, null=True)
-    utm_term = models.CharField(max_length=200, blank=True, null=True)
+    utm_source = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_source")
+    utm_type_source = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_type_source")
+    utm_medium = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_medium")
+    utm_type_content = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_type_content")
+    utm_campaign = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_campaign")
+    utm_term = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_term")
+    utm_content = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_content")
     
     class Meta:
         verbose_name = 'Готовая ссылка с utm-метками'
@@ -220,8 +221,8 @@ class UTMs(models.Model):
                                null=True, blank=True,verbose_name="utm_medium (Тип трафика)")
     utm_type_content = models.ForeignKey(TypeContentUTM, on_delete=models.RESTRICT,
                                null=True, blank=True,verbose_name="utm_type_content (Тип контента)")
-    utm_campaing = models.ForeignKey(CampaingUTM, on_delete=models.RESTRICT,
-                               null=True, blank=True,verbose_name="utm_campaing (Название кампании))")
+    utm_campaign = models.ForeignKey(CampaingUTM, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_campaign (Название кампании))")
     
     class Meta:
         verbose_name = 'Готовый набор UTM меток'
@@ -229,7 +230,7 @@ class UTMs(models.Model):
         db_table = 'smm_utms'
         
     def __str__(self):
-        return f"{self.utm_source}-{self.utm_type_source}-{self.utm_medium}-{self.utm_type_content}-{self.utm_campaing}"
+        return f"{self.utm_source}-{self.utm_type_source}-{self.utm_medium}-{self.utm_type_content}-{self.utm_campaign}"
 
 class PostType(models.Model):
     post_type = models.CharField(max_length=200)
@@ -314,8 +315,8 @@ class SourceMailing(models.Model):
                                null=True, blank=True,verbose_name="utm_source (Соцсеть или месседжер)")
     utm_medium = models.ForeignKey(Medium, on_delete=models.RESTRICT,
                                null=True, blank=True,verbose_name="utm_medium (Тип трафика)")
-    utm_campaing = models.ForeignKey(CampaingUTM, on_delete=models.RESTRICT,
-                               null=True, blank=True,verbose_name="utm_campaing (Название кампании))")
+    utm_campaign = models.ForeignKey(CampaingUTM, on_delete=models.RESTRICT,
+                               null=True, blank=True,verbose_name="utm_campaign (Название кампании))")
     price = models.DecimalField(default=0, 
                                 max_digits = 5,
                                 decimal_places = 2,

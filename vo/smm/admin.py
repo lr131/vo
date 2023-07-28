@@ -21,10 +21,10 @@ class MediumAdmin(admin.ModelAdmin):
     list_display = ('type_source', 'utm_medium', 'description', 'enable')
     
 class CampaingUTMAdmin(admin.ModelAdmin):
-    list_display = ('type_source', 'utm_campaing', 'description', 'enable')
+    list_display = ('type_source', 'utm_campaign', 'description', 'enable')
     
 class UTMsAdmin(admin.ModelAdmin):
-    list_display = ('utm_source', 'utm_type_source', 'utm_medium', 'utm_type_content', 'utm_campaing')
+    list_display = ('utm_source', 'utm_type_source', 'utm_medium', 'utm_type_content', 'utm_campaign')
     
 
 class PostTypeAdmin(admin.ModelAdmin):
