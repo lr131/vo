@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+  {% block menu %}
+    
+  {% with active='crm' page='lids' %}
+      {% include '_menu.html' %}
+    {% endwith %}
+  {% endblock %}
+
+  <!-- Content Wrapper. Contains page content Хлебные крошки -->
+  <div class="content-wrapper" id='mainContainer'>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          </div>
+          {% comment %} <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Главная</a></li>
+              <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+              <li class="breadcrumb-item active">Активная страница</li>
+            </ol>
+          </div> {% endcomment %}
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+      <div class="container-fluid">
+        <div class="row">
+          
+            <div class="col-12" id='mainContainer'>
+
+              <div class="row">
+                <div class="col-md-12">
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Код заявки (Тильда) </th>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Имя</th>
+                        <th scope="col">Телефон</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Код клиента в бд</th>
+                        <th scope="col">Форма на сайте</th>
+                        <th scope="col">utm_source</th>
+                        <th scope="col">utm_type_source</th>
+                        <th scope="col">utm_medium</th>
+                        <th scope="col">utm_type_content</th>
+                        <th scope="col">utm_campaign</th>
+                        <th scope="col">utm_content</th>
+                        <th scope="col">utm_term</th>
+                        <th scope="col">Первичное действие</th>
+                        <th scope="col">Источник связи/ссылка</th>
+                        <th scope="col">Целевое действие</th>
+                        <th scope="col">Заметки</th>
+                        <th scope="col">Координатор</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for lid in lids %}
+                        <tr>
+                          <td>{{lid.lid_code|default_if_none:'' }}</td>
+                          <td>{{lid.date|date:"d.m Y"}} </td>
+                          <td>{{lid.name}}</td>
+                          <td>{{lid.phone}}</td>
+                          <td>{{lid.email}}</td>
+                          <td>{{lid.client_id|default_if_none:'' }}</td>
+                          <td>{{lid.form_name|default_if_none:'' }}</td>
+                          <td>{{lid.utm_source|default_if_none:'' }}</td>
+                          <td>{{lid.utm_type_source|default_if_none:'' }}</td>
+                          <td>{{lid.utm_medium|default_if_none:'' }}</td>
+                          <td>{{lid.utm_type_content|default_if_none:'' }}</td>
+                          <td>{{lid.utm_campaign|default_if_none:'' }}</td>
+                          <td>{{lid.utm_content|default_if_none:'' }}</td>
+                          <td>{{lid.utm_term|default_if_none:'' }}</td>
+                          <td>{{lid.action|default_if_none:'' }}</td>
+                          <td>{{lid.source|default_if_none:'' }}</td>
+                          <td>{{lid.target|default_if_none:'' }}</td>
+                          <td>{{lid.comment|default_if_none:'' }}</td>
+                          <td> {% if lid.worker %} {{lid.worker.first_name}} {{lid.worker.last_name}}
+                            {% else %}
+                            -
+                            {% endif %}
+                          </td>
+                        <td> <a class="btn btn-success" href="{% url 'crm:add_action' %}?lid={{lid.id}}"> Взять в работу </td>
+                        
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+
+          </div>
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+<!-- /.content-wrapper -->
+{% endblock %}
+

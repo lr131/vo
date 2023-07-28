@@ -17,4 +17,6 @@ urlpatterns = [
     path('add_visit', views.add_visit, name="visit_add"),
     path('history', views.complete, name="history"),
     path('active', views.active, name="active"),
+    path('lids', views.get_lids, name="lids"),
+    
     ]

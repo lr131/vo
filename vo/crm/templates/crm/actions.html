@@ -50,6 +50,7 @@
                         <th scope="col">Резюме общения</th>
                         <th scope="col">Создано / Редактировано</th>
                         <th scope="col">Кто работал</th>
+                        <th scope="col">Завершено</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -64,6 +65,7 @@
                           <td>{{action.note}}</td>
                           <td>{{action.cdate|date:"d.m Y"}} / {{action.mdate|date:"d.m Y"}}</td>
                           <td>{{action.worker.first_name}} {{action.worker.last_name}}</td>
+                          <td> {% if action.state %} Да {% else %} нет {% endif %} </td>
                         
                         </tr>
                       {% endfor %}

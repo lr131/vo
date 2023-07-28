@@ -4,7 +4,7 @@ from rest_framework import viewsets, serializers, generics, filters
 from pprint import pprint
 from .forms import ClientEventHistoryForm, PreviousListForm, ActionForm
 from .models import Action, ClientEventHistory, PreviousList, PreviousListClient
-from .models import WebHook
+from .models import WebHook, Lid
 from .serializers import PreviousListClientSerializer
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -90,6 +90,14 @@ def get_lists(request):
         "lists": PreviousList.objects.all()
     }
     return render(request, "crm/prevlists.html", context)
+
+@login_required
+def get_lids(request):
+    context = {
+        "lids": Lid.objects.all()
+    }
+    # TODO фильтровать по воркерам, выводить те, что без них
+    return render(request, "crm/lids.html", context)
 
 @login_required
 def list_detail(request, pk):
