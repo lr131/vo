@@ -39,17 +39,15 @@
               <div class="row">
                 <div class="col-md-12">
 
-                  <table class="table">
+                  <table class="table table-striped table-hover table-fluid">
                     <thead>
                       <tr>
                         <th scope="col">Дата</th>
                         <th scope="col">Имя</th>
-                        <th scope="col">Телефон</th>
-                        <th scope="col">Email</th>
+                        <th scope="col">Контакт</th>
                         <th scope="col">Форма на сайте</th>
                         <th scope="col">UTM метки</th>
                         <th scope="col">Первичное действие</th>
-                        <th scope="col">Источник связи/ссылка</th>
                         <th scope="col">Целевое действие</th>
                         <th scope="col">Заметки</th>
                         <th scope="col">Координатор</th>
@@ -60,9 +58,9 @@
                       {% for lid in lids %}
                         <tr>
                           <td>{{lid.date|date:"d.m Y"}} </td>
-                          <td>{{lid.name}} (код {{lid.client_id|default_if_none:'' }}) </td>
-                          <td>{{lid.phone}}</td>
-                          <td>{{lid.email}}</td>
+                          <td>{{lid.name}} {% if lid.client_id %} 
+                            (код {{lid.client_id}}) {% endif %}</td>
+                          <td>{{lid.phone}} <br/> {{lid.email}}</td>
                           <td>{{lid.form_name|default_if_none:'' }}</td>
                           <td>utm_source={{lid.utm_source|default_if_none:'' }}<br/>
                               utm_type_source={{lid.utm_type_source|default_if_none:'' }}<br/>
@@ -72,9 +70,8 @@
                               utm_content={{lid.utm_content|default_if_none:'' }}<br/>
                               utm_term={{lid.utm_term|default_if_none:'' }}</td>
                           <td>{{lid.action|default_if_none:'' }}</td>
-                          <td>{{lid.source|default_if_none:'' }}</td>
                           <td>{{lid.target|default_if_none:'' }}</td>
-                          <td>{{lid.comment|default_if_none:'' }}</td>
+                          <td> {{lid.comment|default_if_none:'' }}</td>
                           <td> {% if lid.worker %} {{lid.worker.first_name}} {{lid.worker.last_name}}
                             {% else %}
                             -
