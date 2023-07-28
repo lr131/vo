@@ -1,257 +1,513 @@
-<nav class="col-md-2 d-none d-md-block bg-light sidebar">
-  <div class="sidebar-sticky">
-    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-      <span>Виртуальный офис</span>
-      <a class="d-flex align-items-center text-muted" href="#">
-        <span data-feather="plus-circle"></span>
-      </a>
-    </h6>
-      
-    <ul class="nav flex-column">
-       <li class="nav-item">
-        <a {% if active == 'client_list' %} class="nav-link active"
-           {% else %} class="nav-link"
-           {% endif %} href="{% url 'clients' %}">
-          <span data-feather="users"></span>
-          База клиентов {% if active == 'client_list' %} <span class="sr-only">(current)</span></span>{% endif %} 
-        </a>
-      </li>
-      <li class="nav-item">
-        
-        <a {% if active == 'kn_articles' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'knbase:get_articles' %}">
-          <span data-feather="file-text"></span>
-          База знаний
-        </a>
-      </li>
+{% load static %}
+  
+  <!-- Main боковое меню -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+      <img src="{% static 'images/favicon/favicon-32x32.png' %}" alt="Равновесие Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">ВО "Равновесие"</span>
+    </a>
 
-      <li class="nav-item">   
-        <a {% if active == 'mailing' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'smm:mailing_list' %}">
-          <span data-feather="file-text"></span>
-           Рассылки
-        </a>
-      </li>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{% static 'images/default-150x150.png' %}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">{{user.last_name}} {{user.first_name}}</a>
+        </div>
+      </div>
 
-      
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li {% if active == 'client_list' %} class="nav-item menu-open"
+          {% else %} class="nav-item"
+          {% endif %}>
+            <a {% if active == 'client_list' %} class="nav-link active"
+            {% else %} class="nav-link"
+            {% endif %} href="{% url 'clients' %}">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                База клиентов
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a {% if cpage == 'search' %} href="" class="nav-link active"
+                {% else %} href="{% url 'clients' %}" class="nav-link"
+                {% endif %}>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Поиск</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  {% if cpage == 'new' %} href="" class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'create_client' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Новый клиент</p>
+                </a>
+              </li>
+            </ul>
+          </li>
 
-      <li class="nav-item">   
-        <a {% if active == 'sp_list' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'smm:sp_list' %}">
-          <span data-feather="file-text"></span>
-          Наши ресурсы для размещения
-        </a>
-      </li>
-
-      <li class="nav-item">   
-        <a {% if active == 'sp_list_out' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'smm:sp_list' %}">
-          <span data-feather="file-text"></span>
-          Не наши ресурсы для размещения (в разработке)
-        </a>
-      </li>
-
-
-      <li class="nav-item">   
-        <a {% if active == 'link_list' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'smm:link_list' %}">
-          <span data-feather="file-text"></span>
-          Ссылки готовые
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a {% if active == 'staff' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'users' %}">
-          <span data-feather="file-text"></span>
-          Штат
-        </a>
-      </li> 
-      <li class="nav-item">
-        <a {% if active == 'events' %} class="nav-link active"
+          <li {% if active == 'events' %} class="nav-item menu-open"
+          {% else %} class="nav-item"
+          {% endif %}>
+            <a {% if active == 'events' %} class="nav-link active"
             {% else %} class="nav-link"
             {% endif %} href="{% url 'events' %}">
-          Календарь мероприятий
-      </a>
-      </li>
-      {% if user.username == 'lr131' %}
-      <li class="nav-item">
-        <a {% if active == 'crm' %} class="nav-link active"
+              <i class="nav-icon far fa-calendar-alt"></i>
+              <p>
+                Расписание
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                <a {% if active == 'events' %} class="nav-link active"
+                    {% else %} class="nav-link"
+                    {% endif %} href="{% url 'events' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Текущий сезон</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          {% comment %} TODO {% endcomment %}
+          {% if user.username == 'lr131' %}
+          <li {% if active == 'crm' %} class="nav-item menu-open"
+          {% else %} class="nav-item"
+          {% endif %}>
+            <a {% if active == 'crm' %} class="nav-link active"
             {% else %} class="nav-link"
             {% endif %} href="{% url 'crm:get_lists' %}">
-          CRM (Всё ещё в разработке, пока не трогать!)
-        </a>
-      </li>
-      {% endif %}
-    </ul>
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+                CRM
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="../charts/chartjs.html" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>В работе</p>
+                </a>
+                </li>
+              <li class="nav-item">
+                <a href="{% url 'crm:history' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>История посещений</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'crm:visit_add' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Добавить посещение</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Заявки</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'crm:get_lists' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Приглашения</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'crm:add_prevlist' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Создать предварительный список</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          {% endif %}
 
-    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-      {% if active == 'client_list' %}
-        <span>База клиентов</span> 
-      {% endif %} 
-      {% if active == 'mailing' %}
-        <span>Рассылки</span> 
-      {% endif %} 
-      {% if active == 'data_links' %}
-        <span>Ссылки</span> 
-      {% endif %} 
-      
-      {% if active == 'kn_articles' %}
-        <span>База знаний</span> 
-      {% endif %}   
-      {% if active == 'events' %}
-        <span>Мероприятия и расписание</span> 
-      {% endif %} 
-      {% if active == 'crm' %}
-        <span>CRM</span> 
-      {% endif %} 
-        <a class="d-flex align-items-center text-muted" href="#">
-          <span data-feather="plus-circle"></span>
-        </a>
-      
-    </h6>
-    <ul class="nav flex-column mb-2">
-      {% if active == 'client_list' %}
-      <li class="nav-item">
-        <a {% if active == 'client_list' %} class="nav-link active"
-          {% else %} class="nav-link"
-          {% endif %} href="{% url 'clients' %}">
-          <span data-feather="file-text"></span>
-          Список клиентов
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href={% url 'create_client' %}>
-          <span data-feather="file-text"></span>
-          Добавить клиента
-        </a>
-      </li>  
-      {% endif %}
+          <li class="nav-item">
+            <a {% if active == 'kn_articles' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'knbase:get_articles' %}">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Тексты
+              </p>
+            </a>
+          </li>
 
-      {% if active == 'kn_articles' %}
-      <li class="nav-item">
-        <a {% if active == 'kn_articles' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'knbase:get_articles' %}">
-          <span data-feather="file-text"></span>
-          Материалы
-        </a>
-      </li>
-      {% endif %}  
-      
-      {% if active == 'mailing' %}
-      <li class="nav-item">
-        <a {% if page == 'm_list' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'smm:mailing_list' %}">
-          <span data-feather="file-text"></span>
-          Список всех рассылок
-        </a>
-      </li>
-
-      <li class="nav-item">   
-        <a {% if page == 'mailing_new' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'smm:mailing_new' %}">
-          <span data-feather="file-text"></span>
-          Добавить новую рассылку
-        </a>
-      </li> 
-      {% endif %} 
-      
-      {% if active == 'crm' %}
-      <li class="nav-item">
-        <a {% if page == 'history' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'crm:history' %}">
-          <span data-feather="file-text"></span>
-          История посещений
-        </a>
-      </li>
-      <li class="nav-item">
-        <a {% if page == 'add_visit' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'crm:visit_add' %}">
-          <span data-feather="file-text"></span>
-          Добавить посещение
-        </a>
-      </li>
-      <li class="nav-item">
-        <a {% if page == 'lids' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'crm:history' %}">
-          <span data-feather="file-text"></span>
-          Заявки (Входящие)
-        </a>
-      </li>
-      <li class="nav-item">
-        <a {% if page == 'prev_lists' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'crm:get_lists' %}">
-          <span data-feather="file-text"></span>
-          Список списков клиентов (Исходящие)
-        </a>
-      </li>
-      <li class="nav-item">
-        <a {% if page == 'add_prevlist' %} class="nav-link active"
-        {% else %} class="nav-link"
-        {% endif %} href="{% url 'crm:add_prevlist' %}">
-          <span data-feather="file-text"></span>
-          Создать предварительный список
-        </a>
-      </li>
-      {% endif %}  
-    </ul>
-    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-      <span>Разделы в разработке</span>
-      <a class="d-flex align-items-center text-muted" href="#">
-        <span data-feather="plus-circle"></span>
-      </a>
-    </h6>
-    <ul class="nav flex-column">
-      <li class="nav-item">
-        <span class="nav-link text-secondary">
-          <span data-feather="file-text"></span>
-          Рассылки
-        </span>
-      </li> 
-      <li class="nav-item">
-        <span class="nav-link text-secondary">
-          <span data-feather="file-text"></span>
-          Контент-план
-        </span>
-      </li>
-      <li class="nav-item">
-        <span class="nav-link text-secondary">
-          <span data-feather="file-text"></span>
-          Менеджер задач
-        </span>
-      </li> 
-      <li class="nav-item">
-        <span class="nav-link text-secondary">
-          <span data-feather="file-text"></span>
-            SMM
-        </span>
-      </li> 
-      <li class="nav-item">
-        <span class="nav-link text-secondary">
-          <span data-feather="file-text"></span>
-          Telegram-bot
-        </span>
-      </li> 
-      <li class="nav-item disabled">
-        <span class="nav-link text-secondary">
-          <span data-feather="file-text"></span>
-          Мой профиль
-        </span>
-      </li> 
-
-    </ul>
-  </div>
-</nav>
+          <li {% if unit == 'smm' %} class="nav-item menu-open"
+          {% else %} class="nav-item"
+          {% endif %}>
+            <a {% if unit == 'smm' %} class="nav-link active"
+            {% else %} class="nav-link"
+            {% endif %} href="#">
+               <i class="nav-icon fas fa-book"></i>
+              <p>
+                Маркетинг
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a {% if active == 'link_list' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'smm:link_list' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ссылки</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a {% if active == 'sp_list' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'smm:sp_list' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>мы в соц.сетях</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a {% if active == 'sp_list_out' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'smm:sp_list' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Внешние ресурсы</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a {% if active == 'mailing' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'smm:mailing_list' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Рассылки</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Брендбук</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Руководства и шаблоны</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Отзывы</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Доп. ссылки</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li {% if active == 'staff' %} class="nav-item menu-open"
+          {% else %} class="nav-item"
+          {% endif %}>
+            <a class="nav-item">
+                <a {% if active == 'staff' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'users' %}">
+               <i class="nav-icon fas fa-users"></i>
+              <p>
+                Штат
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a class="nav-item">
+                    <a {% if page == 'staff' %} class="nav-link active"
+                    {% else %} class="nav-link"
+                    {% endif %} href="{% url 'users' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Действующий состав</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a <a {% if page == 'past_staff' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'users_past' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Кто был раньше</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+               <i class="nav-icon fas fa-file"></i>
+              <p>
+                Яндекс.Диск
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="https://disk.yandex.ru/d/0RUWMIK16ssRYA" class="nav-link" target="_blank">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    Маркетинг
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="../examples/login.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Login v1</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../examples/register.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Register v1</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../examples/forgot-password.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Forgot Password v1</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="../examples/recover-password.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Recover Password v1</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="https://disk.yandex.ru/d/0RUWMIK16ssRYA" class="nav-link" target="_blank">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    Фото и видео
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="https://disk.yandex.ru/d/bZMF8ipvE17R_g" class="nav-link" target="_blank">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Фотосессия 2021</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="https://disk.yandex.ru/d/dS6UsHp5zy7phg" class="nav-link" target="_blank">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Фотосессия 2022</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="https://disk.yandex.ru/d/n9brnIjht72a_w" class="nav-link" target="_blank">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Фотосессия 2023</p>
+                    </a>
+                  </li>
+                </ul>
+            </ul>
+          </li>
+          <li class="nav-header">ЧАТЫ</li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+               <i class="nav-icon fas fa-file"></i>
+              <p>
+                Телеграм
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="https://t.me/+OYnM3a3VdWBkY2Iy" class="nav-link" target="_blank">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    Рабочий КАНАЛ
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="https://t.me/+DfZ0eCGLhCM2ZjA6" class="nav-link" target="_blank">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    Рабочий ЧАТ
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="https://t.me/+F3UoIxOc86ZhN2Iy" class="nav-link" target="_blank">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    Архив материалов
+                  </p>
+                </a>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+               <i class="nav-icon fas fa-file"></i>
+              <p>
+                Вацап
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link" target="_blank">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    ЯДРО
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" target="_blank">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    Маркетинг
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" target="_blank">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    Команда
+                  </p>
+                </a>
+            </ul>
+          </li>
+          {% comment %} <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-table"></i>
+              <p>
+                Менеджер задач
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="../tables/simple.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Simple Tables</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../tables/data.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>DataTables</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../tables/jsgrid.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>jsGrid</p>
+                </a>
+              </li>
+            </ul>
+          </li> {% endcomment %}
+          <li class="nav-header">В РАЗРАБОТКЕ</li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+               <i class="nav-icon fas fa-th"></i>
+              <p>
+                Контент-план
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon far fa-image"></i>
+              <p>
+                Telegram-бот
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-columns"></i>
+              <p>
+                Менеджер задач
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon far fa-envelope"></i>
+              <p>
+                Рассылки
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="../mailbox/mailbox.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Inbox</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../mailbox/compose.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Compose</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="../mailbox/read-mail.html" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Read</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-user"></i>
+              <p>
+                Профиль
+              </p>
+            </a>
+          </li>
+          
+          <li class="nav-header">LABELS</li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon far fa-circle text-danger"></i>
+              <p class="text">Important</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon far fa-circle text-warning"></i>
+              <p>Warning</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon far fa-circle text-info"></i>
+              <p>Informational</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

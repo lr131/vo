@@ -3,46 +3,66 @@
 {% load static%}
 
 {% block content %}
+{% block menu %}
+    {% with unit='smm' active='sp_list' page='sp_list' %}
+      {% include '_menu.html' %}
+    {% endwith %}
+  {% endblock %}
 
-<div class="container-fluid">
-  <div class="row">
-    {% block menu %}
-    
-      {% with active='sp_list' page='sp_list' %}
-        {% include '_menu.html' %}
-      {% endwith %}
-    {% endblock %}
+  <!-- Content Wrapper. Contains page content Хлебные крошки -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h3> Мы в соцсетях </h3>
+          </div>
+          {% comment %} <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Главная</a></li>
+              <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+              <li class="breadcrumb-item active">Активная страница</li>
+            </ol>
+          </div> {% endcomment %}
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
+    <section class="content">
 
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Название</th>
-            <th scope="col">Сама ссылка</th>
-            <th scope="col">Тип (social) </th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for obj in data %}
-            <tr>
-              <th scope="row">{{obj.name}}</th>
-              <td> <a href='{{obj.link}}' target='_blank'> {{obj.link}} </a> </td>
-              <td>{{obj.social}} </td>
-            </tr>
-          {% endfor %}
-         
-        </tbody>
-      </table>
+      <div class="container-fluid">
+        <div class="row">
+          
+            <div class="col-12" id='mainContainer'>
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Название</th>
+                    <th scope="col">Сама ссылка</th>
+                    <th scope="col">Тип (social) </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for obj in data %}
+                    <tr>
+                      <th scope="row">{{obj.name}}</th>
+                      <td> <a href='{{obj.link}}' target='_blank'> {{obj.link}} </a> </td>
+                      <td>{{obj.social}} </td>
+                    </tr>
+                  {% endfor %}
+                
+                </tbody>
+              </table>
       
+            </div>
 
-        {% comment %} col-md-8 {% endcomment %}
-        {% comment %} col-md-4 {% endcomment %}
+          </div>
+        </div>
       </div>
-
-    </main>
+    </section>
   </div>
-</div>
   
 {% endblock %}
 

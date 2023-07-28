@@ -9,9 +9,20 @@ from django.contrib.auth.models import User
 from . import serializers
 
 @login_required
-def get_users(request):
+def get_active_users(request):
     context = {
-        "users": User.objects.all()
+        "users": User.objects.filter(is_active=True),
+        "title": "Действующий штат",
+        "page": "staff"
+    }
+    return render(request, "users/users_list.html", context)
+
+@login_required
+def get_prev_users(request):
+    context = {
+        "users": User.objects.filter(is_active=False),
+        "title": "Раньше работали",
+        "page": "past_staff"
     }
     return render(request, "users/users_list.html", context)
 

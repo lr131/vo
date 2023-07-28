@@ -3,44 +3,66 @@
 {% load static%}
 
 {% block content %}
+  {% block menu %}
+  {% with 'kn_articles' as active %}
+    {% include '_menu.html' %}
+  {% endwith %}
+  {% endblock %}
 
-<div class="container-fluid">
-    <div class="row">
-      {% block menu %}
-        {% with 'kn_articles' as active %}
-          {% include '_menu.html' %}
-        {% endwith %}
-      {% endblock %}
-      
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
+<!-- Content Wrapper. Contains page content Хлебные крошки -->
+<div class="content-wrapper" id='mainContainer'>
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h3> Наши тексты </h3>
+        </div>
+        {% comment %} <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Главная</a></li>
+            <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+            <li class="breadcrumb-item active">Активная страница</li>
+          </ol>
+        </div> {% endcomment %}
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <section class="content">
+
+    <div class="container-fluid">
+      <div class="row">
+        
+          <div class="col-12" id='mainContainer'>
     
             <h2>База знаний</h2>
             <div class="table-responsive">
                 <table class="table table-striped table-sm">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Создано</th>
-                    <th>Категория</th>
-                    <th>Текст</th>
-                    <th>Автор</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    {% for article in articles %}
+                  <thead>
                     <tr>
-                        <td><a href="{% url 'knbase:get_article' pk=article.pk %}">{{article.title}}</a></td>
-                        <td>{{article.data}}</td>
-                        <td>{{article.category}}</td>
-                        <td>{{article.text |truncatechars:350 }}</td>
-                        <td> {% for author in article.author.all %}
-                            {{author.first_name}} {{author.last_name}}
-                            {% endfor %}
-                        </td>
-                      </tr> 
-                    {% endfor %}
-                    
-                </tbody>
+                      <th></th>
+                      <th>Создано</th>
+                      <th>Категория</th>
+                      <th>Текст</th>
+                      <th>Автор</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {% for article in articles %}
+                      <tr>
+                          <td><a href="{% url 'knbase:get_article' pk=article.pk %}">{{article.title}}</a></td>
+                          <td>{{article.data}}</td>
+                          <td>{{article.category}}</td>
+                          <td>{{article.text |truncatechars:350 }}</td>
+                          <td> {% for author in article.author.all %}
+                              {{author.first_name}} {{author.last_name}}
+                              {% endfor %}
+                          </td>
+                        </tr> 
+                      {% endfor %}
+                      
+                  </tbody>
                 </table>
 
                 {% if page_obj.has_other_pages %}
@@ -84,8 +106,10 @@
                 {% endif %}
             </div>
     
-        </main>
+          </div>
+      </div>
     </div>
+  </section>
 </div>
 
 <script src={% static 'js/form.js' %}></script>

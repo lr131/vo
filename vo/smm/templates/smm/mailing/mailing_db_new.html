@@ -3,33 +3,56 @@
 {% load static%}
 
 {% block content %}
+  {% block menu %}
+      
+  {% with unit='smm' active='smm' page='m_list' %}
+    {% include '_menu.html' %}
+  {% endwith %}
+  {% endblock %}
 
-<div class="container-fluid">
-  <div class="row">
-    {% block menu %}
-    
-      {% with active='smm' page='m_list' %}
-        {% include '_menu.html' %}
-      {% endwith %}
-    {% endblock %}
-
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
-
-      <div class="row">
-        <div class="col-md-12">
-          <legend>Новая рассылка по базе:</legend>
-            <p class="text-muted"> Вставить в рассылку имя: %Name%. Текст "Привет, %Name%" преобразуется в "Привет, Елена!" </p>
-            <p class="text-muted"> Вставить в рассылку ссылку: %Url%. Без меток!!! Если ссылка на наш сайт, галочку про метки оставляем </p>
-          <form class='row' id="mailing" method="POST">
-            {% csrf_token %}
-            {{form}}
-            <input type="submit" value="Создать">
-          </form>
+<!-- Content Wrapper. Contains page content Хлебные крошки -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h3> Новая рассылка по базе: </h3>
         </div>
+        {% comment %} <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Главная</a></li>
+            <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+            <li class="breadcrumb-item active">Активная страница</li>
+          </ol>
+        </div> {% endcomment %}
       </div>
+    </div><!-- /.container-fluid -->
+  </section>
 
-    </main>
-  </div>
+  <section class="content">
+
+    <div class="container-fluid">
+      <div class="row">
+        
+          <div class="col-12" id='mainContainer'>
+
+            <div class="row">
+              <div class="col-md-12">
+                  <p class="text-muted"> Вставить в рассылку имя: %Name%. Текст "Привет, %Name%" преобразуется в "Привет, Елена!" </p>
+                  <p class="text-muted"> Вставить в рассылку ссылку: %Url%. Без меток!!! Если ссылка на наш сайт, галочку про метки оставляем </p>
+                <form class='row' id="mailing" method="POST">
+                  {% csrf_token %}
+                  {{form}}
+                  <input type="submit" value="Создать">
+                </form>
+              </div>
+            </div>
+
+          </div>
+      </div>
+    </div>
+  </section>
 </div>
   
 {% endblock %}

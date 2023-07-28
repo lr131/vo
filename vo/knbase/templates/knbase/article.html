@@ -3,121 +3,47 @@
 {% load static%}
 
 {% block content %}
+  {% block menu %}
+  {% with 'kn_articles' as active %}
+    {% include '_menu.html' %}
+  {% endwith %}
+  {% endblock %}
 
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-            <div class="sidebar-sticky">
-              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Виртуальный офис</span>
-                <a class="d-flex align-items-center text-muted" href="#">
-                  <span data-feather="plus-circle"></span>
-                </a>
-              </h6>
-              <ul class="nav flex-column">
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'clients' %}">
-                    <span data-feather="users"></span>
-                    База клиентов</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <span class="nav-link active">
-                    <span data-feather="file-text"></span>
-                    Календарь мероприятий<span class="sr-only">(current)</span>
-                  </span>
-                </li>
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Штат
-                  </span>
-                </li> 
-              </ul>
-      
-              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Расписание</span>
-                <a class="d-flex align-items-center text-muted" href="#">
-                  <span data-feather="plus-circle"></span>
-                </a>
-              </h6>
-              <ul class="nav flex-column mb-2">
-                <li class="nav-item">
-                  <a class="nav-link active" href="#">
-                    <span data-feather="file-text"></span>
-                    Текущий сезон
-                  </a>
-                </li>       
-              </ul>
-              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Разделы в разработке</span>
-                <a class="d-flex align-items-center text-muted" href="#">
-                  <span data-feather="plus-circle"></span>
-                </a>
-              </h6>
-              <ul class="nav flex-column">
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Рассылки
-                  </span>
-                </li> 
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="shopping-cart"></span>
-                    CRM
-                  </span>
-                </li>
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Контент-план
-                  </span>
-                </li>
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Менеджер задач
-                  </span>
-                </li> 
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    База знаний
-                  </span>
-                </li> 
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    SMM
-                  </span>
-                </li> 
-                <li class="nav-item">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Telegram-bot
-                  </span>
-                </li> 
-                <li class="nav-item disabled">
-                  <span class="nav-link text-secondary">
-                    <span data-feather="file-text"></span>
-                    Мой профиль
-                  </span>
-                </li> 
-      
-              </ul>
-            </div>
-        </nav>
-      
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
-    
-            <h2>{{article.title}}</h2>
+<!-- Content Wrapper. Contains page content Хлебные крошки -->
+<div class="content-wrapper" id='mainContainer'>
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h3> {{article.title}} </h3>
+        </div>
+        {% comment %} <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Главная</a></li>
+            <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+            <li class="breadcrumb-item active">Активная страница</li>
+          </ol>
+        </div> {% endcomment %}
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <section class="content">
+
+    <div class="container-fluid">
+      <div class="row">
+        
+          <div class="col-12" id='mainContainer'>
+
             <div>
                 {{article.text|linebreaksbr }}
             </div>
     
-        </main>
-    </div>
+          </div>
+      </div>
+   </div>
+  </section>
 </div>
 
 <script src={% static 'js/form.js' %}></script>

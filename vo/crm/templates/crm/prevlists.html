@@ -3,38 +3,55 @@
 {% load static%}
 
 {% block content %}
-
-<div class="container-fluid">
-  <div class="row">
-    {% block menu %}
+{% block menu %}
    
-    {% with active='crm' page='prev_lists' %}
-        {% include '_menu.html' %}
-      {% endwith %}
-    {% endblock %}
+{% with active='crm' page='prev_lists' %}
+    {% include '_menu.html' %}
+  {% endwith %}
+{% endblock %}
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
-
-      <div class="row">
-        <div class="col-md-12">
+  <!-- Content Wrapper. Contains page content Хлебные крошки -->
+  <div class="content-wrapper" id='mainContainer'>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
             <h3> Предварительные списки </h3>
+          </div>
+          {% comment %} <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Главная</a></li>
+              <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+              <li class="breadcrumb-item active">Активная страница</li>
+            </ol>
+          </div> {% endcomment %}
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-12" id='mainContainer'>
+
+              {% for list in lists %}
+                <div class="row">
+                  <div class="col-md-12">
+                      <a href="{% url 'crm:list_detail' pk=list.pk %}">
+                          {{list.date|date:"d.m.Y"}} {{list.name}} {{list.description}}
+                      </a>
+                      
+                  </div>
+                </div>
+
+              {% endfor %}
+
+            </div>
         </div>
       </div>
-
-      {% for list in lists %}
-      <div class="row">
-        <div class="col-md-12">
-            <a href="{% url 'crm:list_detail' pk=list.pk %}">
-                {{list.date|date:"d.m.Y"}} {{list.name}} {{list.description}}
-            </a>
-            
-        </div>
-      </div>
-
-       {% endfor %}
-
-    </main>
+    </section>
   </div>
-</div>
   
 {% endblock %}

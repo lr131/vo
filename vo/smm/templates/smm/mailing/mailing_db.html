@@ -3,79 +3,102 @@
 {% load static%}
 
 {% block content %}
+  {% block menu %}
+      
+  {% with unit='smm' active='smm' page='m_list' %}
+    {% include '_menu.html' %}
+  {% endwith %}
+  {% endblock %}
 
-<div class="container-fluid">
-  <div class="row">
-    {% block menu %}
-    
-      {% with active='smm' page='m_list' %}
-        {% include '_menu.html' %}
-      {% endwith %}
-    {% endblock %}
+<!-- Content Wrapper. Contains page content Хлебные крошки -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+        </div>
+        {% comment %} <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Главная</a></li>
+            <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+            <li class="breadcrumb-item active">Активная страница</li>
+          </ol>
+        </div> {% endcomment %}
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
+  <section class="content">
 
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">№</th>
-            <th scope="col">ID</th>
-            <th scope="col">ФИО</th>
-            <th scope="col">Статус и город</th>
-            <th scope="col">Комментарий по общению</th>
-            <th scope="col">Комментарии из базы</th>
-            <th scope="col">Комментарий по текущей рассылке</th>
-            <th scope="col">Месседжеры</th>
-            <th scope="col">Текущий месседжер</th>
-            <th scope="col">Статус</th>
-            <th scope="col">Позвонить</th>
-          </tr>
-        </thead>
+    <div class="container-fluid">
+      <div class="row">
+        
+          <div class="col-12" id='mainContainer'>
 
-        {% autoescape off %}
-        <tbody>
-            {% for client in clients %}
-            <tr>
-                <td>{{client.pk}}</td>
-                <td>{{client.client.pk}}</td>
-                <td>{{client.client.fio}} ({{client.phone}})</td>
-                <td> {{client.client.state.name|default_if_none:""}} ({{client.client.city|default_if_none:""}})</td>
-                <td>{{client.client__client_mailing.comment|default_if_none:""}}</td>
-                <td>{{client.client.note|default_if_none:""}} <br/> {{client.client.comment|default_if_none:""}}</td>
-                <td>{{client.comment|default_if_none:""}}</td>
-                <td>
-                    <br/> <br/> 
-                    <a href='{{client.link_wa_pc}}' target='_blank'> Вацап Комп</a> 
-                    <br/> <br/> 
-                    <a href='{{client.link_wa}}'> Вацап телеф</a> 
-                    <br/> <br/> 
-                    <a href='{{client.link_vi}}'> Viber</a>
-                    <br/> <br/> 
-                    <a href='{{client.link_tg}}'  target='_blank'> Telegram</a>
-                    <br/> <br/> 
-                    <a href='#'> Нет в месседжерах</a>
-                    <br/> <br/> 
-                </td>
-                <td>{{client.link_messeger|default_if_none:""}}</td>
-                <td>{{client.result|default_if_none:""}}</td>
-                <td>
-                  <br/> <br/> 
-                  <a href='tel:+{{client.phone}}' target='_blank'> Позвонить {{client.phone}}</a> 
-                  <br/> <br/> 
-              </td>
-                
-                
-            </tr>
-            {% empty %}
-                <tr><td>Рассылка ещё не сформирована</td></tr>
-                <tr><td> <a href="{% url 'smm:mailing_db_new' pk=mailing.pk %}"> Перейти к формированию </a></td></tr>
-            {% endfor %}
-        </tbody>
-        {% endautoescape %}
-      </table>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">№</th>
+                  <th scope="col">ID</th>
+                  <th scope="col">ФИО</th>
+                  <th scope="col">Статус и город</th>
+                  <th scope="col">Комментарий по общению</th>
+                  <th scope="col">Комментарии из базы</th>
+                  <th scope="col">Комментарий по текущей рассылке</th>
+                  <th scope="col">Месседжеры</th>
+                  <th scope="col">Текущий месседжер</th>
+                  <th scope="col">Статус</th>
+                  <th scope="col">Позвонить</th>
+                </tr>
+              </thead>
 
-    </main>
-  </div>
+              {% autoescape off %}
+              <tbody>
+                  {% for client in clients %}
+                  <tr>
+                      <td>{{client.pk}}</td>
+                      <td>{{client.client.pk}}</td>
+                      <td>{{client.client.fio}} ({{client.phone}})</td>
+                      <td> {{client.client.state.name|default_if_none:""}} ({{client.client.city|default_if_none:""}})</td>
+                      <td>{{client.client__client_mailing.comment|default_if_none:""}}</td>
+                      <td>{{client.client.note|default_if_none:""}} <br/> {{client.client.comment|default_if_none:""}}</td>
+                      <td>{{client.comment|default_if_none:""}}</td>
+                      <td>
+                          <br/> <br/> 
+                          <a href='{{client.link_wa_pc}}' target='_blank'> Вацап Комп</a> 
+                          <br/> <br/> 
+                          <a href='{{client.link_wa}}'> Вацап телеф</a> 
+                          <br/> <br/> 
+                          <a href='{{client.link_vi}}'> Viber</a>
+                          <br/> <br/> 
+                          <a href='{{client.link_tg}}'  target='_blank'> Telegram</a>
+                          <br/> <br/> 
+                          <a href='#'> Нет в месседжерах</a>
+                          <br/> <br/> 
+                      </td>
+                      <td>{{client.link_messeger|default_if_none:""}}</td>
+                      <td>{{client.result|default_if_none:""}}</td>
+                      <td>
+                        <br/> <br/> 
+                        <a href='tel:+{{client.phone}}' target='_blank'> Позвонить {{client.phone}}</a> 
+                        <br/> <br/> 
+                    </td>
+                      
+                      
+                  </tr>
+                  {% empty %}
+                      <tr><td>Рассылка ещё не сформирована</td></tr>
+                      <tr><td> <a href="{% url 'smm:mailing_db_new' pk=mailing.pk %}"> Перейти к формированию </a></td></tr>
+                  {% endfor %}
+              </tbody>
+              {% endautoescape %}
+            </table>
+
+          </div>
+      </div>
+    </div>
+  </section>
 </div>
   
 {% endblock %}

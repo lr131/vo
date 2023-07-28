@@ -3,59 +3,85 @@
 {% load static%}
 
 {% block content %}
+  {% block menu %}
+    
+  {% with active='crm' page='history' %}
+      {% include '_menu.html' %}
+    {% endwith %}
+  {% endblock %}
 
-<div class="container-fluid">
-  <div class="row">
-    {% block menu %}
-   
-    {% with active='crm' page='history' %}
-        {% include '_menu.html' %}
-      {% endwith %}
-    {% endblock %}
-
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
-
-      <div class="row">
-        <div class="col-md-12">
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Список / заявка </th>
-                <th scope="col">Клиент</th>
-                <th scope="col">Этап </th>
-                <th scope="col">Действие </th>
-                <th scope="col">Описание </th>
-                <th scope="col">Резюме общения</th>
-                <th scope="col">Создано / Редактировано</th>
-                <th scope="col">Кто работал</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for action in history %}
-                <tr>
-                  <td>{{action.plc|default_if_none:'' }}}} 
-                    {{action.lid|default_if_none:'' }}</td>
-                  <td>ФИО</td>
-                  <td>{{action.stage}}</td>
-                  <td>{{action.action}}</td>
-                  <td>{{action.description}}</td>
-                  <td>{{action.note}}</td>
-                  <td>{{action.cdate|date:"d.m Y"}} / {{action.mdate|date:"d.m Y"}}</td>
-                  <td>{{action.worker.first_name}} {{action.worker.last_name}}</td>
-                 
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-
+  <!-- Content Wrapper. Contains page content Хлебные крошки -->
+  <div class="content-wrapper" id='mainContainer'>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          </div>
+          {% comment %} <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Главная</a></li>
+              <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+              <li class="breadcrumb-item active">Активная страница</li>
+            </ol>
+          </div> {% endcomment %}
         </div>
+      </div><!-- /.container-fluid -->
+    </section>
 
+    <section class="content">
+
+      <div class="container-fluid">
+        <div class="row">
+          
+            <div class="col-12" id='mainContainer'>
+
+              <div class="row">
+                <div class="col-md-12">
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Список / заявка </th>
+                        <th scope="col">Клиент</th>
+                        <th scope="col">Этап </th>
+                        <th scope="col">Действие </th>
+                        <th scope="col">Описание </th>
+                        <th scope="col">Резюме общения</th>
+                        <th scope="col">Создано / Редактировано</th>
+                        <th scope="col">Кто работал</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for action in history %}
+                        <tr>
+                          <td>{{action.plc|default_if_none:'' }}}} 
+                            {{action.lid|default_if_none:'' }}</td>
+                          <td>ФИО</td>
+                          <td>{{action.stage}}</td>
+                          <td>{{action.action}}</td>
+                          <td>{{action.description}}</td>
+                          <td>{{action.note}}</td>
+                          <td>{{action.cdate|date:"d.m Y"}} / {{action.mdate|date:"d.m Y"}}</td>
+                          <td>{{action.worker.first_name}} {{action.worker.last_name}}</td>
+                        
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                </div>
+
+              </div>
+
+          </div>
+        </div>
+        <!-- /.row -->
       </div>
-
-    </main>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
   </div>
-</div>
-  
+<!-- /.content-wrapper -->
 {% endblock %}
 

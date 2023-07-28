@@ -3,53 +3,72 @@
 {% load static%}
 
 {% block content %}
-
-<div class="container-fluid">
-  <div class="row">
-    {% block menu %}
+  {% block menu %}
     
-      {% with active='mailing' page='m_list' %}
-        {% include '_menu.html' %}
-      {% endwith %}
-    {% endblock %}
+    {% with unit='smm' active='mailing' page='m_list' %}
+      {% include '_menu.html' %}
+    {% endwith %}
+  {% endblock %}
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
-
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Рассылка</th>
-            <th scope="col">Описание</th>
-            <th scope="col">Тип рассылки</th>
-            <th scope="col">Дата создания</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for obj in mailing %}
-            <tr>
-              <th scope="row">{{obj.name}}</th>
-              <td>{{obj.description}}</td>
-              <td>{{obj.source_type}} </td>
-              <td>{{obj.date}}</td>
-              <td> 
-                {% if obj.source_type == 'group' %} <a href="{% url 'smm:mailing_group' pk=obj.pk %}"> {% endif %}
-                {% if obj.source_type == 'inner_person' %} <a href="{% url 'smm:mailing_db' pk=obj.pk %}"> {% endif %}
-                {% if obj.source_type == 'outer_person' %} <a href="{% url 'smm:mailing_myperson' pk=obj.pk %}"> {% endif %}
-                Перейти </a></td>
-            </tr>
-          {% endfor %}
-         
-        </tbody>
-      </table>
-      
-
-        {% comment %} col-md-8 {% endcomment %}
-        {% comment %} col-md-4 {% endcomment %}
+<!-- Content Wrapper. Contains page content Хлебные крошки -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+        </div>
+        {% comment %} <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Главная</a></li>
+            <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+            <li class="breadcrumb-item active">Активная страница</li>
+          </ol>
+        </div> {% endcomment %}
       </div>
+    </div><!-- /.container-fluid -->
+  </section>
 
-    </main>
-  </div>
+  <section class="content">
+
+    <div class="container-fluid">
+      <div class="row">
+        
+          <div class="col-12" id='mainContainer'>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Рассылка</th>
+                  <th scope="col">Описание</th>
+                  <th scope="col">Тип рассылки</th>
+                  <th scope="col">Дата создания</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obj in mailing %}
+                  <tr>
+                    <th scope="row">{{obj.name}}</th>
+                    <td>{{obj.description}}</td>
+                    <td>{{obj.source_type}} </td>
+                    <td>{{obj.date}}</td>
+                    <td> 
+                      {% if obj.source_type == 'group' %} <a href="{% url 'smm:mailing_group' pk=obj.pk %}"> {% endif %}
+                      {% if obj.source_type == 'inner_person' %} <a href="{% url 'smm:mailing_db' pk=obj.pk %}"> {% endif %}
+                      {% if obj.source_type == 'outer_person' %} <a href="{% url 'smm:mailing_myperson' pk=obj.pk %}"> {% endif %}
+                      Перейти </a></td>
+                  </tr>
+                {% endfor %}
+              
+              </tbody>
+            </table>
+    
+          </div>
+
+       </div>
+    </div>
+  </section>
 </div>
   
 {% endblock %}

@@ -144,8 +144,6 @@ def clients(request):
     context = {
         'user': request.user,
         'page': request.GET.get("page", 1)
-    } 
-    user = request.user
-    print(user.groups.filter(name__in=['irk', 'angsk']).exists())    
+    }
     return render(request, 'clients/clients_list.html', context=context)
 

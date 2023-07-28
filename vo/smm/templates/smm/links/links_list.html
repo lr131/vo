@@ -3,71 +3,89 @@
 {% load static%}
 
 {% block content %}
-
-<div class="container-fluid">
-  <div class="row">
-    {% block menu %}
-    
-      {% with active='link_list' page='link_list' %}
-        {% include '_menu.html' %}
-      {% endwith %}
-    {% endblock %}
-
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id='mainContainer'>
-
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Название</th>
-            <th scope="col">Сама ссылка с метками</th>
-            <th scope="col">Короткая ссылка с метками</th>
-            <th scope="col">Источник кампании (через какой месседжер или соцсеть) </th>
-            <th scope="col">Тип трафика</th>
-            <th scope="col">Название кампании</th>
-            <th scope="col">Идентификатор объявления</th>
-            <th scope="col">Ключевое слово</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for obj in data %}
-            <tr>
-              <th scope="row">{{obj.source}}</th>
-              <td> <a href='{{obj.link}}' target='_blank'> {{obj.link}} </a> </td>
-              <td> <a href='{{obj.short}}' target='_blank'> {{obj.short}} </a> </td>
-              <td>{{obj.utm_source}}</td>
-              <td>{{obj.utm_medium}}</td>
-              <td>{{obj.utm_campaign}}</td>
-              <td>{{obj.utm_content}}</td>
-              <td>{{obj.utm_term}}</td>
-            </tr>
-          {% endfor %}
-         
-        </tbody>
-      </table>
-      <div class="row">
-        <div class="col-md-12">
-            <legend>Добавить ссылку:</legend>
-          ВНИМАНИЕ! Раздел в разработке, работает только для рассылки по базе
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <form class='row' method="POST">
-            {% csrf_token %}
-            
-            {{form}}
-            <input type="submit" value="Добавить">
-          </form>
-        </div>
-      </div>
+  {% block menu %}
       
+  {% with unit='smm' active='link_list' page='link_list' %}
+    {% include '_menu.html' %}
+  {% endwith %}
+  {% endblock %}
 
-        {% comment %} col-md-8 {% endcomment %}
-        {% comment %} col-md-4 {% endcomment %}
+ <!-- Content Wrapper. Contains page content Хлебные крошки -->
+ <div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+        </div>
+        {% comment %} <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Главная</a></li>
+            <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+            <li class="breadcrumb-item active">Активная страница</li>
+          </ol>
+        </div> {% endcomment %}
       </div>
+    </div><!-- /.container-fluid -->
+  </section>
 
-    </main>
-  </div>
+  <section class="content">
+
+    <div class="container-fluid">
+      <div class="row">
+        
+          <div class="col-12" id='mainContainer'>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Название</th>
+                  <th scope="col">Сама ссылка с метками</th>
+                  <th scope="col">Короткая ссылка с метками</th>
+                  <th scope="col">Источник кампании (через какой месседжер или соцсеть) </th>
+                  <th scope="col">Тип трафика</th>
+                  <th scope="col">Название кампании</th>
+                  <th scope="col">Идентификатор объявления</th>
+                  <th scope="col">Ключевое слово</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obj in data %}
+                  <tr>
+                    <th scope="row">{{obj.source}}</th>
+                    <td> <a href='{{obj.link}}' target='_blank'> {{obj.link}} </a> </td>
+                    <td> <a href='{{obj.short}}' target='_blank'> {{obj.short}} </a> </td>
+                    <td>{{obj.utm_source}}</td>
+                    <td>{{obj.utm_medium}}</td>
+                    <td>{{obj.utm_campaign}}</td>
+                    <td>{{obj.utm_content}}</td>
+                    <td>{{obj.utm_term}}</td>
+                  </tr>
+                {% endfor %}
+              
+              </tbody>
+            </table>
+            <div class="row">
+              <div class="col-md-12">
+                  <legend>Добавить ссылку:</legend>
+                ВНИМАНИЕ! Раздел в разработке, работает только для рассылки по базе
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <form class='row' method="POST">
+                  {% csrf_token %}
+                  
+                  {{form}}
+                  <input type="submit" value="Добавить">
+                </form>
+              </div>
+            </div>
+
+          </div>
+      </div>
+   </div>
+  </section>
 </div>
   
 {% endblock %}
