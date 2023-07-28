@@ -109,10 +109,14 @@ class Action(models.Model):
         
     def __str__(self):
         return self.note
-    
-    @admin.display(description='lid_info')
-    def get_state(self):
+
+    @admin.display(description='лид')
+    def get_lid(self):
         return f"{self.lid.form_name}"
+    
+    @admin.display(description='Клиент')
+    def get_client(self):
+        return f"{self.lid.name}"
     
 class ClientEventHistory(models.Model):
     client_id = models.IntegerField(verbose_name="Клиент")
