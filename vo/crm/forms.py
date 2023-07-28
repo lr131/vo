@@ -36,4 +36,5 @@ class ActionForm(forms.ModelForm):
         self.fields['plc'].widget.attrs.update({'class': 'form-control'})
         self.fields['description'].widget.attrs.update({'class': 'form-control'})
         self.fields['note'].widget.attrs.update({'class': 'form-control'})
+        self.fields['state'].widget.attrs.update({'class': 'form-control'})
         # self.fields['worker'].widget.attrs.update({'class': 'form-control'})

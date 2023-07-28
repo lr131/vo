@@ -15,5 +15,6 @@ urlpatterns = [
     path('list/add', views.add_prevlist, name="add_prevlist"),
     path('action/add', views.add_action, name="add_action"),
     path('add_visit', views.add_visit, name="visit_add"),
-    path('history', views.history, name="history"),
+    path('history', views.complete, name="history"),
+    path('active', views.active, name="active"),
     ]

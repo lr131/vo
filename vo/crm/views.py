@@ -134,12 +134,12 @@ def add_action(request):
     return render(request, "crm/add_action.html", context)
 
 @login_required
-def history(request):
+def complete(request):
     plc = request.GET.get("plc")
     
     lid = request.GET.get("lid")
     
-    qs = Action.objects.all()
+    qs = Action.objects.filter(state=True)
     
     if lid:
         qs = qs.filter(lid=lid)
@@ -150,8 +150,30 @@ def history(request):
         "history": qs,
         "plc": plc,
         "lid": lid,
+        "page": "history"
     }
-    return render(request, "crm/history.html", context)
+    return render(request, "crm/actions.html", context)
+
+@login_required
+def active(request):
+    plc = request.GET.get("plc")
+    
+    lid = request.GET.get("lid")
+    
+    qs = Action.objects.filter(state=True)
+    
+    if lid:
+        qs = qs.filter(lid=lid)
+    if plc:
+        qs = qs.filter(plc=plc)
+   
+    context = {
+        "history": qs,
+        "plc": plc,
+        "lid": lid,
+        "page": "active"
+    }
+    return render(request, "crm/actions.html", context)
 
 class PreviousListClientViewSet(viewsets.ModelViewSet):
     # Возможно стоит заменить на generics RetrieveUpdateDelAPIView

@@ -97,21 +97,21 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="../charts/chartjs.html" class="nav-link">
+                <a href="{% url 'crm:active' %}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p>В работе</p>
                 </a>
                 </li>
               <li class="nav-item">
-                <a href="{% url 'crm:history' %}" class="nav-link">
+                <a href="{% url 'crm:complete' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>История посещений</p>
+                  <p>Завершены</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{% url 'crm:visit_add' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Добавить посещение</p>
+                  <p>Добавить действие</p>
                 </a>
               </li>
               <li class="nav-item">

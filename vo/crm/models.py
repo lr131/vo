@@ -81,7 +81,7 @@ class Lid(models.Model):
         db_table = 'lid'
         
     def __str__(self):
-        return self.name
+        return f'{self.name} ({self.form_name}) {self.date}'
     
     
 class Action(models.Model):
@@ -98,6 +98,7 @@ class Action(models.Model):
     action = models.CharField(max_length=250, verbose_name="Действие координатора")
     note = models.TextField(verbose_name="Резюме общения")
     stage = models.CharField(max_length=250, verbose_name="Этап")
+    state = models.BooleanField(default=False, verbose_name="Завершены все этапы")
     # TODO сделать редактируемым только для того, кто создал
     worker = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, 
                                verbose_name="Координатор, кто берётся работать, ответственный")
@@ -110,7 +111,7 @@ class Action(models.Model):
     def __str__(self):
         return self.note
 
-    @admin.display(description='лид')
+    @admin.display(description='Лид')
     def get_lid(self):
         return f"{self.lid.form_name}"
     
