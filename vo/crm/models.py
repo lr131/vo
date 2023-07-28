@@ -1,5 +1,6 @@
 from http import cookies
 from django.db import models
+from django.contrib import admin
 from django.contrib.auth.models import User
 
 class PreviousList(models.Model):
@@ -108,6 +109,10 @@ class Action(models.Model):
         
     def __str__(self):
         return self.note
+    
+    @admin.display(description='lid_info')
+    def get_state(self):
+        return f"{self.lid.form_name}"
     
 class ClientEventHistory(models.Model):
     client_id = models.IntegerField(verbose_name="Клиент")
