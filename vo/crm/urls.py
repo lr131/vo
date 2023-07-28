@@ -15,7 +15,7 @@ urlpatterns = [
     path('list/add', views.add_prevlist, name="add_prevlist"),
     path('action/add', views.add_action, name="add_action"),
     path('add_visit', views.add_visit, name="visit_add"),
-    path('history', views.complete, name="history"),
+    path('complete', views.complete, name="complete"),
     path('active', views.active, name="active"),
     path('lids', views.get_lids, name="lids"),
     
