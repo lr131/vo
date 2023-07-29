@@ -18,5 +18,8 @@ urlpatterns = [
     path('complete', views.complete, name="complete"),
     path('active', views.active, name="active"),
     path('lids', views.get_lids, name="lids"),
+    path('lid/add', views.add_lid, name="add_lid"),
+    path('tilda', views.get_tilda, name="tilda"),
+    
     
     ]

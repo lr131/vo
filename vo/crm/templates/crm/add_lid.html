@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+  {% block menu %}
+  {% with active='crm' page='add_lid' %}
+    {% include '_menu.html' %}
+  {% endwith %}
+  {% endblock %}
+
+<!-- Content Wrapper. Contains page content Хлебные крошки -->
+<div class="content-wrapper" id='mainContainer'>
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+        </div>
+        {% comment %} <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Главная</a></li>
+            <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+            <li class="breadcrumb-item active">Активная страница</li>
+          </ol>
+        </div> {% endcomment %}
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <section class="content">
+
+    <div class="container-fluid">
+      <div class="row">
+        
+        <div class="col-12" id='mainContainer'>
+
+            <div class="row">
+              <div class="col-md-8">
+                  <h4>Добавить заявку</h4>
+              </div>
+            </div>
+
+            {% if errors %}
+                {{ errors}}
+            {% endif %}
+
+            <form method="post" id="lidForm" data-clid="{{clid}}" data-tdh="{{tdh.pk}}" 
+                  data-user="{{user.pk}}" 
+                  {% if tdh.body %}
+                    data-uname="{{Name}}"
+                    data-uemail="{{Email}}"
+                    data-uphone="{{Phone}}"
+                    data-formin="{{formid}}"
+                    data-formname="{{formname}}"
+                    data-trainid="{{trainid}}"
+                    data-utmsource="{{utm_source}}"
+                    data-utmtypesource="{{utm_type_source}}"
+                    data-utmmedium="{{utm_medium}}"
+                    data-utmtypecontent="{{utm_type_content}}"
+                    data-utmcampaign="{{utm_campaign}}"
+                    data-utmterm="{{utm_term}}"
+                    data-utmcontent="{{utm_content}}"
+                  {% endif %}
+                  >
+              {% csrf_token %}
+              <div class="row mt-3">
+                  <div class="col-sm-3">
+                      {{ form.name.label }}
+                      {% if tdh.name %}
+                        <input type="text" name="name" maxlength="250" class="form-control" id="id_name" value="{{tdh.name}}">
+                      {% else %}
+                        {{ form.name }}
+                      {% endif %}
+                  </div>
+
+                  <div class="col-sm-3">
+                      {{ form.phone.label }}
+                      {% if tdh.phone %}
+                        <input type="text" name="phone" maxlength="250" class="form-control" 
+                        id="id_phone" value="{{tdh.phone}}">
+                      {% else %}
+                        {{ form.phone }}
+                      {% endif %}
+                  </div>
+
+                  <div class="col-sm-3">
+                    {{ form.email.label }}
+                    {% if Email %}
+                        <input type="text" name="email" maxlength="250" class="form-control" id="id_email" value="{{Email}}">
+                    {% else %}
+                        {{ form.email }}
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-2">
+                    {{ form.client_id.label }}
+                    {{ form.client_id }}
+                </div>
+              </div>
+
+              <div class="row mt-3">
+
+                <div class="col-sm-3">
+                    Действие: позвонил, написал
+                    
+                    {% if tdh.pk %}
+                        <input type="text" name="action" maxlength="250" class="form-control" id="id_action" value="Регистрация на сайте">
+                    {% else %}
+                        {{ form.action }}
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-3">
+                    По поводу: 
+                    {{ form.event_id }}
+                </div>
+
+                <div class="col-sm-3">
+                    {{ form.target.label }}
+                    {{ form.target }}
+                </div>
+
+                <div class="col-sm-2">
+                    Откуда заявка/кто привел
+                    {% if tdh.pk  %}
+                        <input type="text" name="source" maxlength="250" 
+                        class="form-control" id="id_source" 
+                        value="Наш сайт, форма {{formname}}">
+                    {% else %}
+                        {{ form.source }}
+                    {% endif %}
+                </div>
+
+
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-sm-6">
+                    {{ form.comment.label }}
+                    {{ form.comment }}
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <h3> Данные из Тильды </h3>
+              </div>
+              
+
+              <div class="row mt-3">
+                <div class="col-sm-2">
+                    {{ form.lid_code.label }}
+                    {% if tranid  %}
+                        <input type="text" name="lid_code" maxlength="250" 
+                        class="form-control" id="id_lid_code" 
+                        value="{{tranid}}">
+                    {% else %}
+                        {{ form.lid_code }}
+                    {% endif %}
+
+                </div>
+                <div class="col-sm-2">
+                  {{ form.block_code.label }}
+                  {% if formid  %}
+                    <input type="text" name="block_code" maxlength="250" 
+                    class="form-control" id="id_block_code" 
+                    value="{{formid}}">
+                {% else %}
+                    {{ form.block_code }}
+                {% endif %}
+
+                </div>
+                <div class="col-sm-3">
+                  {{ form.form_name.label }}
+                    {% if formname  %}
+                        <input type="text" name="form_name" maxlength="250" 
+                        class="form-control" id="id_form_name" 
+                        value="{{formname}}">
+                    {% else %}
+                        {{ form.form_name }}
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-2">
+                    {{ form.utm_source.label }}
+                    {% if utm_source  %}
+                        <input type="text" name="utm_source" maxlength="250" 
+                        class="form-control" id="id_utm_source" 
+                        value="{{utm_source}}">
+                    {% else %}
+                        {{ form.utm_source }}
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-2">
+                    {{ form.utm_type_source.label }}
+                    {% if utm_type_source  %}
+                        <input type="text" name="utm_type_source" maxlength="250" 
+                        class="form-control" id="id_utm_type_source" 
+                        value="{{utm_type_source}}">
+                    {% else %}
+                        {{ form.utm_type_source }}
+                    {% endif %}
+                </div>
+
+              </div>
+
+              <div class="row mt-3">
+                
+                <div class="col-sm-2">
+                    {{ form.utm_medium.label }}
+                    {% if utm_medium  %}
+                        <input type="text" name="utm_medium" maxlength="250" 
+                        class="form-control" id="id_utm_medium" 
+                        value="{{utm_medium}}">
+                    {% else %}
+                        {{ form.utm_medium }}
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-2">
+                    {{ form.utm_type_content.label }}
+                    {% if utm_type_content  %}
+                        <input type="text" name="utm_type_content" maxlength="250" 
+                        class="form-control" id="id_utm_type_content" 
+                        value="{{utm_type_content}}">
+                    {% else %}
+                        {{ form.utm_type_content }}
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-2">
+                    {{ form.utm_campaign.label }}
+                    {% if utm_campaign  %}
+                        <input type="text" name="utm_campaign" maxlength="250" 
+                        class="form-control" id="id_utm_campaign" 
+                        value="{{utm_campaign}}">
+                    {% else %}
+                        {{ form.utm_campaign }}
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-2">
+                    {{ form.utm_term.label }}
+                    {% if utm_term  %}
+                        <input type="text" name="utm_term" maxlength="250" 
+                        class="form-control" id="id_utm_term" 
+                        value="{{utm_term}}">
+                    {% else %}
+                        {{ form.utm_term }}
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-2">
+                    {{ form.utm_content.label }}
+                    {% if utm_content  %}
+                        <input type="text" name="utm_content" maxlength="250" 
+                        class="form-control" id="id_utm_content" 
+                        value="{{utm_content}}">
+                    {% else %}
+                        {{ form.utm_content }}
+                    {% endif %}
+                </div>
+              </div>
+
+              <div class="row mt-3"> 
+
+                
+
+                <div class="col-sm-2" style="display: none">
+                    <input name="worker" class="form-control" id="id_worker" value={{user.pk}}>
+                </div>
+                  
+              </div>
+
+              <div class="row mt-3"> 
+                  <div class="col-sm-6">
+                      <button type="submit" class="btn btn-success">Сохранить</button>
+                  </div>
+                  
+              </div>
+            </form>  
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</div>
+
+{% endblock %}
+

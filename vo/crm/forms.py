@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import ClientEventHistory, PreviousList, Action
+from .models import ClientEventHistory, PreviousList, Action, Lid
 
 class ClientEventHistoryForm(forms.ModelForm):
 
@@ -19,13 +19,24 @@ class PreviousListForm(forms.ModelForm):
         fields = ('name', 'description',)
         
         
+class LidForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+    
+    class Meta:
+        model = Lid
+        fields = '__all__'
+        
+        
         
 class ActionForm(forms.ModelForm):
     
     class Meta:
         model = Action
         fields = ('description', 'action', 
-                  'note', 'stage', 'lid', 
+                  'note', 'stage', 'lid', 'state', 
                   'plc')
         
     def __init__(self, *args, **kwargs):
