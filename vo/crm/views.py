@@ -15,7 +15,6 @@ import json
 @csrf_exempt
 def tilda_webhook(request):
     if request.method == 'POST':
-        pprint(request)
         raw_string =request.body.decode('utf-8')
         split_string = raw_string.split('&')
         

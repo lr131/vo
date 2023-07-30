@@ -6,6 +6,7 @@ from django.http import FileResponse, HttpResponse
 import pandas as pd
 import io
 import os
+from furl import furl
 from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinksForm, LinkSpeedForm, MailindQuickDetailForm, UploadWapicoReportForm
 from .models import Mailing, MailingDetail, Client, ClientProducts, Links, SocialPlace
 
@@ -112,8 +113,18 @@ def mailing_group(request, pk):
 
 @login_required
 def get_mailing_db_file(request, pk):
+    prev_url = furl(request.META.get('HTTP_REFERER'))
+    filter = prev_url.args.get('filter')
     data = Mailing.objects.get(pk=pk)
     clients = MailingDetail.objects.filter(mailing=data)
+    if filter:
+        if filter == 'wait':
+            clients = clients.filter(result='Ожидает отправки')
+        elif filter == 'delivered':
+            clients = clients.filter(result='Delivered')
+        elif filter == 'read':
+            clients = clients.filter(result='Read')
+            
     data_to_df = []
     columns = ['Phone Number', 'Name','Last Name', 'State', 'City']
     
@@ -136,13 +147,6 @@ def get_mailing_db_file(request, pk):
         response = HttpResponse(b.getvalue(), content_type=content_type)
         response['Content-Disposition'] = 'attachment; filename="' + filename + '.xlsx"'
         return response
-    
-    print(df_res)
-    
-    buffer = io.BytesIO()
-    buffer.write(picture_content)
-    buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename='filename.jpg')
 
 def handle_uploaded_file(f):
     path = os.path.join(settings.MEDIA_ROOT, 'smm')
@@ -157,6 +161,16 @@ def handle_uploaded_file(f):
 def mailing_db(request, pk):
     data = Mailing.objects.get(pk=pk)
     clients = MailingDetail.objects.filter(mailing=data)
+    
+    filter = request.GET.get("filter")
+    if filter:
+        if filter == 'wait':
+            clients = clients.filter(result='Ожидает отправки')
+        elif filter == 'delivered':
+            clients = clients.filter(result='Delivered')
+        elif filter == 'read':
+            clients = clients.filter(result='Read')
+    
     context = {'mailing': data, 'clients': clients}
     if request.method == 'POST':
         form = UploadWapicoReportForm(request.POST, request.FILES)
