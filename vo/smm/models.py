@@ -422,11 +422,90 @@ class ClientMailing(models.Model):
                 f"{self.client.name} " if self.client.name else ""
                 f"{self.comment}" if self.comment else "")
 
+class Place(models.Model):
+    addr = models.CharField(max_length=200,null=True,blank=True, verbose_name="Адрес")
+    source =  models.CharField(max_length=200,null=True,blank=True, verbose_name="Название") # онлайн, зал, кабинет
+    
+    class Meta:
+        managed = False
+        db_table = 'event_place'
+        
+    def __str__(self) -> str:
+        return f"{self.addr}"
+    
+class EventState(models.Model):
+    name = models.CharField(max_length=300, verbose_name="Статус")
+    description = models.CharField(max_length=200,null=True,blank=True, verbose_name="Описание")
+    
+    class Meta:
+        managed = False
+        db_table = 'event_state'
+        
+    def __str__(self) -> str:
+        return f"{self.name}"
+
+
+class EventType(models.Model):
+    name = models.CharField(max_length=300, verbose_name="Тип мероприятия")
+    description = models.CharField(max_length=200,null=True,blank=True, verbose_name="Описание")
+    
+    class Meta:
+        managed = False
+        db_table = 'event_types'
+        
+    def __str__(self) -> str:
+        return f"{self.name}"
+
+class Event(models.Model):
+    name = models.CharField(max_length=200, verbose_name="Название")
+    state = models.ForeignKey(EventState, verbose_name="Статус", null=True, blank=True, on_delete=models.SET_NULL) # проводится, не проводится, в архиве и тд
+    event_type = models.ForeignKey(EventType, verbose_name="Тип мероприятия",  null=True, blank=True, on_delete=models.SET_NULL) # Тренинг, программа, марафон и тд
+    description = models.TextField(null=True,blank=True, verbose_name="Описание")
+    short = models.CharField(max_length=500, blank=True, null=True, verbose_name="Короткое описание (до 500 знаков)")
+    payment = models.CharField(max_length=200,null=True,blank=True, verbose_name="Стоимость")
+    continuance = models.CharField(max_length=200,null=True,blank=True, verbose_name="Продолжительность") # продолжительность
+    about = models.TextField(null=True,blank=True, verbose_name="Какие боли закрывает?") # какие боли закрывает
+    country = models.IntegerField(default=5, verbose_name="Сколько человек по плану") # количество человек по плану
+    next_step = models.TextField(null=True,blank=True, verbose_name="Следующий шаг по продуктам") # следующий шаг по продуктам TODO
+    prev_step = models.TextField(null=True,blank=True, verbose_name="Предыдущий шаг по продуктам") # предыдущий шаг / бесплатные материалы TODO
+    created_date = models.DateTimeField(auto_now_add=True, blank=True, verbose_name="Дата создания")
+    site = models.CharField(max_length=500, null=True, blank=True, verbose_name="Ссылка на лендинг")
+    
+    class Meta:
+        managed = False
+        db_table = 'events_event'
+        
+    def __str__(self) -> str:
+        return f"{self.name} ({self.event_type}) - {self.state}"
+
+class EventPlan(models.Model):
+    start_date = models.DateTimeField(blank=True, verbose_name="Дата начала")
+    end_date = models.DateTimeField(blank=True, null=True, verbose_name="Дата завершения")
+    season = models.CharField(max_length=100, default="2023/2024", verbose_name="Сезон")
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name="Мероприятие")
+    place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Где")
+    is_period = models.BooleanField(default=False, verbose_name="Это периодичное мероприятие?")
+    site = models.CharField(max_length=500, null=True, blank=True, verbose_name="Ссылка на лендинг (перекроет ссылку тренинга)")
+    period = models.PositiveIntegerField(null=True,blank=True, verbose_name="Введите период (в днях)") # через сколько дней если что повторять
+    
+    class Meta:
+        managed = False
+        db_table = 'event_plan'
+    
+    def __str__(self):
+        return (f" {self.event.name} " if self.event.name else ""
+                f"{self.place} " if self.place else ""
+                f"{self.start_date}" if self.start_date else "")
+
+
 class Mailing(models.Model):
     name = models.CharField(max_length=100, 
                             verbose_name="Название рассылки")
     description = models.CharField(max_length=100, 
                             verbose_name="Описание рассылки")
+    event_plan_id = models.ForeignKey(EventPlan, on_delete=models.SET_NULL, 
+                                      null=True, blank=True, verbose_name="По поводу мероприятия")
+    text = models.TextField(blank=True, null=True, verbose_name="текст рассылки без меток")
     source_type = models.CharField(max_length=100,
                                    choices=MAILING_SOURCE_TYPES,
                                    default='group',
@@ -439,6 +518,35 @@ class Mailing(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+class Lid(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    lid_code = models.CharField(max_length=50, blank=True, null=True, verbose_name="Код заявки")
+    block_code = models.CharField(max_length=50, blank=True, null=True, verbose_name="Код блока")
+    form_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Форма на сайте")
+    name = models.CharField(max_length=250, blank=True, null=True, verbose_name="Имя")
+    phone = models.CharField(max_length=250, blank=True, null=True, verbose_name="Телефон")
+    email = models.CharField(max_length=250, blank=True, null=True, verbose_name="Почта")
+    utm_source = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_source")
+    utm_type_source = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_type_source")
+    utm_medium = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_medium")
+    utm_type_content = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_type_content")
+    utm_campaign = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_campaign")
+    utm_term = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_term")
+    utm_content = models.CharField(max_length=50, blank=True, null=True, verbose_name="utm_content")
+    client_id = models.IntegerField(blank=True, null=True, verbose_name="Клиент (если новый, то пусто)")
+    event_id = models.IntegerField(blank=True, null=True, verbose_name="Мероприятие (пусто, если клиент не знает чего хочет")
+    action = models.CharField(max_length=250, verbose_name="Действие: позвонил, написал, оставил заявку через сайт и тд")
+    source = models.CharField(max_length=250, verbose_name="Источник связи, ссылка")
+    comment = models.TextField(blank=True, null=True, verbose_name="Примечания (внутренние)")
+    target = models.CharField(blank=True, null=True, max_length=250, verbose_name="Целевое действие") # купил курс, зашел на марафон и тд
+    
+    class Meta:
+        managed = False
+        db_table = 'lid'
+        
+    def __str__(self):
+        return f'{self.name} ({self.form_name}) {self.date}'
     
 class MailingDetail(models.Model):
     mailing = models.ForeignKey(Mailing,
@@ -452,7 +560,11 @@ class MailingDetail(models.Model):
     text = models.TextField()
     link = models.CharField(max_length=500, null=True, blank=True,
                             verbose_name="Ссылка, если есть, без меток")
-    outer_text = models.TextField(verbose_name="Готовый текст, сформируется автоматичесик")
+    outer_text = models.TextField(verbose_name="Готовый текст для whatsapp, сформируется автоматически")
+    outer_text_vi = models.TextField(null=True, blank=True,
+                                     verbose_name="Готовый текст для viber, сформируется автоматически")
+    outer_text_tg = models.TextField(null=True, blank=True,
+                                     verbose_name="Готовый текст для viber, сформируется автоматически")
     
     cdate = models.DateTimeField(auto_now_add=True)
     cuser = models.ForeignKey(settings.AUTH_USER_MODEL, 
@@ -480,6 +592,8 @@ class MailingDetail(models.Model):
     result = models.CharField(max_length=100,
                                    choices=MAILING_RESULT_CHOISES,
                                    default='Ожидает отправки')
+    lid_id = models.ForeignKey(Lid, on_delete=models.SET_NULL,
+                               null=True, blank=True,verbose_name="Связь с заявкой")
     comment = models.TextField(null=True, blank=True)
     
     class Meta:

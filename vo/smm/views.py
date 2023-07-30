@@ -1,10 +1,12 @@
-from contextlib import redirect_stderr
-from multiprocessing import context
 from django.shortcuts import render, redirect
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-
-from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinksForm, LinkSpeedForm, MailindQuickDetailForm
+from django.http import FileResponse, HttpResponse
+import pandas as pd
+import io
+import os
+from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinksForm, LinkSpeedForm, MailindQuickDetailForm, UploadWapicoReportForm
 from .models import Mailing, MailingDetail, Client, ClientProducts, Links, SocialPlace
 
 @login_required
@@ -24,7 +26,7 @@ def mailing_new(request):
 
 @login_required
 def mailing_list(request):
-    data = Mailing.objects.all()
+    data = Mailing.objects.all().order_by('-date')
     context = {'mailing': data}
     return render(request, 'smm/mailing/mailing_list.html', context=context)
 
@@ -105,13 +107,80 @@ def mailing_group(request, pk):
     data = Mailing.objects.get(pk=pk)
     clients = MailingDetail.objects.filter(mailing=data)
     context = {'mailing': data, 'clients': clients}
+    
     return render(request, 'smm/mailing/mailing_group.html', context=context)
+
+@login_required
+def get_mailing_db_file(request, pk):
+    data = Mailing.objects.get(pk=pk)
+    clients = MailingDetail.objects.filter(mailing=data)
+    data_to_df = []
+    columns = ['Phone Number', 'Name','Last Name', 'State', 'City']
+    
+    for client in clients:        
+        f = client.client.family if client.client.family else ""
+        n = client.client.name if client.client.name else ""
+
+        raw = (client.phone, n, f, client.client.state.name, client.client.city)
+        data_to_df.append(raw)
+            
+    df_res = pd.DataFrame(data_to_df, columns=columns)
+    
+    with io.BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='openpyxl')
+        df_res.to_excel(writer, sheet_name='Sheet1', index=False)
+        writer.close()
+        filename = data.name
+        content_type = 'application/vnd.ms-excel'
+        response = HttpResponse(b.getvalue(), content_type=content_type)
+        response['Content-Disposition'] = 'attachment; filename="' + filename + '.xlsx"'
+        return response
+    
+    print(df_res)
+    
+    buffer = io.BytesIO()
+    buffer.write(picture_content)
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='filename.jpg')
+
+def handle_uploaded_file(f):
+    path = os.path.join(settings.MEDIA_ROOT, 'smm')
+    if not os.path.exists(path):
+        os.mkdir(path)
+    path = os.path.join(path,'report.xlsx')
+    with open(path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 @login_required
 def mailing_db(request, pk):
     data = Mailing.objects.get(pk=pk)
     clients = MailingDetail.objects.filter(mailing=data)
     context = {'mailing': data, 'clients': clients}
+    if request.method == 'POST':
+        form = UploadWapicoReportForm(request.POST, request.FILES)
+        if form.is_valid():
+            print(request.FILES['file'])
+            handle_uploaded_file(request.FILES['file'])
+            path = os.path.join(settings.MEDIA_ROOT, 'smm','report.xlsx')
+            part = pd.read_excel(path, na_filter = False)
+            # print(part)
+            for row in part.itertuples(index=False):
+                print(row)
+                phone = row[0]
+                qs = clients.get(phone=int(phone))
+                print(qs)
+                qs.pdate = row[6]
+                qs.link_messeger = "WhatsApp"
+                qs.result = row[5]
+                if row[7]:
+                    qs.comment = f"Ответное сообщение: \n{row[7]}"
+                qs.save()
+                
+            return redirect('smm:mailing_db', pk=pk)
+    form = UploadWapicoReportForm()
+    context['form'] = form
     return render(request, 'smm/mailing/mailing_db.html', context=context)
 
 @login_required
@@ -123,13 +192,16 @@ def mailing_db_new(request, pk):
             db = form.cleaned_data['db']
             filter = form.cleaned_data['filter']
             state = form.cleaned_data['state']
+            cleated_msg = form.cleaned_data['msg']
             msg = form.cleaned_data['msg']
             link = form.cleaned_data['link']
             utm = form.cleaned_data['utm']
             states = [state['id'] for state in state.values()]
             groups = (db,)
-            comment = msg
-            params = {'link': link}   
+            text = msg
+            params = {'link': link}  
+            msg_tg = ''
+            msg_vi = '' 
             qs = Client.objects.filter(group__in=groups).extra(
                 select={'id': 'clients_client.id',
                     'phone': 'clients_client.phone',
@@ -171,8 +243,13 @@ def mailing_db_new(request, pk):
                     qs = qs.filter(products__is_school_level_2=True)
             qs = qs.filter(state__in=states)
 
+            # тут надо не ДОБАВИТЬ МЕТКИ, тут ИСПОЛЬЗОВАТЬ UTM/
+            # ЗАТЕМ найти вот эти вот ссылки в базе (тогда нужен механизм создания ссылок-таки)
+            # ЗАТЕМ, уже если вдруг ссылки не найдено, а галка стоит, то создать эту ссылку или ссылки
             if utm and link and len(link):
-                links = Links.objects.filter(link__startswith=link, utm_medium='person')
+                links = Links.objects.filter(link__startswith=link, 
+                                             utm_medium='person',
+                                             utm_type_content='direct')
                 # TODO предполагается, что ссылки уже есть в базе
 
                 links_dict = {}
@@ -187,21 +264,11 @@ def mailing_db_new(request, pk):
                         links_dict['tg'] = l.short
                         msg_tg = msg.replace('%Url%', links_dict['tg'])
                         print('msg:\n', msg)
-                        print('comment ДО')
-                        print(comment)
-                        comment = comment + f"<br/><br/>Текст для Telegram:<br/><br/>{msg_tg}<br/><br/>"
-                        print('comment ПОСЛЕ')
-                        print(comment)
                     if l.utm_source == 'viber':
                         print('viber')
                         links_dict['viber'] = l.short
                         msg_vi = msg.replace('%Url%', links_dict['viber'])
                         print('msg:\n', msg)
-                        print('comment ДО')
-                        print(comment)
-                        comment = comment + f"<br/><br/>Текст для Viber:<br/><br/>{msg_vi}<br/><br/>"
-                        print('comment ПОСЛЕ')
-                        print(comment)
                     if l.utm_source == 'wa':
                         links_dict['wa'] = l.short
                         link = l.short   
@@ -215,13 +282,14 @@ def mailing_db_new(request, pk):
                     continue
                 phones = client['phone'].split(';')
                 msg2 = msg.replace('%Name%', client['name'])
-                params['comment'] = comment.replace('%Name%', client['name'])
+                params['text'] = text.replace('%Name%', client['name'])
                 # TODO создание объекта рассылки
                 cl = Client.objects.get(pk=client['id'])
                 for phone in phones:
                     MailingDetail.objects.create(mailing=data,
-                                             text = msg2,
                                              outer_text = msg2,
+                                             outer_text_vi = msg_vi,
+                                             outer_text_tg = msg_tg,
                                              cuser=request.user,
                                              muser=request.user,
                                              client=cl,

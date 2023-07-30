@@ -101,7 +101,15 @@
                     <i class="far fa-circle nav-icon"></i>
                     <p>В работе</p>
                 </a>
-                </li>
+              </li>
+              
+              <li class="nav-item">
+                <a href="{% url 'crm:lids' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Заявки (Новые)</p>
+                </a>
+              </li>
+
               <li class="nav-item">
                 <a href="{% url 'crm:complete' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -111,13 +119,7 @@
               <li class="nav-item">
                 <a href="{% url 'crm:tilda' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Заявки (Тильда)</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'crm:lids' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Заявки</p>
+                  <p>Запросы (Тильда)</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -129,7 +131,7 @@
               <li class="nav-item">
                 <a href="{% url 'crm:add_prevlist' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Создать предварительный список</p>
+                  <p>Создать предв. список</p>
                 </a>
               </li>
             </ul>

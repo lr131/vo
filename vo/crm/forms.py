@@ -16,7 +16,7 @@ class PreviousListForm(forms.ModelForm):
     
     class Meta:
         model = PreviousList
-        fields = ('name', 'description',)
+        fields = ('name', 'description', 'event_plan_id', 'event_id')
         
         
 class LidForm(forms.ModelForm):

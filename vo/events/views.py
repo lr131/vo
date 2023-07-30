@@ -1,5 +1,8 @@
+from calendar import month
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import datetime, timedelta
 from rest_framework import viewsets, serializers, generics, pagination, filters
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -19,8 +22,12 @@ class EventPlanViewSet(viewsets.ModelViewSet):
     
 @login_required
 def get_plan(request):
+    down_date = timezone.now() - timedelta(weeks=5)# end_date__gte
+    update = timezone.now() + timedelta(weeks=14) # start_date__lte
     context = {
-        "events": EventPlan.objects.all().order_by('start_date')
+        "events": EventPlan.objects.filter(
+            end_date__gte=down_date,
+            start_date__lte=update).order_by('-start_date')
     }
     return render(request, "events/events.html", context)
 

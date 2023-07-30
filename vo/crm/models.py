@@ -9,6 +9,8 @@ class PreviousList(models.Model):
     description = models.CharField(max_length=512, blank=True, null=True, verbose_name="Описание")
     cuser = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, 
                               verbose_name="Кто создал список")
+    event_plan_id = models.IntegerField(null=True, verbose_name="Мероприятие с известной датой")
+    event_id = models.ImageField(null=True, verbose_name="Мероприятие без даты")
     
     class Meta:
         verbose_name = "Список на мероприятие"

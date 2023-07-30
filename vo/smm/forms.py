@@ -43,7 +43,8 @@ class LinkSpeedForm(forms.Form):
                            max_length=500, required=True)
     link = forms.CharField(label='ссылка (без меток)', 
                            max_length=500, required=True)
-    source = forms.CharField(label='Для чего ссылка', widget=forms.Select(choices=MAILING_SOURCE_TYPES))
+    source = forms.CharField(label='Для чего ссылка', 
+                             widget=forms.Select(choices=MAILING_SOURCE_TYPES))
     
     
     def __init__(self, *args, **kwargs):
@@ -64,6 +65,12 @@ class MailindQuickDetailForm(forms.Form):
     source = forms.CharField(label='Месседжер', 
                              widget=forms.Select(choices=CHOICES_MSGRS))
     
+class UploadWapicoReportForm(forms.Form):
+    file = forms.FileField()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'custom-file-input'})
 
 class MailindBDForm(forms.Form):
     CHOICES_SOURCE= (
@@ -89,7 +96,7 @@ class MailindBDForm(forms.Form):
     msg = forms.CharField(label='текст (шаблон)', widget=forms.Textarea)
     link = forms.CharField(label='ссылка (без меток)', 
                            max_length=500, required=False)
-    utm = forms.BooleanField(label='Добавить метки', required=False, initial=True)
+    utm = forms.BooleanField(label='Использовать метки', required=False, initial=True)
 
     state = forms.ModelMultipleChoiceField(queryset=State.objects.all())
     

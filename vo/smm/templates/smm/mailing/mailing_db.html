@@ -17,14 +17,33 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
+          <form enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+              <div class="custom-file">
+                {{form.file}}
+                {% comment %} <input class="custom-file-input" type="file" name="file" required id="id_file"> {% endcomment %}
+                <label class="custom-file-label" for="id_file">Загрузить файл отчета</label>
+              </div>
+              <div class="input-group-append">
+                <button type='submit' class="input-group-text">Загрузить</button>
+              </div>
+            </div>
+        </form>
         </div>
-        {% comment %} <div class="col-sm-6">
-          <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Главная</a></li>
-            <li class="breadcrumb-item"><a href="#">Раздел</a></li>
-            <li class="breadcrumb-item active">Активная страница</li>
-          </ol>
-        </div> {% endcomment %}
+        {% if clients %}
+
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              {% comment %} <li class="breadcrumb-item"></li> {% endcomment %}
+              <li class="breadcrumb-item"><a href="{% url 'smm:wapico' pk=mailing.pk %}">Скачать для сервиса рассылок</a></li>
+              
+              <li class="breadcrumb-item active">
+                
+              </li>
+            </ol>
+          </div> 
+        {% endif %}
       </div>
     </div><!-- /.container-fluid -->
   </section>
@@ -66,9 +85,9 @@
                       <td>{{client.comment|default_if_none:""}}</td>
                       <td>
                           <br/> <br/> 
-                          <a href='{{client.link_wa_pc}}' target='_blank'> Вацап Комп</a> 
+                          <a href='{{client.link_wa_pc}}' target='_blank'> Вацап WEB</a> 
                           <br/> <br/> 
-                          <a href='{{client.link_wa}}'> Вацап телеф</a> 
+                          <a href='{{client.link_wa}}'> Вацап</a> 
                           <br/> <br/> 
                           <a href='{{client.link_vi}}'> Viber</a>
                           <br/> <br/> 
