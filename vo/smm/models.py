@@ -428,7 +428,7 @@ class Place(models.Model):
     
     class Meta:
         managed = False
-        db_table = 'event_place'
+        db_table = 'events_place'
         
     def __str__(self) -> str:
         return f"{self.addr}"

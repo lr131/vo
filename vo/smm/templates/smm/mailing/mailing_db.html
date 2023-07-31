@@ -41,6 +41,7 @@
               <li class="breadcrumb-item active"> <a href="{% url 'smm:mailing_db' pk=mailing.pk %}?filter=delivered"> Доставлено </a> </li>
               <li class="breadcrumb-item active"> <a href="{% url 'smm:mailing_db' pk=mailing.pk %}?filter=read"> Прочитано </a> </li>
               <li class="breadcrumb-item"><a class='btn btn-primary' href="{% url 'smm:wapico' pk=mailing.pk %}">Скачать для сервиса рассылок</a></li>
+              <li class="breadcrumb-item"><a class='btn btn-warning' href="{% url 'smm:wapico' pk=mailing.pk %}">Сформировать новую из текущей</a></li>
               
             </ol>
           </div> 

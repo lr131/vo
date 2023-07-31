@@ -1,8 +1,9 @@
 from dataclasses import field
 from email.policy import default
 from django import forms
-
-from .models import Mailing, MailingDetail, State, SocialPlace, Links
+from django.utils import timezone
+from datetime import datetime, timedelta
+from .models import Mailing, MailingDetail, State, SocialPlace, Links, EventPlan
 from .const import MAILING_SOURCE_TYPES, MAILING_RESULT_CHOISES, SOURCE_MAILING_STATE
 
 
@@ -38,6 +39,7 @@ class LinksForm(forms.ModelForm):
         model = Links
         fields = '__all__'
 
+
 class LinkSpeedForm(forms.Form):
     name = forms.CharField(label='Наименование (что за ссылка)', 
                            max_length=500, required=True)
@@ -46,6 +48,30 @@ class LinkSpeedForm(forms.Form):
     source = forms.CharField(label='Для чего ссылка', 
                              widget=forms.Select(choices=MAILING_SOURCE_TYPES))
     
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+            
+
+class EventPlaceChoiceField(forms.ModelChoiceField):
+
+    def label_from_instance(self, obj):
+        return f'{obj.event.name} - {obj.start_date:%d.%m.%Y} ({obj.place})'
+
+class LinkSetForm(forms.Form):
+    down_date = timezone.now() - timedelta(weeks=5)# end_date__gte
+    update = timezone.now() + timedelta(weeks=14) # start_date__lte
+    source = EventPlaceChoiceField(label='Для чего ссылка', 
+                          queryset=EventPlan.objects.filter(
+                                    end_date__gte=down_date,
+                                    start_date__lte=update).order_by('-start_date')
+                          )
+    utm_term = forms.CharField(label='Идентификатор объявления (utm_term)',
+                               max_length=100, required=False)
+    utm_content = forms.CharField(label='Ключевое слово (utm_content)',
+                                  max_length=100, required=False)
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

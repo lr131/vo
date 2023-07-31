@@ -7,8 +7,8 @@ import pandas as pd
 import io
 import os
 from furl import furl
-from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinksForm, LinkSpeedForm, MailindQuickDetailForm, UploadWapicoReportForm
-from .models import Mailing, MailingDetail, Client, ClientProducts, Links, SocialPlace
+from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinksForm, LinkSpeedForm, MailindQuickDetailForm, UploadWapicoReportForm, LinkSetForm
+from .models import Mailing, MailingDetail, Client, ClientProducts, Links, SocialPlace, UTMs, EventPlan, Event
 
 @login_required
 def mailing_new(request):
@@ -51,57 +51,84 @@ def sp_new(request):
 
 @login_required
 def link_list(request):
-    data = Links.objects.all()
-    if request.method == 'POST':
-        form = LinkSpeedForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            link = form.cleaned_data['link']
-            source = form.cleaned_data['source']
-            
-            if source == 'inner_person':
-                us = {'wa': "WhatsApp", 'viber': "Viber", 'tg': "Telegram"}
-                medium = 'person'
-                for s in us:
-                    name2 = f'{name} для рассылки по базе в личку в {us[s]}'
-                    link2 = f'{link}?utm_source={s}&utm_medium={medium}'
-                    
-                    import vk_api
-                    login, password = settings.LOGIN_VK, settings.PASSWORD_VK
-                    scope = 4096
-                    vk_session = vk_api.VkApi(login=login, password=password,scope=scope)
-
-                    try:
-                        vk_session.auth(token_only=True)
-                    except vk_api.AuthError as error_msg:
-                        print(error_msg)
-                        return
-
-                    vkapi = vk_session.get_api()
-                    params = {'url': link2, 'private': 1}
-                    short = vkapi.utils.getShortLink(**params)
-                    sh = short.get('short_url')
-                    Links.objects.create(link=link2,
-                                         short=sh,
-                                         source=name2,
-                                         utm_source=s,
-                                         utm_medium=medium)
-            return redirect('smm:link_list')
-            
-    form = LinkSpeedForm()
-    context = {'data': data, 'form': form}
+    data = Links.objects.all().order_by('-date')
+    context = {'data': data,}
     return render(request, 'smm/links/links_list.html', context=context)
 
 @login_required
 def link_new(request):
     if request.method == "POST":
-        form = LinksForm(request.POST)
+        form = LinkSetForm(request.POST)
         if form.is_valid():
-            form.save()
+            source = form.cleaned_data['source']
+            utm_term = form.cleaned_data['utm_term']
+            utm_content = form.cleaned_data['utm_content']
+            
+            site = source.event.site
+            utms_set = UTMs.objects.all()
+            
+            import vk_api
+            login, password = settings.LOGIN_VK, settings.PASSWORD_VK
+            scope = 4096
+            vk_session = vk_api.VkApi(login=login, password=password, app_id=2685278, scope=scope)
+
+            try:
+                vk_session.auth(token_only=True)
+            except vk_api.AuthError as error_msg:
+                print(error_msg)
+                raise 
+            
+            vkapi = vk_session.get_api()
+            
+            for utms in utms_set:
+                utm_source_name = utms.utm_source.social if utms.utm_source else ''
+                utm_type_source_name = utms.utm_type_source.title if utms.utm_type_source else ''
+                utm_medium_name = utms.utm_medium.type_source if utms.utm_medium else ''
+                utm_type_content_name = utms.utm_type_content.title if utms.utm_type_content else ''
+                utm_campaign_name = utms.utm_campaign.type_source if utms.utm_campaign else ''
+                
+                source_name = "".join((f"Соцсеть-источник: {utm_source_name}\n" if utm_source_name else "",
+                                      f"Тип источника: {utm_type_source_name}\n" if utm_type_source_name else "",
+                                      f"Чей ресурс: {utm_medium_name}\n" if utm_medium_name else "",
+                                      f"Тип контента: {utm_type_content_name}\n" if utm_type_content_name else "",
+                                      f"Название кампании: {utm_campaign_name}\n " if utm_campaign_name else ""))
+                
+                link = "".join((f"{site}?",
+                        f"utm_source={utms.utm_source.utm_source}&" if utms.utm_source else "",
+                        f"utm_type_source={utms.utm_type_source.utm_type_source}&" if utms.utm_type_source else "",
+                        f"utm_medium={utms.utm_medium.utm_medium}&" if utms.utm_medium else "",
+                        f"utm_type_content={utms.utm_type_content.utm_type_content}&" if utms.utm_type_content else "",
+                        f"utm_campaign={utms.utm_campaign.utm_campaign }&" if utms.utm_campaign else "",
+                        f"utm_term={utm_term}&" if utm_term else "",
+                        f"utm_content={utm_content}&" if utm_content else "",
+                        ))
+                
+                link = link[:len(link) - 1]                  
+
+                params = {'url': link, 'private': 1}
+                short = vkapi.utils.getShortLink(**params)
+                sh = short.get('short_url')
+                
+                print(link, sh, source_name)
+                
+                link_params = {"link": link,
+                               "short": sh,
+                               "source": source_name,
+                               "utm_source": utms.utm_source.utm_source if utms.utm_source else '-',
+                               "utm_type_source": utms.utm_type_source.utm_type_source if utms.utm_type_source else '-',
+                               "utm_medium": utms.utm_medium.type_source if utms.utm_medium else '-',
+                               "utm_type_content": utms.utm_type_content.title if utms.utm_type_content else '-',
+                               "utm_campaign": utms.utm_campaign.type_source if utms.utm_campaign else '-',
+                               "utm_term": utm_term if utm_term else '-',
+                               "utm_content": utm_content if utm_content else '-'}
+                
+                Links.objects.create(**link_params)
+            
             return redirect('smm:link_list')
     else:
-        form = LinksForm()
+        form = LinkSetForm()
     return render(request, 'smm/links/link_new.html', {'form': form})
+
 
 @login_required
 def mailing_group(request, pk):
@@ -315,6 +342,21 @@ def mailing_db_new(request, pk):
     form = MailindBDForm()
     context = {'mailing': data, 'clients': clients, 'form': form}
     return render(request, 'smm/mailing/mailing_db_new.html', context=context)
+
+# # TODO!!!
+# @login_required
+# def mailing_db_double(request, pk):
+#     data = Mailing.objects.get(pk=pk)
+#     print('past', data)
+#     clients = MailingDetail.objects.filter(mailing=data)
+#     data.pk = None
+#     data.save()
+#     print('now', data)
+#     for client in clients:
+#         client.pk = None
+#         client.save()
+#         client.mailing = data
+#         client.save()
 
 @login_required
 def mailing_myperson(request, pk):
