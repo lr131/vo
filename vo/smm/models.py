@@ -601,7 +601,25 @@ class MailingDetail(models.Model):
         verbose_name_plural = 'Клиенты в рассылках'
 
     def __str__(self):
-        return f"{self.phone}"
+        
+        s = []
+        s.append(f"{self.mailing.name} ({self.mailing.description}) ")
+        if self.pdate:
+            s.append(f"{self.pdate:%d.%m.%Y} ")
+        s.append(f"{self.client} | ")
+        if self.link_messeger:
+            s.append(f"{self.link_messeger} - ")
+        s.append(f"{self.result}")
+        if self.comment:
+            s.append(f"({self.comment})")
+        return ''.join(s)
+        # return (f"{self.mailing}"
+        #         f"{self.pdate:%d.%m.%Y} " if self.pdate else ""
+        #         f"{self.client} | "
+        #         f"{self.link_messeger} - " if self.link_messeger else ""
+        #         f"{self.result}"
+        #         f"({self.comment})" if {self.comment} else ""
+        #         )
     
     @property
     def link_wa_pc(self):

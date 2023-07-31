@@ -82,61 +82,59 @@
           </li>
 
           {% comment %} TODO {% endcomment %}
-          {% if user.username == 'lr131' %}
-          <li {% if active == 'crm' %} class="nav-item menu-open"
-          {% else %} class="nav-item"
-          {% endif %}>
-            <a {% if active == 'crm' %} class="nav-link active"
-            {% else %} class="nav-link"
-            {% endif %} href="{% url 'crm:get_lists' %}">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                CRM
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{% url 'crm:active' %}" class="nav-link">
+            <li {% if active == 'crm' %} class="nav-item menu-open"
+                {% else %} class="nav-item"
+                {% endif %}>
+              <a {% if active == 'crm' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'crm:get_lists' %}">
+                  <i class="nav-icon fas fa-chart-pie"></i>
+                  <p>
+                    CRM
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{% url 'crm:active' %}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>В работе</p>
+                  </a>
+                </li>
+                
+                <li class="nav-item">
+                  <a href="{% url 'crm:lids' %}" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>В работе</p>
-                </a>
-              </li>
-              
-              <li class="nav-item">
-                <a href="{% url 'crm:lids' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Заявки (Новые)</p>
-                </a>
-              </li>
+                    <p>Заявки (Новые)</p>
+                  </a>
+                </li>
 
-              <li class="nav-item">
-                <a href="{% url 'crm:complete' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Завершено</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'crm:tilda' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Запросы (Тильда)</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'crm:get_lists' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Предв.списки</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'crm:add_prevlist' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Создать предв. список</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          {% endif %}
+                <li class="nav-item">
+                  <a href="{% url 'crm:complete' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Завершено</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'crm:tilda' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Запросы (Тильда)</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'crm:get_lists' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Предв.списки</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'crm:add_prevlist' %}" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Создать предв. список</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
 
           <li class="nav-item">
             <a {% if active == 'kn_articles' %} class="nav-link active"

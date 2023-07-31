@@ -116,9 +116,9 @@ def link_new(request):
                                "source": source_name,
                                "utm_source": utms.utm_source.utm_source if utms.utm_source else '-',
                                "utm_type_source": utms.utm_type_source.utm_type_source if utms.utm_type_source else '-',
-                               "utm_medium": utms.utm_medium.type_source if utms.utm_medium else '-',
-                               "utm_type_content": utms.utm_type_content.title if utms.utm_type_content else '-',
-                               "utm_campaign": utms.utm_campaign.type_source if utms.utm_campaign else '-',
+                               "utm_medium": utms.utm_medium.utm_medium if utms.utm_medium else '-',
+                               "utm_type_content": utms.utm_type_content.utm_type_content if utms.utm_type_content else '-',
+                               "utm_campaign": utms.utm_campaign.utm_campaign if utms.utm_campaign else '-',
                                "utm_term": utm_term if utm_term else '-',
                                "utm_content": utm_content if utm_content else '-'}
                 
@@ -206,17 +206,20 @@ def mailing_db(request, pk):
             handle_uploaded_file(request.FILES['file'])
             path = os.path.join(settings.MEDIA_ROOT, 'smm','report.xlsx')
             part = pd.read_excel(path, na_filter = False)
-            # print(part)
             for row in part.itertuples(index=False):
                 print(row)
-                phone = row[0]
-                qs = clients.get(phone=int(phone))
+                phone = row[1]
+                try:
+                    qs = clients.get(phone=int(phone))
+                except Exception:
+                    print(phone, 'ошибка')
+                    continue
                 print(qs)
-                qs.pdate = row[6]
+                qs.pdate = row[4]
                 qs.link_messeger = "WhatsApp"
-                qs.result = row[5]
-                if row[7]:
-                    qs.comment = f"Ответное сообщение: \n{row[7]}"
+                qs.result = row[0]
+                if len(row[5]):
+                    qs.comment = f"Ответное сообщение: \n{row[5]}"
                 qs.save()
                 
             return redirect('smm:mailing_db', pk=pk)
@@ -289,16 +292,15 @@ def mailing_db_new(request, pk):
             # ЗАТЕМ, уже если вдруг ссылки не найдено, а галка стоит, то создать эту ссылку или ссылки
             if utm and link and len(link):
                 links = Links.objects.filter(link__startswith=link, 
-                                             utm_medium='person',
+                                             utm_medium='ravnovesie_asia',
                                              utm_type_content='direct')
+                # links = Links.objects.filter(link__startswith=link,
+                #                              utm_type_content='direct')
                 # TODO предполагается, что ссылки уже есть в базе
 
                 links_dict = {}
                 
                 for l in links:
-                    print(l.utm_source == 'tg')
-                    print(l.utm_source == 'viber')
-                    print(l.utm_source == 'wa')
 
                     if l.utm_source == 'tg':
                         print('tg')

@@ -37,14 +37,11 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th scope="col">Название</th>
+                  <th scope="col">Описание</th>
                   <th scope="col">Сама ссылка с метками</th>
                   <th scope="col">Короткая ссылка с метками</th>
                   <th scope="col">Источник кампании (через какой месседжер или соцсеть) </th>
-                  <th scope="col">Тип трафика</th>
-                  <th scope="col">Название кампании</th>
-                  <th scope="col">Идентификатор объявления</th>
-                  <th scope="col">Ключевое слово</th>
+                  <th scope="col">Метки</th>
                 </tr>
               </thead>
               <tbody>
@@ -54,10 +51,14 @@
                     <td> <a href='{{obj.link}}' target='_blank'> {{obj.link}} </a> </td>
                     <td> <a href='{{obj.short}}' target='_blank'> {{obj.short}} </a> </td>
                     <td>{{obj.utm_source}}</td>
-                    <td>{{obj.utm_medium}}</td>
-                    <td>{{obj.utm_campaign}}</td>
-                    <td>{{obj.utm_content}}</td>
-                    <td>{{obj.utm_term}}</td>
+                    <td>utm_source={{obj.utm_source}}<br/>
+                      utm_type_source={{obj.utm_type_source}}<br/>
+                      utm_medium={{obj.utm_medium}}<br/>
+                      utm_type_content={{obj.utm_type_content}}<br/>
+                      utm_campaign={{obj.utm_campaign}}<br/>
+                      utm_content={{obj.utm_content}}<br/>
+                      utm_term={{obj.utm_term}}<br/>
+                      <br/></td>
                   </tr>
                 {% endfor %}
               
