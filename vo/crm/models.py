@@ -83,7 +83,7 @@ class Lid(models.Model):
         db_table = 'lid'
         
     def __str__(self):
-        return f'{self.name} ({self.form_name}) {self.date}'
+        return f'{self.name} ({self.form_name}) {self.date:%d.%m.%Y}'
     
     
 class Action(models.Model):
