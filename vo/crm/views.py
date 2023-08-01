@@ -170,6 +170,10 @@ def list_detail(request, pk):
 def add_action(request):
     plc = request.GET.get("plc")
     lid = request.GET.get("lid")
+    if lid:
+        lid_model = Lid.objects.get(pk=lid)
+    else:
+        lid_model = None
     next = request.GET.get("next")
     if request.method == "POST":
         form = ActionForm(request.POST)
@@ -177,6 +181,9 @@ def add_action(request):
             action = form.save(commit=False)
             action.worker = request.user
             action.save()
+            if lid_model:
+                lid_model.worker = request.user
+                lid_model.save()
             if plc:
                 return redirect('crm:get_lists')
             else:
