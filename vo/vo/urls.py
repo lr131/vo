@@ -17,8 +17,6 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
 
-from django_select2 import urls as django_select2_urls
-
 from users import views as user_views
 from clients import views as client_views
 from events import views as events_views
@@ -43,5 +41,4 @@ urlpatterns = [
     path('kn/', include(('knbase.urls', 'knbase'), namespace="knbase"), name="knbase"),
     path('smm/', include(('smm.urls', 'smm'), namespace="smm"), name="smm"),
     path('crm/', include(('crm.urls', 'crm'), namespace="crm"), name="crm"),
-    path('select2/', include(django_select2_urls)),
 ]

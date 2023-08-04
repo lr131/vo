@@ -165,6 +165,7 @@ def get_tilda(request):
 def list_detail(request, pk):
     
     if request.method == "POST":
+        print('clients' in request.POST)
         if 'clients' in request.POST:
             form = AddClientsForm(request.POST)
             if form.is_valid():
@@ -175,7 +176,7 @@ def list_detail(request, pk):
                         try:
                             client = Client.objects.get(pk=cl)
                             pcl, created = PreviousListClient.objects.get_or_create(prev_list=pl,
-                                                                                    client=cl)
+                                                                                    client=client)
                             if created:
                                 pcl.cuser = request.user
                                 pcl.save()
