@@ -1,5 +1,4 @@
 from django import forms
-from django_select2.forms import Select2Widget, ModelSelect2Widget,ModelSelect2TagWidget
 
 from .models.client_event_history import ClientEventHistory
 from .models.previous_list import PreviousList
@@ -63,30 +62,7 @@ class ActionForm(forms.ModelForm):
         self.fields['description'].widget.attrs.update({'class': 'form-control'})
         self.fields['note'].widget.attrs.update({'class': 'form-control'})
         self.fields['state'].widget.attrs.update({'class': 'form-control'})
-        
-class PreviousListClientForm(forms.ModelForm):
-    # client_id = forms.ModelChoiceField(
-    #         queryset=Client.objects.all(),
-    #         widget=Select2Widget
-    # )
-    client_id = forms.ChoiceField(
-    widget=ModelSelect2Widget(
-        queryset=Client.objects.all(),
-        model=Client,
-        search_fields=['family', 'name', 'phone'],
-        attrs={'data-width': '100%'},
-    ),
-)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].widget.attrs.update({'class': 'form-control'})
-
-    class Meta:
-        model = PreviousListClient
-        fields = ('client_id',)
-        
 
 class AddClientsForm(forms.Form):
     clients = forms.CharField(max_length=5000)
