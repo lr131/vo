@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+  {% block menu %}
+  {% with active='crm' page='add_action' %}
+    {% include '_menu.html' %}
+  {% endwith %}
+  {% endblock %}
+
+<!-- Content Wrapper. Contains page content Хлебные крошки -->
+<div class="content-wrapper" id='mainContainer'>
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+        </div>
+        {% comment %} <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Главная</a></li>
+            <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+            <li class="breadcrumb-item active">Активная страница</li>
+          </ol>
+        </div> {% endcomment %}
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <section class="content">
+
+    <div class="container-fluid">
+      <div class="row">
+        
+        <div class="col-12" id='mainContainer'>
+
+            <div class="row">
+              <div class="col-md-8">
+                  <h4>Клиент ФИО ГОРОД</h4>
+              </div>
+            </div>
+            
+            <form method="post" id="actionForm" data-plc="{{plc}}" data-lid="{{lid}}" 
+                  data-user="{{user.pk}}" 
+                  {% if next == 'pic' %}
+                      data-next="{% url 'crm:list_detail' plc %}"
+                  {% endif %} 
+                  {% if next == 'lid' %}
+                    data-next="{% url 'crm:lids' %}"
+
+                  {% else %}
+
+                    data-next="#"
+                  {% endif %}
+                  >
+              {% csrf_token %}
+              <div class="row mt-3">
+                  <div class="col-sm-6">
+                      {{ form.lid.label }}
+                      {{ form.lid }}
+                  </div>
+
+                  <div class="col-sm-6">
+                      {{ form.plc.label }}
+                      {{ form.plc }}
+                  </div>
+              </div>
+
+              <div class="row mt-3">
+                  <div class="col-sm-6">
+                      {{ form.action.label }}
+                      {{ form.action }}
+                  </div>
+
+                  <div class="col-sm-6">
+                      {{ form.stage.label }}
+                      {{ form.stage }}
+                  </div>
+              </div>
+
+              <div class="row mt-3">
+                  <div class="col-sm-6">
+                      {{ form.description.label }}
+                      {{ form.description }}
+                  </div>
+
+                  <div class="col-sm-6">
+                      {{ form.note.label }}
+                      {{ form.note }}
+                  </div>
+              </div>
+
+              <div class="row mt-3">
+                  <div class="col-sm-6">
+                      {{ form.worker.label }}
+                      {{ form.worker }}
+                  </div>
+              </div>
+
+              <div class="row mt-3"> 
+                <div class="col-sm-6">
+                  {{ form.state.label }}
+                  {{ form.state }}
+                </div>
+                  <div class="col-sm-6">
+                      <button type="submit" class="btn btn-success">Сохранить</button>
+                  </div>
+                  
+                
+              </div>
+            </form>  
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</div>
+{% comment %} <script src={% static 'js/utils.js' %}></script> {% endcomment %}
+<script src={% static 'js/crm/action.js' %}></script>
+
+{% endblock %}
+

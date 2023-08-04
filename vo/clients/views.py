@@ -7,7 +7,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import State, Client, ClientProducts, ClientMailing, ClientInterest
+from .models.state import State
+from .models.client import Client
+from .models.client_products import ClientProducts
+from .models.client_mailing import ClientMailing
+from .models.client_interest import ClientInterest
+
+
 from .serializers import ClientExtraSerializer, StateSerializer, ProductsSerializer, MailingSerializer, InterestSerializer, ClientSerializer
 from .paginations import CustomPagination
 

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import  PreviousListClient
+from .models.previous_list_client import  PreviousListClient
 
 class PreviousListClientSerializer(serializers.ModelSerializer):
     class Meta:

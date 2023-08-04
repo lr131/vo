@@ -1,6 +1,15 @@
 from django import forms
+from django_select2.forms import Select2Widget, ModelSelect2Widget,ModelSelect2TagWidget
 
-from .models import ClientEventHistory, PreviousList, Action, Lid
+from .models.client_event_history import ClientEventHistory
+from .models.previous_list import PreviousList
+from .models.previous_list_client import PreviousListClient
+from .models.action import Action
+from .models.lid import Lid
+from .models.event import Event
+from .models.event_plan import EventPlan
+from .models.client import Client, State
+
 
 class ClientEventHistoryForm(forms.ModelForm):
 
@@ -9,6 +18,12 @@ class ClientEventHistoryForm(forms.ModelForm):
         fields = ('client_id', 'event_plan_id', 'note',) 
         
 class PreviousListForm(forms.ModelForm):
+    event_id = forms.ModelChoiceField(queryset=Event.objects.all(), 
+                                      label="Мероприятие без даты",
+                                      required=False)
+    event_plan_id = forms.ModelChoiceField(queryset=EventPlan.objects.filter(season="2023/2024"), 
+                                           label="Мероприятие из расписания",
+                                           required=False)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
@@ -16,7 +31,7 @@ class PreviousListForm(forms.ModelForm):
     
     class Meta:
         model = PreviousList
-        fields = ('name', 'description', 'event_plan_id', 'event_id')
+        fields = ('name', 'event_plan_id', 'event_id', 'description')
         
         
 class LidForm(forms.ModelForm):
@@ -48,4 +63,61 @@ class ActionForm(forms.ModelForm):
         self.fields['description'].widget.attrs.update({'class': 'form-control'})
         self.fields['note'].widget.attrs.update({'class': 'form-control'})
         self.fields['state'].widget.attrs.update({'class': 'form-control'})
-        # self.fields['worker'].widget.attrs.update({'class': 'form-control'})
+        
+class PreviousListClientForm(forms.ModelForm):
+    # client_id = forms.ModelChoiceField(
+    #         queryset=Client.objects.all(),
+    #         widget=Select2Widget
+    # )
+    client_id = forms.ChoiceField(
+    widget=ModelSelect2Widget(
+        queryset=Client.objects.all(),
+        model=Client,
+        search_fields=['family', 'name', 'phone'],
+        attrs={'data-width': '100%'},
+    ),
+)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+
+    class Meta:
+        model = PreviousListClient
+        fields = ('client_id',)
+        
+
+class AddClientsForm(forms.Form):
+    clients = forms.CharField(max_length=5000)
+    
+
+class AddClientsSetForm(forms.Form):
+    CHOICES_SOURCE= (
+        ('irk', 'Иркутск'),
+        ('angsk', 'Ангарск'),
+        ('ykt', 'Якутск'),
+        ('online', 'Онлайн'),
+    )
+    CHOICES_FILTER= (
+        (None, 'Без фильтра'),
+        ('no_base_course', 'Не курсовые'),
+        ('is_base_course', 'Курсовые'),
+        ('is_assisting', 'Ассистировали'),
+        ('future_assisting', 'Хотят ассистировать'),
+        ('is_school_level_1', 'Выпускники ИШ 1 ступени'),
+        ('is_school_level_2', 'Выпускники ИШ 2 ступени'),
+        ('ter_gr', 'Выпускники терапевтической группы'),
+    )
+    db = forms.MultipleChoiceField(label='База-источник', 
+                                   choices=CHOICES_SOURCE)
+    filter = forms.CharField(label='Фильтр', 
+                             widget=forms.Select(choices=CHOICES_FILTER), 
+                             required=False)
+    state = forms.ModelMultipleChoiceField(label='Статус клиентов',
+                                           queryset=State.objects.all())
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})

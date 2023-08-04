@@ -1,9 +1,41 @@
 from django.contrib import admin
-from .models import AuthData, Mailing, UTMSource, Medium, Links, Target, Rubric
-from .models import PostType, Post, PostPlan, ContentFormat, ContentForm
-from .models import ContentType, SocialPlace, ContentPlace, Tag
-from .models import  Mailing, MailingDetail, SourceMailing, CampaingUTM
-from .models import UTMs, TypeContentUTM, TypeSourceUTM
+
+from .models.auth_data import AuthData
+
+from .models.content_type import ContentType
+from .models.content_place import ContentPlace
+from .models.content_format import ContentFormat
+from .models.content_form import ContentForm
+from .models.target import Target
+from .models.rubric import Rubric
+from .models.utm_source import UTMSource
+from .models.utm_medium import Medium
+from .models.utm_campaign import CampaingUTM
+from .models.utm_type_source import TypeSourceUTM
+from .models.utm_type_content import TypeContentUTM
+from .models.links import Links
+from .models.social_place import SocialPlace
+from .models.utms import UTMs
+from .models.post_type import PostType
+from .models.tag import Tag
+from .models.post import Post
+from .models.content_plan import PostPlan
+
+from .models.client_state import State
+from .models.client import Client
+from .models.client_product import ClientProducts
+from .models.client_mailing import ClientMailing
+
+from .models.event_place import Place
+from .models.event_state import EventState
+from .models.event_type import EventType
+from .models.event import Event
+from .models.event_plan import EventPlan
+
+from .models.lid import Lid
+from .models.mailing import Mailing
+from .models.source_mailing import SourceMailing
+from .models.mailing_detail import MailingDetail
 
 class ContentTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')

@@ -5,7 +5,7 @@
 {% block content %}
   {% block menu %}
     
-  {% with active='crm' page=state %}
+  {% with active='crm' page=page %}
       {% include '_menu.html' %}
     {% endwith %}
   {% endblock %}
@@ -43,7 +43,6 @@
                     <thead>
                       <tr>
                         <th scope="col">Список / заявка </th>
-                        <th scope="col">Клиент</th>
                         <th scope="col">Этап </th>
                         <th scope="col">Действие </th>
                         <th scope="col">Описание </th>
@@ -58,14 +57,20 @@
                         <tr>
                           <td>{{action.plc|default_if_none:'' }} 
                             {{action.lid|default_if_none:'' }}</td>
-                          <td>ФИО</td>
                           <td>{{action.stage}}</td>
                           <td>{{action.action}}</td>
                           <td>{{action.description}}</td>
                           <td>{{action.note}}</td>
                           <td>{{action.cdate|date:"d.m Y"}} / {{action.mdate|date:"d.m Y"}}</td>
                           <td>{{action.worker.first_name}} {{action.worker.last_name}}</td>
-                          <td> {% if action.state %} Да {% else %} нет {% endif %} </td>
+                          <td> {% if action.state %} Да 
+                            {% else %} 
+                              {% if request.user == action.worker %}
+                                <a href="{% url 'crm:edit_action' pk=action.pk %}"> Редактировать </a>
+                              {% else %}
+                                Нет
+                              {% endif %}
+                            {% endif %} </td>
                         
                         </tr>
                       {% endfor %}

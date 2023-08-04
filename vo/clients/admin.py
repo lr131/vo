@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import ClientInterest, ClientMailing, ClientProducts, State, Client
+
+from .models.state import State
+from .models.client import Client
+from .models.client_products import ClientProducts
+from .models.client_mailing import ClientMailing
+from .models.client_interest import ClientInterest
 
 class ClientAdmin(admin.ModelAdmin):
     ordering = ['family', 'name', 'city', 'group']

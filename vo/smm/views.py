@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.http import FileResponse, HttpResponse
@@ -7,8 +6,17 @@ import pandas as pd
 import io
 import os
 from furl import furl
+
 from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinksForm, LinkSpeedForm, MailindQuickDetailForm, UploadWapicoReportForm, LinkSetForm
-from .models import Mailing, MailingDetail, Client, ClientProducts, Links, SocialPlace, UTMs, EventPlan, Event
+
+
+from .models.links import Links
+from .models.social_place import SocialPlace
+from .models.utms import UTMs
+from .models.client import Client
+
+from .models.mailing import Mailing
+from .models.mailing_detail import MailingDetail
 
 @login_required
 def mailing_new(request):
@@ -64,7 +72,9 @@ def link_new(request):
             utm_term = form.cleaned_data['utm_term']
             utm_content = form.cleaned_data['utm_content']
             
-            site = source.event.site
+            site = source.site
+            if not site:
+                site = source.event.site
             utms_set = UTMs.objects.all()
             
             import vk_api
@@ -103,27 +113,39 @@ def link_new(request):
                         f"utm_content={utm_content}&" if utm_content else "",
                         ))
                 
-                link = link[:len(link) - 1]                  
-
-                params = {'url': link, 'private': 1}
-                short = vkapi.utils.getShortLink(**params)
-                sh = short.get('short_url')
-                
-                print(link, sh, source_name)
+                link = link[:len(link) - 1]  
                 
                 link_params = {"link": link,
-                               "short": sh,
-                               "source": source_name,
                                "utm_source": utms.utm_source.utm_source if utms.utm_source else '-',
                                "utm_type_source": utms.utm_type_source.utm_type_source if utms.utm_type_source else '-',
                                "utm_medium": utms.utm_medium.utm_medium if utms.utm_medium else '-',
                                "utm_type_content": utms.utm_type_content.utm_type_content if utms.utm_type_content else '-',
                                "utm_campaign": utms.utm_campaign.utm_campaign if utms.utm_campaign else '-',
                                "utm_term": utm_term if utm_term else '-',
-                               "utm_content": utm_content if utm_content else '-'}
+                               "utm_content": utm_content if utm_content else '-'}    
                 
-                Links.objects.create(**link_params)
-            
+                created = False
+                try:
+                    obj, created = Links.objects.get_or_create(**link_params)
+                except Links.MultipleObjectsReturned as e:
+                    objs = Links.objects.filter(**link_params)
+                    obj = objs.first()
+                    for v in objs:
+                        if v.pk != obj.pk:
+                            v.delete()
+                    created = False
+                finally:    
+                    if created:
+                        params = {'url': link, 'private': 1}
+                        short = vkapi.utils.getShortLink(**params)
+                        sh = short.get('short_url')
+                    
+                        print(link, sh, source_name)
+                        
+                        obj.short = sh
+                        obj.source = source_name
+                        obj.save()
+
             return redirect('smm:link_list')
     else:
         form = LinkSetForm()
@@ -246,6 +268,7 @@ def mailing_db_new(request, pk):
             params = {'link': link}  
             msg_tg = ''
             msg_vi = '' 
+            
             qs = Client.objects.filter(group__in=groups).extra(
                 select={'id': 'clients_client.id',
                     'phone': 'clients_client.phone',

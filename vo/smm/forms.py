@@ -1,11 +1,18 @@
-from dataclasses import field
-from email.policy import default
 from django import forms
 from django.utils import timezone
-from datetime import datetime, timedelta
-from .models import Mailing, MailingDetail, State, SocialPlace, Links, EventPlan
+from datetime import timedelta
 from .const import MAILING_SOURCE_TYPES, MAILING_RESULT_CHOISES, SOURCE_MAILING_STATE
 
+from .models.links import Links
+from .models.social_place import SocialPlace
+
+
+from .models.client_state import State
+
+from .models.event_plan import EventPlan
+
+from .models.mailing import Mailing
+from .models.mailing_detail import MailingDetail
 
 class MailingForm(forms.ModelForm):
 
@@ -116,15 +123,16 @@ class MailindBDForm(forms.Form):
         ('ter_gr', 'Выпускники терапевтической группы'),
     )
     db = forms.CharField(label='База-источник', widget=forms.Select(choices=CHOICES_SOURCE))
-    filter = forms.CharField(label='фильтр (курсовые/не курсовые)', 
+    filter = forms.CharField(label='Фильтр', 
                              widget=forms.Select(choices=CHOICES_FILTER), 
                              required=False)
-    msg = forms.CharField(label='текст (шаблон)', widget=forms.Textarea)
-    link = forms.CharField(label='ссылка (без меток)', 
+    msg = forms.CharField(label='Шаблон текста', widget=forms.Textarea)
+    link = forms.CharField(label='Ссылка без utm-меток', 
                            max_length=500, required=False)
-    utm = forms.BooleanField(label='Использовать метки', required=False, initial=True)
+    utm = forms.BooleanField(label='Использовать UTM-метки', required=False, initial=True)
 
-    state = forms.ModelMultipleChoiceField(queryset=State.objects.all())
+    state = forms.ModelMultipleChoiceField(label='Статус клиентов',
+                                           queryset=State.objects.all())
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

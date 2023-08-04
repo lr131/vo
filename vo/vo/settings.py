@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'api',
+    'django_select2',
+    
 ]
 
 MIDDLEWARE = [

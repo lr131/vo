@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import Lid, ClientEventHistory, WebHook, Action
+from .models.previous_list_client import PreviousListClient
+from .models.webhook import WebHook
+from .models.client_event_history import ClientEventHistory
+from .models.previous_list import PreviousList
+from .models.action import Action
+from .models.lid import Lid
 
 class WebHookAdmin(admin.ModelAdmin):
     list_display = ('cdate', 'tranid', 'formname', 'name', 'phone')
@@ -17,3 +22,5 @@ admin.site.register(Lid, LidAdmin)
 admin.site.register(Action, ActionAdmin)
 admin.site.register(WebHook,WebHookAdmin)
 admin.site.register(ClientEventHistory)
+admin.site.register(PreviousList)
+admin.site.register(PreviousListClient)

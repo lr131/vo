@@ -1,6 +1,12 @@
 from rest_framework import serializers
-from .models import State, Client, ClientProducts, ClientMailing, ClientInterest
 from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
+
+from .models.state import State
+from .models.client import Client
+from .models.client_products import ClientProducts
+from .models.client_mailing import ClientMailing
+from .models.client_interest import ClientInterest
+
 
 class StateSerializer(serializers.ModelSerializer):
     """Класс-сериализатор статусов клиента"""
@@ -32,7 +38,6 @@ class ClientSerializer(serializers.ModelSerializer):
 
         
     def create(self, validated_data):
-        print("validated_data", validated_data)
         # Проверка на дубли
         phones = validated_data.get('phone').split(';')
 

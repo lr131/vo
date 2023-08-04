@@ -34,22 +34,72 @@
 
     <div class="container-fluid">
       <div class="row">
-        
-          <div class="col-12" id='mainContainer'>
+        <div class="col-md-12">
+          <form id="mailing" method="POST">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>{{form.db.label}}</label>
+                  {{form.db}}
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>{{form.filter.label}}</label>
+                  {{form.filter}}
+                </div>
+              </div>
+
+            </div>
 
             <div class="row">
-              <div class="col-md-12">
-                  <p class="text-muted"> Вставить в рассылку имя: %Name%. Текст "Привет, %Name%" преобразуется в "Привет, Елена!" </p>
-                  <p class="text-muted"> Вставить в рассылку ссылку: %Url%. Без меток!!! Если ссылка на наш сайт, галочку про метки оставляем </p>
-                <form class='row' id="mailing" method="POST">
-                  {% csrf_token %}
-                  {{form}}
-                  <input type="submit" value="Создать">
-                </form>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>{{form.link.label}}</label>
+                  {{form.link}}
+                  <div class="form-check">
+                    <input type="checkbox" name="utm" class="form-check-input" id="id_utm" checked="">
+                    <label class="form-check-label" for="id_utm">{{form.utm.label}}</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>{{form.state.label}}</label>
+                  {{form.state}}
+                </div>
               </div>
             </div>
 
-          </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label>{{form.msg.label}}</label>
+                  {{form.msg}}
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label></label>
+                  <p class="text-muted"> Вставить в рассылку имя: <b>%Name%</b>.
+                    <br/> Текст <i>"Привет, <b>%Name%</b>"</i> преобразуется в <i>"Привет, <b>{{request.user.first_name}}</b>!"</i> </p>
+                  <p class="text-muted"> Вставить в текст рассылки ссылку:<b> %Url%</b>. Метки подставятся автоматически</p>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-info" type="submit"> Создать </button>
+          </form>
+
+
+
+
+            
+          
+        </div>
       </div>
     </div>
   </section>
