@@ -8,7 +8,9 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import EventSerializer, EventPlanSerializer, EventPlanExtraSerializer
-from .models import Event, EventPlan
+
+from .models.event import Event
+from .models.event_plan import EventPlan
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all().order_by('name')

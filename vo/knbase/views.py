@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 
+from .models.category import Category
+from .models.article import Article
 
-from .models import Article
  
 # @login_required
 class ArticleList(ListView):

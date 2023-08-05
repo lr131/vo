@@ -1,6 +1,11 @@
 from rest_framework import serializers
 
-from .models import Event, EventPlan
+from .models.place import Place
+from .models.event_state import EventState
+from .models.event import Event
+from .models.event_plan import EventPlan
+from .models.event_type import EventType
+
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:

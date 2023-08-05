@@ -1,13 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User 
 
-class Category(models.Model):
-    id = models.AutoField(unique=True, primary_key=True)
-    name = models.CharField(max_length=50)
- 
-    def __str__(self):
-        return self.name
- 
+from .category import Category
  
 class Article(models.Model):
     id = models.AutoField(unique=True, primary_key=True)
