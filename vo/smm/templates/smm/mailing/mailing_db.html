@@ -86,13 +86,13 @@
                 <tr>
                   <th scope="col">№</th>
                   <th scope="col">ФИО</th>
-                  <th scope="col">Комментарий по общению</th>
-                  <th scope="col">Комментарии из базы</th>
+                  <th scope="col">Комментарии:</th>
                   <th scope="col">Комментарий по текущей рассылке</th>
                   <th scope="col">Месседжеры</th>
                   <th scope="col">Текущий месседжер</th>
                   <th scope="col">Статус</th>
                   <th scope="col">Позвонить</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
 
@@ -104,8 +104,23 @@
                       <td>{{client.client.fio}} <br/> (ID {{client.client.pk}}) <br/>
                         {{client.client.state.name|default_if_none:""}} ({{client.client.city|default_if_none:""}})
                       </td>
-                      <td>{{client.client__client_mailing.comment|default_if_none:""}}</td>
-                      <td>{{client.client.note|default_if_none:""}} <br/> {{client.client.comment|default_if_none:""}}</td>
+                      <td>
+                        <strong> Комментарий по общению: </strong> <br/>
+
+                        {{client.client__client_mailing.comment|default_if_none:"нет комментариев"}} 
+                        
+                        <br/>
+                        <br/>
+                        <strong> Комментарий по клиенту в целом: </strong> <br/>
+
+                        {{client.client.note|default_if_none:""}} <br/> {{client.client.comment|default_if_none:""}}
+
+                        <br/>
+                        <br/>
+
+
+                      
+                      </td>
                       <td>{{client.comment|default_if_none:""}}</td>
                       <td>
                           <a href='{{client.link_wa_pc}}' target='_blank'> Вацап WEB</a> 
@@ -122,9 +137,18 @@
                       <td>{{client.link_messeger|default_if_none:""}}</td>
                       <td>{{client.result|default_if_none:""}}</td>
                       <td>
-                        <br/> <br/> 
-                        <a href='tel:+{{client.phone}}' target='_blank'> Позвонить</a> 
-                        <br/> <br/> 
+                        <br/> 
+                        <a class="btn btn-info" href='tel:+{{client.phone}}' target='_blank'> Позвонить</a> 
+                        <br/>
+                    </td>
+                    <td>
+                      <br/> 
+                      <form method="POST" action="{% url 'smm:remove_from_mailing' mailing.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="md" value="{{ client.pk }}">
+                        <button type="submit" class="btn btn-warning">Удалить</button>
+                      </form>
+                      <br/> 
                     </td>
                       
                       

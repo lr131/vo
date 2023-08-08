@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.http import FileResponse, HttpResponse
+from numpy import record
 import pandas as pd
 import io
 import os
@@ -395,6 +397,14 @@ def mailing_db_new(request, pk):
     form = MailindBDForm()
     context = {'mailing': data, 'clients': clients, 'form': form}
     return render(request, 'smm/mailing/mailing_db_new.html', context=context)
+
+@login_required
+@require_POST
+def remove_from_mailing(request, pk):
+    mdpk = request.POST.get('md')
+    record = MailingDetail.objects.get(pk=mdpk)
+    record.delete()
+    return redirect('smm:mailing_db', pk=pk) 
 
 
 @login_required
