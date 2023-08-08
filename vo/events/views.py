@@ -1,4 +1,3 @@
-from calendar import month
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -6,11 +5,14 @@ from datetime import datetime, timedelta
 from rest_framework import viewsets, serializers, generics, pagination, filters
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from django.contrib.auth.models import User
 
 from .serializers import EventSerializer, EventPlanSerializer, EventPlanExtraSerializer
 
 from .models.event import Event
 from .models.event_plan import EventPlan
+
+from .forms import EventForm, EventPlanForm
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all().order_by('name')
@@ -27,11 +29,23 @@ def get_plan(request):
     down_date = timezone.now() - timedelta(weeks=5)# end_date__gte
     update = timezone.now() + timedelta(weeks=14) # start_date__lte
     context = {
+        "form": EventPlanForm(),
+        "users": User.objects.filter(is_active=True),
         "events": EventPlan.objects.filter(
             end_date__gte=down_date,
             start_date__lte=update).order_by('-start_date')
     }
     return render(request, "events/events.html", context)
+
+
+@login_required
+def create_or_edit_to_plan(request):
+    down_date = timezone.now() - timedelta(weeks=5)# end_date__gte
+    update = timezone.now() + timedelta(weeks=14) # start_date__lte
+    context = {
+        "form": EventPlanForm()
+    }
+    return render(request, "events/event.html", context)
 
 class EventPlanExtraView(generics.ListAPIView):
     serializer_class = EventPlanExtraSerializer

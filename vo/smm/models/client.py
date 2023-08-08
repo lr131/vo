@@ -11,6 +11,7 @@ class Client(models.Model):
     birthday = models.DateTimeField(blank=True, null=True,
                                     default=datetime(1900, 1, 1, hour=16))
     city = models.CharField(max_length=250, null=True)
+    phone = models.CharField(max_length=250, null=True)
     in_black_list = models.BooleanField(default=False,
                                         verbose_name="В черном списке")
     state = models.ForeignKey(State, 

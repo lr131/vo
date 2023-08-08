@@ -22,7 +22,6 @@
             <div class="input-group">
               <div class="custom-file">
                 {{form.file}}
-                {% comment %} <input class="custom-file-input" type="file" name="file" required id="id_file"> {% endcomment %}
                 <label class="custom-file-label" for="id_file">Загрузить файл отчета</label>
               </div>
               <div class="input-group-append">
@@ -40,8 +39,11 @@
               <li class="breadcrumb-item active"> <a href="{% url 'smm:mailing_db' pk=mailing.pk %}?filter=wait"> Ожидают </a> </li>
               <li class="breadcrumb-item active"> <a href="{% url 'smm:mailing_db' pk=mailing.pk %}?filter=delivered"> Доставлено </a> </li>
               <li class="breadcrumb-item active"> <a href="{% url 'smm:mailing_db' pk=mailing.pk %}?filter=read"> Прочитано </a> </li>
+              {% if request.user.username == 'lr131' %}
               <li class="breadcrumb-item"><a class='btn btn-primary' href="{% url 'smm:wapico' pk=mailing.pk %}">Скачать для сервиса рассылок</a></li>
-              <li class="breadcrumb-item"><a class='btn btn-warning' href="{% url 'smm:wapico' pk=mailing.pk %}">Сформировать новую из текущей</a></li>
+              {% endif %}
+              
+              {% comment %} <li class="breadcrumb-item"><a class='btn btn-warning' href="{% url 'smm:wapico' pk=mailing.pk %}">Сформировать новую из текущей</a></li> {% endcomment %}
               
             </ol>
           </div> 
@@ -54,6 +56,28 @@
 
     <div class="container-fluid">
       <div class="row">
+        <div class="col-12">
+          <h3> {{mailing.name}} </h3>
+          <p> {{mailing.description}} </p>
+        </div>
+      </div>
+
+      {% if clients %}
+        <div class="row">
+          <div class="col-12">
+            <h4> Статистика по рассылке </h4>
+            <p> Сообщений всего: <b>{{report.total}} </b></p>
+            <p> Прочитано: {{report.read}}</p>
+            <p> Получено ответов: {{report.answer}}</p>
+            <p> Доставлено: {{report.delivered}}</p>
+            <p> Отправлено в вацап: {{report.send}}</p>
+            <p> Ожидают отправки: {{report.wait}}</p>
+          </div>
+        </div>
+        {% endif %}
+
+
+      <div class="row">
         
           <div class="col-12" id='mainContainer'>
 
@@ -61,9 +85,7 @@
               <thead>
                 <tr>
                   <th scope="col">№</th>
-                  <th scope="col">ID</th>
                   <th scope="col">ФИО</th>
-                  <th scope="col">Статус и город</th>
                   <th scope="col">Комментарий по общению</th>
                   <th scope="col">Комментарии из базы</th>
                   <th scope="col">Комментарий по текущей рассылке</th>
@@ -79,14 +101,13 @@
                   {% for client in clients %}
                   <tr>
                       <td>{{client.pk}}</td>
-                      <td>{{client.client.pk}}</td>
-                      <td>{{client.client.fio}} ({{client.phone}})</td>
-                      <td> {{client.client.state.name|default_if_none:""}} ({{client.client.city|default_if_none:""}})</td>
+                      <td>{{client.client.fio}} <br/> (ID {{client.client.pk}}) <br/>
+                        {{client.client.state.name|default_if_none:""}} ({{client.client.city|default_if_none:""}})
+                      </td>
                       <td>{{client.client__client_mailing.comment|default_if_none:""}}</td>
                       <td>{{client.client.note|default_if_none:""}} <br/> {{client.client.comment|default_if_none:""}}</td>
                       <td>{{client.comment|default_if_none:""}}</td>
                       <td>
-                          <br/> <br/> 
                           <a href='{{client.link_wa_pc}}' target='_blank'> Вацап WEB</a> 
                           <br/> <br/> 
                           <a href='{{client.link_wa}}'> Вацап</a> 
@@ -95,14 +116,14 @@
                           <br/> <br/> 
                           <a href='{{client.link_tg}}'  target='_blank'> Telegram</a>
                           <br/> <br/> 
-                          <a href='#'> Нет в месседжерах</a>
+                          <a > Нет в месседжерах</a>
                           <br/> <br/> 
                       </td>
                       <td>{{client.link_messeger|default_if_none:""}}</td>
                       <td>{{client.result|default_if_none:""}}</td>
                       <td>
                         <br/> <br/> 
-                        <a href='tel:+{{client.phone}}' target='_blank'> Позвонить {{client.phone}}</a> 
+                        <a href='tel:+{{client.phone}}' target='_blank'> Позвонить</a> 
                         <br/> <br/> 
                     </td>
                       

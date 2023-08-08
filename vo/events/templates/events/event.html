@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+  {% block menu %}
+    {% with 'events' as active %}
+      {% include '_menu.html' %}
+    {% endwith %}
+  {% endblock %}
+
+  <!-- Content Wrapper. Contains page content Хлебные крошки -->
+  <div class="content-wrapper" id='mainContainer'>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h3> Добавить в расписание </h3>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        
+
+        <div class="row">
+
+
+          
+            <div class="col-12" id='mainContainer'>
+                <div class="table-responsive">
+                    <form>
+                      {% csrf_token %}
+                      <div class="row mt-3">
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                          <label><strong>{{ form.start_date.label }}<span class='required'>*</span></strong></label>
+                          <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime">
+                            <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                          {% comment %} {{ form.start_date }} {% endcomment %}
+                          <input type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime" name="start_date" id="id_start_date">
+                        </div>
+      
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                          <label><strong>{{ form.end_date.label }}<span class='required'>*</span></strong></label>
+                          {{ form.end_date }}
+                        </div>
+
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                          <label><strong>{{ form.season.label }}<span class='required'>*</span></strong></label>
+                          {{ form.season }}
+                        </div>
+
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                          <label><strong>{{ form.place.label }}<span class='required'>*</span></strong></label>
+                          {{ form.place }}
+                        </div>
+
+                        <div class="col-md-3">
+                          <label><strong>{{ form.site.label }}</strong></label>
+                          {{ form.site }}
+                        </div>
+
+                      </div>
+
+                      <div class="row mt-3">
+                        <div class="col-lg-2 col-sm-4 col-12">
+                          <label><strong>{{ form.user.label }}<span class='required'>*</span></strong></label>
+                          {{ form.user }}
+                        </div>
+
+                        <div class="col-lg-4 col-sm-6 col-12">
+                          <div class="form-group">
+                            <label><strong>{{ form.period.label }}</strong></label>
+                            {{form.period}}
+                            <div class="form-check">
+                              <input type="checkbox" name="is_period" class="form-check-input" id="id_is_period" checked="">
+                              <label class="form-check-label" for="id_is_period"><strong>{{form.is_period.label}}</strong></label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <div class="col-md-3">
+                          <button type="submit" class="btn btn-primary">Добавить</button>
+                        </div>
+                      </div>
+                      
+                    </form>
+                </div>
+        
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+<!-- /.content-wrapper -->
+
+
+  
+{% endblock %}
+

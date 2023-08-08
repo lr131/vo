@@ -35,6 +35,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('api-auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
     path('events', events_views.get_plan, name="events"),
+    path('events/add', events_views.create_or_edit_to_plan, name="events_add"),
     path('users', user_views.get_active_users, name='users'),
     path('users/past', user_views.get_prev_users, name='users_past'),
     path('webhook/tilda', crm_views.tilda_webhook, name='tilda_webhook'),

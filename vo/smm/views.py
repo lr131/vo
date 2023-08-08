@@ -224,29 +224,57 @@ def mailing_db(request, pk):
     if request.method == 'POST':
         form = UploadWapicoReportForm(request.POST, request.FILES)
         if form.is_valid():
-            print(request.FILES['file'])
             handle_uploaded_file(request.FILES['file'])
             path = os.path.join(settings.MEDIA_ROOT, 'smm','report.xlsx')
             part = pd.read_excel(path, na_filter = False)
-            for row in part.itertuples(index=False):
-                print(row)
-                phone = row[1]
-                try:
-                    qs = clients.get(phone=int(phone))
-                except Exception:
-                    print(phone, 'ошибка')
-                    continue
-                print(qs)
-                qs.pdate = row[4]
-                qs.link_messeger = "WhatsApp"
-                qs.result = row[0]
-                if len(row[5]):
-                    qs.comment = f"Ответное сообщение: \n{row[5]}"
-                qs.save()
-                
+            
+            if clients:
+                for row in part.itertuples(index=False):
+                    print(row)
+                    phone = row[1]
+                    try:
+                        qs = clients.get(phone=int(phone))
+                    except Exception:
+                        print(phone, 'ошибка')
+                        continue
+                    print(qs)
+                    qs.pdate = row[4]
+                    qs.link_messeger = "WhatsApp"
+                    qs.result = row[0]
+                    if len(row[5]):
+                        qs.comment = f"Ответное сообщение: \n{row[5]}"
+                    qs.save()
+            else:
+                for row in part.itertuples(index=False):
+                    print(row)   
+                    phone = row[1] 
+                    c = Client.objects.filter(phone__contains=str(phone)).first()
+                    params = {
+                        'pdate': row[4],
+                        'link_messeger': "WhatsApp",
+                        'result': row[0],
+                        'text': "не доступен, так как данная рассылка уже сформирована из отчета",
+                        'outer_text': "не доступен",
+                        'phone': int(phone)
+                    }
+                    if len(row[5]):
+                       params['comment'] = f"Ответное сообщение: \n{row[5]}"
+                    MailingDetail.objects.create(mailing=data,
+                                             cuser=request.user,
+                                             muser=request.user,
+                                             client=c,
+                                             **params)
+                    
             return redirect('smm:mailing_db', pk=pk)
     form = UploadWapicoReportForm()
     context['form'] = form
+    report = {'total': clients.count(),
+              'read': clients.filter(result='Read').count(),
+              'delivered': clients.filter(result='Delivered').count(),
+              'wait': clients.filter(result='Ожидает отправки').count(),
+              'answer': clients.filter(comment__isnull=False).count(),
+              'send': clients.filter(result='Отправил').count()}
+    context['report'] = report
     return render(request, 'smm/mailing/mailing_db.html', context=context)
 
 @login_required
@@ -368,20 +396,6 @@ def mailing_db_new(request, pk):
     context = {'mailing': data, 'clients': clients, 'form': form}
     return render(request, 'smm/mailing/mailing_db_new.html', context=context)
 
-# # TODO!!!
-# @login_required
-# def mailing_db_double(request, pk):
-#     data = Mailing.objects.get(pk=pk)
-#     print('past', data)
-#     clients = MailingDetail.objects.filter(mailing=data)
-#     data.pk = None
-#     data.save()
-#     print('now', data)
-#     for client in clients:
-#         client.pk = None
-#         client.save()
-#         client.mailing = data
-#         client.save()
 
 @login_required
 def mailing_myperson(request, pk):
