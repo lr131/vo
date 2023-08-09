@@ -115,6 +115,15 @@
                     <p>Заявки (Новые)</p>
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a href="{% url 'crm:get_stat' %}" 
+                  {% if page == 'get_stat' %} class="nav-link active"
+                  {% else %} class="nav-link"
+                  {% endif %}>
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Статистика (заявки)</p>
+                  </a>
+                </li>
                 
                 <li class="nav-item">
                   <a href="{% url 'crm:complete' %}" 
@@ -196,14 +205,22 @@
                   <p>мы в соц.сетях</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a {% if active == 'sp_list_out' %} class="nav-link active"
-                {% else %} class="nav-link"
-                {% endif %} href="{% url 'smm:sp_list' %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Внешние ресурсы</p>
-                </a>
-              </li>
+
+              {% if request.user.username == 'lr131' %}
+                  
+                <li class="nav-item">
+                  <a {% if active == 'sp_list_out' %} class="nav-link active"
+                  {% else %} class="nav-link"
+                  {% endif %} href="{% url 'smm:sp_list' %}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Внешние ресурсы</p>
+                  </a>
+                </li>
+
+              {% endif %}
+
+              
+
               <li class="nav-item">
                 <a {% if active == 'mailing' %} class="nav-link active"
                 {% else %} class="nav-link"
@@ -212,6 +229,9 @@
                   <p>Рассылки</p>
                 </a>
               </li>
+
+              {% if request.user.username == 'lr131' %}
+
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -236,6 +256,10 @@
                   <p>Доп. ссылки</p>
                 </a>
               </li>
+
+              {% endif %}
+
+
             </ul>
           </li>
           <li {% if active == 'staff' %} class="nav-item menu-open"

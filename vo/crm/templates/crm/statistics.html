@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+  {% block menu %}
+    
+  {% with active='crm' page='get_stat' %}
+      {% include '_menu.html' %}
+    {% endwith %}
+  {% endblock %}
+
+  <!-- Content Wrapper. Contains page content Хлебные крошки -->
+  <div class="content-wrapper" id='mainContainer'>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+          </div>
+          {% comment %} <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Главная</a></li>
+              <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+              <li class="breadcrumb-item active">Активная страница</li>
+            </ol>
+          </div> {% endcomment %}
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+
+            <h3> Текущая статистика по интенсиву: </h3>
+            {% for stat in statistics %}
+              <p> Источник: {{stat.utm_medium|default_if_none:"метка не указана"}}, регистраций: {{stat.count}} </p>
+            {% endfor %}
+
+            <br/>
+            <p><strong> ВСЕГО РЕГИСТРАЦИЙ:</strong> {{total}} </p>
+
+          </div>
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+<!-- /.content-wrapper -->
+{% endblock %}
+

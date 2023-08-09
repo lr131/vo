@@ -270,11 +270,12 @@ def mailing_db(request, pk):
             return redirect('smm:mailing_db', pk=pk)
     form = UploadWapicoReportForm()
     context['form'] = form
+    answer = clients.exclude(result='').filter(comment__isnull=False)
     report = {'total': clients.count(),
               'read': clients.filter(result='Read').count(),
               'delivered': clients.filter(result='Delivered').count(),
               'wait': clients.filter(result='Ожидает отправки').count(),
-              'answer': clients.filter(comment__isnull=False).count(),
+              'answer': answer.count(),
               'send': clients.filter(result='Отправил').count()}
     context['report'] = report
     return render(request, 'smm/mailing/mailing_db.html', context=context)

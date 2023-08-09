@@ -1,6 +1,7 @@
 from distutils.command import clean
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.views.decorators.http import require_POST
 from rest_framework import viewsets, serializers, generics, filters
 from pprint import pprint
@@ -112,11 +113,51 @@ def get_lists(request):
 
 @login_required
 def get_lids(request):
-    context = {
-        "lids": Lid.objects.filter(worker__isnull=True).order_by('-date')[:100]
-    }
+    
+    
+    tmp = Lid.objects.filter(lid_code__contains='5225056')
+    
+    person = Lid.objects.filter(utm_medium='person').values_list()
+    print(person)
+        
+    statistics = tmp.values('utm_medium').annotate(count=Count('id')).order_by('-count')
+    # statistics = Lid.objects.values('utm_medium').annotate(count=Count('id')).order_by('-count')
+    
+    print (len(statistics))
+    for entry in statistics:
+        utm_medium = entry['utm_medium']
+        count = entry['count']
+        print(f"utm_medium: {utm_medium}, count: {count}")
+    
     # TODO фильтровать по воркерам, выводить те, что без них
+    context = {
+        "lids": Lid.objects.filter(worker__isnull=True).order_by('-date')[:100],
+        "statistics": statistics,
+        "total": len(statistics)
+    }
+    
     return render(request, "crm/lids.html", context)
+
+
+@login_required
+def get_stat(request):
+    
+    tmp = Lid.objects.filter(lid_code__contains='5225056')
+            
+    statistics = tmp.values('utm_medium').annotate(count=Count('id')).order_by('-count')
+    
+    for entry in statistics:
+        utm_medium = entry['utm_medium']
+        count = entry['count']
+        print(f"utm_medium: {utm_medium}, count: {count}")
+    
+    context = {
+        "statistics": statistics,
+        "total": len(statistics)
+    }
+    
+    return render(request, "crm/statistics.html", context)
+
 
 @login_required
 def add_lid(request):

@@ -22,6 +22,7 @@ urlpatterns = [
     path('complete', views.complete, name="complete"),
     path('active', views.active, name="active"),
     path('lids', views.get_lids, name="lids"),
+    path('stat', views.get_stat, name="get_stat"),
     path('lid/add', views.add_lid, name="add_lid"),
     path('tilda', views.get_tilda, name="tilda"),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
