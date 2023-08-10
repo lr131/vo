@@ -71,9 +71,9 @@
                                 data-url="{% url 'clients:router:client-detail' client.client_id %}" >
                               <td><a name="fio" href="{% url 'client' client.client_id %}" target="_blank">
                                 {{client.client_family}} {{client.client_name}} {{client.client_patr}} ({{client.client_state}})</a> </td>
-                              <td name="city">{{client.client_city}}</td>
-                              <td><a class="btn btn-success" href="{% url 'crm:add_action' %}?plc={{list.pk}}" target="_blank"> Добавить </a></td>
-                              <td><a class="btn btn-primary" href="{% url 'crm:active'  %}?plc={{list.pk}}" target="_blank"> Посмотреть </a></td>
+                              <td name="city">{{client.client_city}}</td> 
+                              <td><a class="btn btn-success" href="{% url 'crm:add_action' %}?plc={{client.id}}" target="_blank"> Добавить </a></td>
+                              <td><a class="btn btn-primary" href="{% url 'crm:active'  %}?plc={{client.id}}" target="_blank"> Посмотреть </a></td>
                               <td><form method="POST" action="{% url 'crm:remove_from_list' list.pk %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="pcl" value="{{ client.id }}">

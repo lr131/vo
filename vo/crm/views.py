@@ -153,7 +153,7 @@ def get_stat(request):
     
     context = {
         "statistics": statistics,
-        "total": len(statistics)
+        "total": tmp.count()
     }
     
     return render(request, "crm/statistics.html", context)
@@ -352,7 +352,7 @@ def edit_action(request, pk):
         lid_model = Lid.objects.get(pk=lid)
     else:
         lid_model = None
-    next = request.GET.get("next")
+    next = request.META.get('HTTP_REFERER')
     
     if request.method == "POST":
         form = ActionForm(request.POST, instance=action)
@@ -363,10 +363,8 @@ def edit_action(request, pk):
             if lid_model:
                 lid_model.worker = request.user
                 lid_model.save()
-            if plc:
-                return redirect('crm:get_lists')
             else:
-                return redirect('crm:lids')
+                return redirect(next)
     else:
         context = {
             "form": ActionForm(instance=action),
@@ -399,6 +397,9 @@ def complete(request):
 
 @login_required
 def active(request):
+    
+    filter = request.GET.get("filter")
+    
     plc = request.GET.get("plc")
     
     lid = request.GET.get("lid")
@@ -409,6 +410,13 @@ def active(request):
         qs = qs.filter(lid=lid)
     if plc:
         qs = qs.filter(plc=plc)
+        Action.objects.filter(state=False)
+   
+    if filter:
+        if filter == 'all':
+            pass # TODO тут нужно продумать вообще фильтры
+    else:
+        qs = qs.filter(worker=request.user)
    
     context = {
         "history": qs,

@@ -20,7 +20,6 @@ class Action(models.Model):
     note = models.TextField(verbose_name="Резюме общения")
     stage = models.CharField(max_length=250, verbose_name="Этап")
     state = models.BooleanField(default=False, verbose_name="Завершены все этапы")
-    # TODO сделать редактируемым только для того, кто создал
     worker = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, 
                                verbose_name="Координатор, кто берётся работать, ответственный")
     

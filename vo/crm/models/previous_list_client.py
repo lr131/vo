@@ -23,4 +23,4 @@ class PreviousListClient(models.Model):
 
         
     def __str__(self):
-        return f"{self.prev_list}"
+        return f"{self.client} ({self.prev_list})"
