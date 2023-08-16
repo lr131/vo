@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'plan.apps.PlanConfig',
     'crm.apps.CrmConfig',
     'knbase.apps.KnbaseConfig',
+    'tgbots.apps.TgbotsConfig'
     'rest_framework',
     'corsheaders',
     'django_filters',

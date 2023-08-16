@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.http import FileResponse, HttpResponse
-from numpy import record
 import pandas as pd
 import io
 import os
