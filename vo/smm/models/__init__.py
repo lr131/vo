@@ -12,6 +12,9 @@ from .utm_campaign import CampaingUTM
 from .utm_type_source import TypeSourceUTM
 from .utm_type_content import TypeContentUTM
 from .links import Links
+from .link_out import LinkOut
+from .seeding import Seeding
+
 from .social_place import SocialPlace
 from .utms import UTMs
 from .post_type import PostType

@@ -15,6 +15,7 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
+
       <div class="row mb-2">
         <div class="col-sm-6">
             <legend>Добавить ссылку:</legend>
@@ -33,13 +34,167 @@
     <div class="container-fluid">
 
       <div class="row">
+        <div class="col-12">
+          <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+              <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Добавить одинарную ссылку</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Пакетное добавление</a>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body">
+              <div class="tab-content" id="custom-tabs-one-tabContent">
+                <div class="tab-pane fade active show" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
+                  {% if error_message %}
+                      <div class="alert alert-danger">{{ error_message }}</div>
+                  {% endif %}
+                  <form method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Ссылка на мероприятие</label>
+                          <p class="text-muted">Выберите из списка</p>
+                          {{form_one.source}}
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label>Или введите вручную</label>
+                          <p class="text-muted">Ссылка без меток!</p>
+                          {{form_one.source_2}}
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-2">
+                        <!-- select -->
+                        <div class="form-group">
+                          <label>Cоцсеть/ресурс</label>
+                          <p class="text-muted">utm_source</p>
+                          {{form_one.utm_source}}
+                        </div>
+                      </div>
+                      
+                      <div class="col-md-2">
+                        <!-- select -->
+                        <div class="form-group">
+                          <label>Тип ресурса</label>
+                          <p class="text-muted">utm_type_source</p>
+                          {{form_one.utm_type_source}}
+                        </div>
+                      </div>
+
+                      <div class="col-md-3">
+                        <!-- select -->
+                        <div class="form-group">
+                          <label>Тип трафика</label>
+                          <p class="text-muted">utm_medium</p>
+                          {{form_one.utm_medium}}
+                        </div>
+                      </div>
+
+                      <div class="col-md-3">
+                        <!-- select -->
+                        <div class="form-group">
+                          <label>Название кампании</label>
+                          <p class="text-muted">utm_campaign</p>
+                          {{form_one.utm_campaign}}
+                        </div>
+                      </div>
+
+                      <div class="col-md-2">
+                        <!-- select -->
+                        <div class="form-group">
+                          <label>Тип контента</label>
+                          <p class="text-muted">utm_type_content</p>
+                          {{form_one.utm_type_content}}
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <!-- text input -->
+                        <div class="form-group">
+                          <label>Идентификатор объявления</label>
+                          <p class="text-muted">utm_content</p>
+                          {{form_one.utm_content}}
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label>Ключевое слово</label>
+                          <p class="text-muted">utm_term</p>
+                          {{form_one.utm_term}}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12 col-sm-3">
+                        {{form_one.form}}
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
+                  <form method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-12 col-sm-4">
+                          <!-- select -->
+                          <div class="form-group">
+                            <label>На что ссылка</label>
+                            <p class="text-muted">На какое мероприятие</p>
+                            {{form_set.source}}
+                          </div>
+                        </div>
+
+                        <div class="col-12 col-sm-4">
+                          <!-- text input -->
+                          <div class="form-group">
+                            <label>Идентификатор объявления</label>
+                            <p class="text-muted">utm_content</p>
+                            {{form_set.utm_content}}
+                          </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                          <div class="form-group">
+                            <label>Ключевое слово</label>
+                            <p class="text-muted">utm_term</p>
+                            {{form_set.utm_term}}
+                          </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                      <div class="col-12 col-sm-3">
+                        {{form_set.form}}
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+        
+      </div>
+
+      <div class="row">
         <div class="col-md-12">
-          <form class='row' method="POST">
-            {% csrf_token %}
-            
-            {{form}}
-            <input type="submit" value="Добавить">
-          </form>
+          
         </div>
       </div>
    </div>

@@ -143,7 +143,7 @@
                     <p>Запросы (Тильда)</p>
                   </a>
                 </li>
-                prev_list
+
                 <li class="nav-item">
                   <a href="{% url 'crm:get_lists' %}" 
                   {% if page == 'prev_list' %} class="nav-link active"
@@ -153,6 +153,7 @@
                     <p>Предв.списки</p>
                   </a>
                 </li>
+
                 <li class="nav-item">
                   <a href="{% url 'crm:add_prevlist' %}"
                   {% if page == 'add_prevlist' %} class="nav-link active"
@@ -211,7 +212,7 @@
                 <li class="nav-item">
                   <a {% if active == 'sp_list_out' %} class="nav-link active"
                   {% else %} class="nav-link"
-                  {% endif %} href="{% url 'smm:sp_list' %}">
+                  {% endif %} href="{% url 'smm:link_out_list' %}">
                     <i class="far fa-circle nav-icon"></i>
                     <p>Внешние ресурсы</p>
                   </a>

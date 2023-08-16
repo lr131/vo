@@ -14,6 +14,9 @@ from .models.utm_campaign import CampaingUTM
 from .models.utm_type_source import TypeSourceUTM
 from .models.utm_type_content import TypeContentUTM
 from .models.links import Links
+from .models.link_out import LinkOut
+from .models.seeding import Seeding
+
 from .models.social_place import SocialPlace
 from .models.utms import UTMs
 from .models.post_type import PostType
@@ -85,3 +88,5 @@ admin.site.register(Tag)
 admin.site.register(Mailing)
 admin.site.register(MailingDetail)
 admin.site.register(SourceMailing)
+admin.site.register(LinkOut)
+admin.site.register(Seeding)

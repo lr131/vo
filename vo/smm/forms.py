@@ -14,6 +14,12 @@ from .models.event_plan import EventPlan
 from .models.mailing import Mailing
 from .models.mailing_detail import MailingDetail
 
+from .models.utm_source import UTMSource
+from .models.utm_type_source import TypeSourceUTM
+from .models.utm_medium import Medium
+from .models.utm_campaign import CampaingUTM
+from .models.utm_type_content import TypeContentUTM
+
 class MailingForm(forms.ModelForm):
 
     class Meta:
@@ -68,8 +74,12 @@ class EventPlaceChoiceField(forms.ModelChoiceField):
         return f'{obj.event.name} - {obj.start_date:%d.%m.%Y} ({obj.place})'
 
 class LinkSetForm(forms.Form):
-    down_date = timezone.now() - timedelta(weeks=5)# end_date__gte
-    update = timezone.now() + timedelta(weeks=14) # start_date__lte
+    form = forms.CharField(label='Что это за форма',
+                           max_length=50,
+                           initial='LinkSetForm',
+                           widget=forms.HiddenInput())
+    down_date = timezone.now() - timedelta(days=1) # end_date__gte
+    update = timezone.now() + timedelta(weeks=15) # start_date__lte
     source = EventPlaceChoiceField(label='Для чего ссылка', 
                           queryset=EventPlan.objects.filter(
                                     end_date__gte=down_date,
@@ -79,6 +89,70 @@ class LinkSetForm(forms.Form):
                                max_length=100, required=False)
     utm_content = forms.CharField(label='Ключевое слово (utm_content)',
                                   max_length=100, required=False)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+
+
+class UTMTypeSourceChoiceField(forms.ModelChoiceField):
+
+    def label_from_instance(self, obj):
+        return f'{obj.title} ({obj.description})'
+    
+class UTMMediumChoiceField(forms.ModelChoiceField):
+
+    def label_from_instance(self, obj):
+        if obj.description:
+            return f'{obj.type_source} ({obj.description})'
+        else:
+            return f'{obj.type_source}'
+
+class LinkForm(forms.Form):
+    form = forms.CharField(label='Что это за форма',
+                           max_length=50,
+                           initial='LinkForm',
+                           widget=forms.HiddenInput())
+    down_date = timezone.now() - timedelta(days=1)# end_date__gte
+    update = timezone.now() + timedelta(weeks=15) # start_date__lte
+    source = EventPlaceChoiceField(label='Для чего ссылка', 
+                          queryset=EventPlan.objects.filter(
+                                    end_date__gte=down_date,
+                                    start_date__lte=update).order_by('-start_date'),
+                          required=False
+                          )
+    source_2 = forms.CharField(label='Для чего ссылка', required=False)
+    utm_source = forms.ModelChoiceField(label='utm_source', 
+                          queryset=UTMSource.objects.all().order_by('social')
+                          )
+    utm_type_source = UTMTypeSourceChoiceField(label='utm_type_source', 
+                                             queryset=TypeSourceUTM.objects.filter(
+                                                 enable=True).order_by('title'))
+    utm_medium = UTMMediumChoiceField(label='utm_medium', 
+                                             queryset=Medium.objects.filter(
+                                                 enable=True).order_by('type_source'))
+    utm_campaign = UTMMediumChoiceField(label='utm_campaign', 
+                                             queryset=CampaingUTM.objects.all().order_by('type_source'))
+    utm_type_content = UTMTypeSourceChoiceField(label='utm_type_content', 
+                                             queryset=TypeContentUTM.objects.all().order_by('title'))
+    utm_term = forms.CharField(label='Идентификатор объявления (utm_term)',
+                               max_length=100, required=False,
+                               widget=forms.TextInput(attrs={'placeholder': 'free, -30%, registration'}))
+    utm_content = forms.CharField(label='Ключевое слово (utm_content)',
+                                  max_length=100, required=False,
+                               widget=forms.TextInput(attrs={'placeholder': 'link, landing page'}))
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        field1_value = cleaned_data.get('source')
+        field2_value = cleaned_data.get('source_2')
+        
+        # Проверка, что хотя бы одно из полей field1 и field2 заполнено
+        if not field1_value and not field2_value:
+            raise forms.ValidationError('Необходимо заполнить хотя бы одно из полей ссылки')
+
+        return cleaned_data
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

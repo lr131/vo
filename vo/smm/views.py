@@ -8,8 +8,9 @@ import pandas as pd
 import io
 import os
 from furl import furl
+import vk_api
 
-from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinksForm, LinkSpeedForm, MailindQuickDetailForm, UploadWapicoReportForm, LinkSetForm
+from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinkForm, LinkSpeedForm, MailindQuickDetailForm, UploadWapicoReportForm, LinkSetForm
 
 
 from .models.links import Links
@@ -19,6 +20,10 @@ from .models.client import Client
 
 from .models.mailing import Mailing
 from .models.mailing_detail import MailingDetail
+
+from .models.link_out import LinkOut
+from .models.seeding import Seeding
+from .models.lid import Lid
 
 @login_required
 def mailing_new(request):
@@ -61,98 +66,294 @@ def sp_new(request):
 
 @login_required
 def link_list(request):
-    data = Links.objects.all().order_by('-date')
-    context = {'data': data,}
-    return render(request, 'smm/links/links_list.html', context=context)
+    
+    form = LinkForm()
+    data = []
+    
+    seeding = Seeding.objects.all()
+    
+    for val in seeding:
+        print(val.date, val.link_out, val.link_out.utm_medium.utm_medium, val.lead_count, "lead_cost", val.lead_cost)
 
-@login_required
-def link_new(request):
+    
     if request.method == "POST":
-        form = LinkSetForm(request.POST)
-        if form.is_valid():
-            source = form.cleaned_data['source']
-            utm_term = form.cleaned_data['utm_term']
-            utm_content = form.cleaned_data['utm_content']
+        if request.POST.get('form') == 'LinkForm':
+            form = LinkForm(request.POST)
+            print(form)
+            source = form.cleaned_data['source']  
+            print(source, type(source), source.site)
+            utm_source_data = form.cleaned_data['utm_source']
+            utm_medium_data = form.cleaned_data['utm_medium']
+            
+            utm_source = f"{utm_source_data.utm_source}" if utm_source_data else '-'
+            utm_medium = f"{utm_medium_data.utm_medium}" if utm_medium_data else '-'
             
             site = source.site
             if not site:
                 site = source.event.site
-            utms_set = UTMs.objects.all()
-            
-            import vk_api
-            login, password = settings.LOGIN_VK, settings.PASSWORD_VK
-            scope = 4096
-            vk_session = vk_api.VkApi(login=login, password=password, app_id=2685278, scope=scope)
+                
+            data = Links.objects.filter(utm_source=utm_source,utm_medium=utm_medium,
+                                 link__startswith=site).order_by('-date')
+                
 
-            try:
-                vk_session.auth(token_only=True)
-            except vk_api.AuthError as error_msg:
-                print(error_msg)
-                raise 
-            
-            vkapi = vk_session.get_api()
-            
-            for utms in utms_set:
-                utm_source_name = utms.utm_source.social if utms.utm_source else ''
-                utm_type_source_name = utms.utm_type_source.title if utms.utm_type_source else ''
-                utm_medium_name = utms.utm_medium.type_source if utms.utm_medium else ''
-                utm_type_content_name = utms.utm_type_content.title if utms.utm_type_content else ''
-                utm_campaign_name = utms.utm_campaign.type_source if utms.utm_campaign else ''
-                
-                source_name = "".join((f"Соцсеть-источник: {utm_source_name}\n" if utm_source_name else "",
-                                      f"Тип источника: {utm_type_source_name}\n" if utm_type_source_name else "",
-                                      f"Чей ресурс: {utm_medium_name}\n" if utm_medium_name else "",
-                                      f"Тип контента: {utm_type_content_name}\n" if utm_type_content_name else "",
-                                      f"Название кампании: {utm_campaign_name}\n " if utm_campaign_name else ""))
-                
-                link = "".join((f"{site}?",
-                        f"utm_source={utms.utm_source.utm_source}&" if utms.utm_source else "",
-                        f"utm_type_source={utms.utm_type_source.utm_type_source}&" if utms.utm_type_source else "",
-                        f"utm_medium={utms.utm_medium.utm_medium}&" if utms.utm_medium else "",
-                        f"utm_type_content={utms.utm_type_content.utm_type_content}&" if utms.utm_type_content else "",
-                        f"utm_campaign={utms.utm_campaign.utm_campaign }&" if utms.utm_campaign else "",
-                        f"utm_term={utm_term}&" if utm_term else "",
-                        f"utm_content={utm_content}&" if utm_content else "",
-                        ))
-                
-                link = link[:len(link) - 1]  
-                
-                link_params = {"link": link,
-                               "utm_source": utms.utm_source.utm_source if utms.utm_source else '-',
-                               "utm_type_source": utms.utm_type_source.utm_type_source if utms.utm_type_source else '-',
-                               "utm_medium": utms.utm_medium.utm_medium if utms.utm_medium else '-',
-                               "utm_type_content": utms.utm_type_content.utm_type_content if utms.utm_type_content else '-',
-                               "utm_campaign": utms.utm_campaign.utm_campaign if utms.utm_campaign else '-',
-                               "utm_term": utm_term if utm_term else '-',
-                               "utm_content": utm_content if utm_content else '-'}    
-                
-                created = False
-                try:
-                    obj, created = Links.objects.get_or_create(**link_params)
-                except Links.MultipleObjectsReturned as e:
-                    objs = Links.objects.filter(**link_params)
-                    obj = objs.first()
-                    for v in objs:
-                        if v.pk != obj.pk:
-                            v.delete()
-                    created = False
-                finally:    
-                    if created:
-                        params = {'url': link, 'private': 1}
-                        short = vkapi.utils.getShortLink(**params)
-                        sh = short.get('short_url')
+    context = {'data': data, 'form': form}
+    return render(request, 'smm/links/links_list.html', context=context)
+
+
+@login_required
+def link_out_list(request):
+    data = LinkOut.objects.filter(actual=True)
+    context = {'data': data}
+    return render(request, 'smm/links/links_out.html', context=context)
+
+
+def create_link(url, utm_source, utm_type_source,
+                utm_medium, utm_type_content,
+                utm_campaign,utm_term,utm_content):
+    
+    utm_source_name = utm_source.social if utm_source else ''
+    utm_type_source_name = utm_type_source.title if utm_type_source else ''
+    utm_medium_name = utm_medium.type_source if utm_medium else ''
+    utm_type_content_name = utm_type_content.title if utm_type_content else ''
+    utm_campaign_name = utm_campaign.type_source if utm_campaign else ''
+    
+    source_name = "".join((f"Соцсеть-источник: {utm_source_name}\n" if utm_source_name else "",
+                            f"Тип источника: {utm_type_source_name}\n" if utm_type_source_name else "",
+                            f"Чей ресурс: {utm_medium_name}\n" if utm_medium_name else "",
+                            f"Тип контента: {utm_type_content_name}\n" if utm_type_content_name else "",
+                            f"Название кампании: {utm_campaign_name}\n " if utm_campaign_name else ""))
+        
+    link = "".join((f"{url}?",
+            f"utm_source={utm_source.utm_source}&" if utm_source else "",
+            f"utm_type_source={utm_type_source.utm_type_source}&" if utm_type_source else "",
+            f"utm_medium={utm_medium.utm_medium}&" if utm_medium else "",
+            f"utm_type_content={utm_type_content.utm_type_content}&" if utm_type_content else "",
+            f"utm_campaign={utm_campaign.utm_campaign }&" if utm_campaign else "",
+            f"utm_term={utm_term}&" if utm_term else "",
+            f"utm_content={utm_content}&" if utm_content else "",
+            ))
                     
-                        print(link, sh, source_name)
+    link = link[:len(link) - 1]
+    
+    link_params = {"link": link,
+                    "utm_source": utm_source.utm_source if utm_source else '-',
+                    "utm_type_source": utm_type_source.utm_type_source if utm_type_source else '-',
+                    "utm_medium": utm_medium.utm_medium if utm_medium else '-',
+                    "utm_type_content": utm_type_content.utm_type_content if utm_type_content else '-',
+                    "utm_campaign": utm_campaign.utm_campaign if utm_campaign else '-',
+                    "utm_term": utm_term if utm_term else '-',
+                    "utm_content": utm_content if utm_content else '-'}
+    
+    return {'source_name': source_name,
+            'link': link,
+            'link_params': link_params}
+
+@login_required
+def link_new(request):
+    if request.method == "POST":
+        if request.POST.get('form'):
+            if request.POST.get('form') == 'LinkSetForm':
+                form = LinkSetForm(request.POST)
+                if form.is_valid():
+                    source = form.cleaned_data['source']
+                    utm_term = form.cleaned_data['utm_term']
+                    utm_content = form.cleaned_data['utm_content']
+                    
+                    site = source.site
+                    if not site:
+                        site = source.event.site
+                    utms_set = UTMs.objects.all()
+                    
+                    
+                    login, password = settings.LOGIN_VK, settings.PASSWORD_VK
+                    scope = 4096
+                    vk_session = vk_api.VkApi(login=login, password=password, app_id=2685278, scope=scope)
+
+                    try:
+                        vk_session.auth(token_only=True)
+                    except vk_api.AuthError as error_msg:
+                        print(error_msg)
+                        raise 
+                    
+                    vkapi = vk_session.get_api()
+                    
+                    for utms in utms_set:
+                        utm_source_name = utms.utm_source.social if utms.utm_source else ''
+                        utm_type_source_name = utms.utm_type_source.title if utms.utm_type_source else ''
+                        utm_medium_name = utms.utm_medium.type_source if utms.utm_medium else ''
+                        utm_type_content_name = utms.utm_type_content.title if utms.utm_type_content else ''
+                        utm_campaign_name = utms.utm_campaign.type_source if utms.utm_campaign else ''
                         
-                        obj.short = sh
-                        obj.source = source_name
-                        obj.save()
+                        source_name = "".join((f"Соцсеть-источник: {utm_source_name}\n" if utm_source_name else "",
+                                            f"Тип источника: {utm_type_source_name}\n" if utm_type_source_name else "",
+                                            f"Чей ресурс: {utm_medium_name}\n" if utm_medium_name else "",
+                                            f"Тип контента: {utm_type_content_name}\n" if utm_type_content_name else "",
+                                            f"Название кампании: {utm_campaign_name}\n " if utm_campaign_name else ""))
+                        
+                        link = "".join((f"{site}?",
+                                f"utm_source={utms.utm_source.utm_source}&" if utms.utm_source else "",
+                                f"utm_type_source={utms.utm_type_source.utm_type_source}&" if utms.utm_type_source else "",
+                                f"utm_medium={utms.utm_medium.utm_medium}&" if utms.utm_medium else "",
+                                f"utm_type_content={utms.utm_type_content.utm_type_content}&" if utms.utm_type_content else "",
+                                f"utm_campaign={utms.utm_campaign.utm_campaign }&" if utms.utm_campaign else "",
+                                f"utm_term={utm_term}&" if utm_term else "",
+                                f"utm_content={utm_content}&" if utm_content else "",
+                                ))
+                        
+                        link = link[:len(link) - 1]  
+                        
+                        link_params = {"link": link,
+                                    "utm_source": utms.utm_source.utm_source if utms.utm_source else '-',
+                                    "utm_type_source": utms.utm_type_source.utm_type_source if utms.utm_type_source else '-',
+                                    "utm_medium": utms.utm_medium.utm_medium if utms.utm_medium else '-',
+                                    "utm_type_content": utms.utm_type_content.utm_type_content if utms.utm_type_content else '-',
+                                    "utm_campaign": utms.utm_campaign.utm_campaign if utms.utm_campaign else '-',
+                                    "utm_term": utm_term if utm_term else '-',
+                                    "utm_content": utm_content if utm_content else '-'}    
+                        
+                        created = False
+                        try:
+                            obj, created = Links.objects.get_or_create(**link_params)
+                        except Links.MultipleObjectsReturned as e:
+                            objs = Links.objects.filter(**link_params)
+                            obj = objs.first()
+                            for v in objs:
+                                if v.pk != obj.pk:
+                                    v.delete()
+                            created = False
+                        finally:    
+                            if created:
+                                params = {'url': link, 'private': 1}
+                                short = vkapi.utils.getShortLink(**params)
+                                sh = short.get('short_url')
+                            
+                                print(link, sh, source_name)
+                                
+                                obj.short = sh
+                                obj.source = source_name
+                                obj.save()
 
-            return redirect('smm:link_list')
+            elif request.POST.get('form') == 'LinkForm':
+                form = LinkForm(request.POST)
+                if form.is_valid():
+                    source = form.cleaned_data['source']
+                    site = form.cleaned_data['source_2']
+                    utm_term = form.cleaned_data['utm_term']
+                    utm_content = form.cleaned_data['utm_content']
+                    
+                    utm_source = form.cleaned_data['utm_source']
+                    utm_type_source = form.cleaned_data['utm_type_source']
+                    utm_medium = form.cleaned_data['utm_medium']
+                    utm_campaign = form.cleaned_data['utm_campaign']
+                    utm_type_content = form.cleaned_data['utm_type_content']
+                    
+                    
+                    if source:
+                        site = source.site
+                        if not site:
+                            site = source.event.site
+                    
+                    # data = link_new(site, utm_source, utm_type_source,utm_medium, utm_type_content, utm_campaign,utm_term,utm_content)        
+                    
+                    # link_params = data.get('link_params')
+                    # source_name = data.get('source_name')
+                    # link = data.get('link')
+                    utm_source_name = utm_source.social if utm_source else ''
+                    utm_type_source_name = utm_type_source.title if utm_type_source else ''
+                    utm_medium_name = utm_medium.type_source if utm_medium else ''
+                    utm_type_content_name = utm_type_content.title if utm_type_content else ''
+                    utm_campaign_name = utm_campaign.type_source if utm_campaign else ''
+                    
+                    source_name = "".join((f"Соцсеть-источник: {utm_source_name}\n" if utm_source_name else "",
+                                            f"Тип источника: {utm_type_source_name}\n" if utm_type_source_name else "",
+                                            f"Чей ресурс: {utm_medium_name}\n" if utm_medium_name else "",
+                                            f"Тип контента: {utm_type_content_name}\n" if utm_type_content_name else "",
+                                            f"Название кампании: {utm_campaign_name}\n " if utm_campaign_name else ""))
+                        
+                    link = "".join((f"{site}?",
+                            f"utm_source={utm_source.utm_source}&" if utm_source else "",
+                            f"utm_type_source={utm_type_source.utm_type_source}&" if utm_type_source else "",
+                            f"utm_medium={utm_medium.utm_medium}&" if utm_medium else "",
+                            f"utm_type_content={utm_type_content.utm_type_content}&" if utm_type_content else "",
+                            f"utm_campaign={utm_campaign.utm_campaign }&" if utm_campaign else "",
+                            f"utm_term={utm_term}&" if utm_term else "",
+                            f"utm_content={utm_content}&" if utm_content else "",
+                            ))
+                    
+                    link = link[:len(link) - 1]
+                    
+                    link_params = {"link": link,
+                                    "utm_source": utm_source.utm_source if utm_source else '-',
+                                    "utm_type_source": utm_type_source.utm_type_source if utm_type_source else '-',
+                                    "utm_medium": utm_medium.utm_medium if utm_medium else '-',
+                                    "utm_type_content": utm_type_content.utm_type_content if utm_type_content else '-',
+                                    "utm_campaign": utm_campaign.utm_campaign if utm_campaign else '-',
+                                    "utm_term": utm_term if utm_term else '-',
+                                    "utm_content": utm_content if utm_content else '-'}    
+                        
+                    created = False
+                    try:
+                        obj, created = Links.objects.get_or_create(**link_params)
+                    except Links.MultipleObjectsReturned as e:
+                        objs = Links.objects.filter(**link_params)
+                        obj = objs.first()
+                        for v in objs:
+                            if v.pk != obj.pk:
+                                v.delete()
+                        created = False
+                    finally:    
+                        if created:
+                            
+                            login, password = settings.LOGIN_VK, settings.PASSWORD_VK
+                            scope = 4096
+                            vk_session = vk_api.VkApi(login=login, password=password, app_id=2685278, scope=scope)
+
+                            try:
+                                vk_session.auth(token_only=True)
+                            except vk_api.AuthError as error_msg:
+                                print(error_msg)
+                                raise 
+                            
+                            vkapi = vk_session.get_api()
+                            
+                            params = {'url': link, 'private': 1}
+                            short = vkapi.utils.getShortLink(**params)
+                            sh = short.get('short_url')
+                        
+                            print(link, sh, source_name)
+                            
+                            obj.short = sh
+                            obj.source = source_name
+                            obj.save()
+                    
+                    
+                    form_set = LinkSetForm()
+                    form_one = LinkForm(request.POST)
+                    context = {'form_one': form, 
+                               'form_set': form_set}
+                    return render(request, 'smm/links/link_new.html', context)
+                else:
+                    error_message = form.errors.get('__all__')  # Получение ошибки валидации '__all__'
+                    form_set = LinkSetForm()
+                    form_one = LinkForm()
+                    context = {'form_one': form, 
+                               'form_set': form_set,
+                               'error_message': error_message}
+                    return render(request, 'smm/links/link_new.html', context)
+                    
+                    
+        return redirect('smm:link_list')
     else:
-        form = LinkSetForm()
-    return render(request, 'smm/links/link_new.html', {'form': form})
+        form_set = LinkSetForm()
+        form_one = LinkForm()
+    return render(request, 'smm/links/link_new.html', 
+                  {'form_set': form_set,
+                   'form_one': form_one})
 
+
+@login_required
+def add_link(request):
+    return render(request, "crm/add_link.html")
 
 @login_required
 def mailing_group(request, pk):

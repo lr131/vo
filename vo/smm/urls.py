@@ -13,4 +13,6 @@ urlpatterns = [
     path('sp/new/', views.sp_new, name="sp_new"),
     path('links/', views.link_list, name="link_list"),
     path('link/new/', views.link_new, name="link_new"),
+    path('links/out/', views.link_out_list, name="link_out_list"),
+    
 ]
