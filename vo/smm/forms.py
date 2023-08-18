@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
 from .const import MAILING_SOURCE_TYPES, MAILING_RESULT_CHOISES, SOURCE_MAILING_STATE
@@ -10,6 +11,7 @@ from .models.social_place import SocialPlace
 from .models.client_state import State
 
 from .models.event_plan import EventPlan
+from .models.event import Event
 
 from .models.mailing import Mailing
 from .models.mailing_detail import MailingDetail
@@ -71,7 +73,11 @@ class LinkSpeedForm(forms.Form):
 class EventPlaceChoiceField(forms.ModelChoiceField):
 
     def label_from_instance(self, obj):
-        return f'{obj.event.name} - {obj.start_date:%d.%m.%Y} ({obj.place})'
+        return f'{obj.event.event_type.name} {obj.event.name} - {obj.start_date:%d.%m.%Y} ({obj.place})'
+
+class EventChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return f'{obj.event.event_type.name} {obj.event.name} - {obj.start_date:%d.%m.%y} ({obj.place})'
 
 class LinkSetForm(forms.Form):
     form = forms.CharField(label='Что это за форма',
@@ -80,6 +86,9 @@ class LinkSetForm(forms.Form):
                            widget=forms.HiddenInput())
     down_date = timezone.now() - timedelta(days=1) # end_date__gte
     update = timezone.now() + timedelta(weeks=15) # start_date__lte
+    qs = EventPlan.objects.filter(
+                                    end_date__gte=down_date,
+                                    start_date__lte=update).order_by('-start_date')
     source = EventPlaceChoiceField(label='Для чего ссылка', 
                           queryset=EventPlan.objects.filter(
                                     end_date__gte=down_date,
@@ -116,12 +125,43 @@ class LinkForm(forms.Form):
                            widget=forms.HiddenInput())
     down_date = timezone.now() - timedelta(days=1)# end_date__gte
     update = timezone.now() + timedelta(weeks=15) # start_date__lte
-    source = EventPlaceChoiceField(label='Для чего ссылка', 
-                          queryset=EventPlan.objects.filter(
-                                    end_date__gte=down_date,
-                                    start_date__lte=update).order_by('-start_date'),
-                          required=False
-                          )
+    
+    regular_qs = EventPlan.objects.filter(
+        Q(site__isnull=False) | Q(event__site__isnull=False),
+        is_period=True,
+        end_date__gte=down_date,
+        start_date__lte=update
+    ).values('event').distinct()
+    
+    print(regular_qs)
+    
+
+    one_time_qs = EventPlan.objects.filter(
+        Q(site__isnull=False) | Q(event__site__isnull=False),
+        is_period=False,
+        end_date__gte=down_date,
+        start_date__lte=update
+    )
+    
+    print(one_time_qs)
+    
+    print(regular_qs.count()) #1
+    print(one_time_qs.count()) #25
+
+    qs = regular_qs.union(one_time_qs)
+    print(qs) #15
+
+    # qs = sorted(qs, key=lambda obj: obj['start_date'], reverse=True)[:1]
+
+    # TODO выяснить, как же вывести вместе с группой
+    # qs = EventPlan.objects.filter(event__in=qs)
+    qs = one_time_qs
+
+    source = EventPlaceChoiceField(
+        label='для чего ссылка',
+        queryset=qs.order_by('start_date'),
+        required=False
+    )
     source_2 = forms.CharField(label='Для чего ссылка', required=False)
     utm_source = forms.ModelChoiceField(label='utm_source', 
                           queryset=UTMSource.objects.all().order_by('social')

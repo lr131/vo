@@ -93,6 +93,8 @@ def link_list(request):
                 
             data = Links.objects.filter(utm_source=utm_source,utm_medium=utm_medium,
                                  link__startswith=site).order_by('-date')
+            if not data:
+                data = []
                 
 
     context = {'data': data, 'form': form}

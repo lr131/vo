@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models.user import User
+from .models.bot import TGBot
+from .models.history import History
+
+admin.site.register(User)
+admin.site.register(History)
+admin.site.register(TGBot)
