@@ -37,7 +37,7 @@
           
             <div class="col-12">
 
-                <table>
+                <table class="table table-hover table-head-fixed text-nowrap table-sm">
                     <tr>
                         <th>Пользователь</th>
                         <th>Телеграм бот</th>
@@ -50,7 +50,13 @@
                         <td>{{ message.user }}</td>
                         <td>{{ message.tgbot }}</td>
                         <td>{{ message.date_time }}</td>
-                        <td>{{ message.message }}</td>
+                        {% if message.mtype == 'photo' %}
+                        <td>
+                            <img src="{{ media_url }}{{ message.message }}" alt="скриншот" class="small-img" data-toggle="modal" data-target="#largeImgModal">
+                        </td>
+                        {% else %}
+                            <td>{{ message.message }}</td>
+                        {% endif %} 
                         <td>{{ message.mtype }}</td>
                     </tr>
                     {% endfor %}
@@ -61,5 +67,16 @@
       </div>
     </section>
   </div>
+ 
+ <!-- Модальное окно для отображения большой версии картинки -->
+<div class="modal fade" id="largeImgModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <img src="{{ message.message.url }}" alt="Большая картинка" class="large-img">
+      </div>
+    </div>
+  </div>
+</div>
   
 {% endblock %}

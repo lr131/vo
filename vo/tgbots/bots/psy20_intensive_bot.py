@@ -12,6 +12,8 @@ text = get_start_text()
 
 botPsy20intensive = TGBot.objects.get(pk=2) # пока абсолютное значение
 
+def send_message_to_telegram(chat_id, message):
+    bot.send_message(chat_id=chat_id, text=message)
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
