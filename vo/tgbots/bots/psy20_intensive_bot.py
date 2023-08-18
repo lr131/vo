@@ -7,10 +7,11 @@ from ..models.user import User
 from ..models.bot import TGBot
 from ..utils import is_phone, get_start_text, check_phone_in_last_messages
 
-bot = telebot.TeleBot(settings.LR131_TOKEN)
+bot = telebot.TeleBot(settings.PSY20_INTENSIVE_TOKEN)
 text = get_start_text()
 
-botPsy20intensive = TGBot.objects.get(pk=1) # пока тестовое значение
+botPsy20intensive = TGBot.objects.get(pk=2) # пока абсолютное значение
+
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -80,6 +81,7 @@ def handle_photo(message):
     History.objects.create(user=obj, tgbot=botPsy20intensive, message=f"ВЫ: {reply}", mtype='text')
     bot.reply_to(message, reply)
     
+
 
 @bot.message_handler(content_types=['document'])
 def handle_document(message):

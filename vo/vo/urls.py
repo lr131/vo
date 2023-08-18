@@ -22,13 +22,15 @@ from clients import views as client_views
 from events import views as events_views
 from smm import views as smm_views
 from crm import views as crm_views
-from tgbots.views import telegram_webhook
+from tgbots import views as tgbots_views
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     # path('', user_views.profile, name='profile'),
     path('', client_views.clients, name='clients'),
-    path('webhook/tglr131', telegram_webhook, name='tglr131_webhook'),
+    path('webhook/tglr131', tgbots_views.telegram_webhook_lr131bot, name='tglr131_webhook'),
+    path('webhook/tg/psy20/marathon', tgbots_views.telegram_webhook_psy20_marathon, name='marathon_psy20_webhook'),
+    path('webhook/tg/psy20/intensive', tgbots_views.telegram_webhook_psy20_intensive, name='intensive_psy20_webhook'),
     path('clients/', client_views.clients, name='clients'),
     path('client/<int:pk>/', client_views.client, name="client"),
     path('client/create/', client_views.create_client, name="create_client"),
@@ -44,4 +46,5 @@ urlpatterns = [
     path('kn/', include(('knbase.urls', 'knbase'), namespace="knbase"), name="knbase"),
     path('smm/', include(('smm.urls', 'smm'), namespace="smm"), name="smm"),
     path('crm/', include(('crm.urls', 'crm'), namespace="crm"), name="crm"),
+    path('tgbots/', include(('tgbots.urls', 'tgbots'), namespace="tgbots"), name="tgbots"),
 ]
