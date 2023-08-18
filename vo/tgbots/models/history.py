@@ -11,6 +11,7 @@ class History(models.Model):
     message = models.CharField(verbose_name="Текст сообщения или адрес картинки/документа", max_length=5000)
     mtype = models.CharField(verbose_name="Тип сообщения", max_length=50)
     
+    
     class Meta:
         verbose_name = 'История сообщений'
         verbose_name_plural = 'Истории сообщений'

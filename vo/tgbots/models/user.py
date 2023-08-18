@@ -5,6 +5,7 @@ from .bot import TGBot
 
 class User(models.Model):
     tgbot = models.ForeignKey(TGBot, on_delete = models.RESTRICT, verbose_name="Телеграм бот")
+    user_id = models.IntegerField(verbose_name="Идентификатор пользователя")
     chat_id = models.IntegerField(verbose_name="Идентификатор чата")
     client = models.ForeignKey(Client, on_delete=models.SET_NULL, 
                                blank=True, null=True,
@@ -15,4 +16,4 @@ class User(models.Model):
         verbose_name_plural = 'Пользователи ботов телеграм'
         
     def __str__(self):
-        return f"{self.bot_name} - {self.chat_id}"
+        return f"{self.tgbot.bot_name} - {self.chat_id}"
