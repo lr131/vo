@@ -9,7 +9,7 @@ import os
 from furl import furl
 import vk_api
 
-from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinkForm, LinkSpeedForm, MailindQuickDetailForm, UploadWapicoReportForm, LinkSetForm
+from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinkForm, LinkSearchForm, MailindQuickDetailForm, UploadWapicoReportForm, LinkSetForm
 
 
 from .models.links import Links
@@ -66,43 +66,54 @@ def sp_new(request):
 @login_required
 def link_list(request):
     
-    form = LinkForm()
+    form = LinkSearchForm()
     data = []
     
-    seeding = Seeding.objects.all()
-    
-    for val in seeding:
-        print(val.date, val.link_out, val.link_out.utm_medium.utm_medium, val.lead_count, "lead_cost", val.lead_cost)
-
-    
     if request.method == "POST":
-        if request.POST.get('form') == 'LinkForm':
-            form = LinkForm(request.POST)
-            print(form)
-            source = form.cleaned_data['source']  
-            print(source, type(source), source.site)
-            utm_source_data = form.cleaned_data['utm_source']
-            utm_medium_data = form.cleaned_data['utm_medium']
-            
-            utm_source = f"{utm_source_data.utm_source}" if utm_source_data else '-'
-            utm_medium = f"{utm_medium_data.utm_medium}" if utm_medium_data else '-'
-            
-            site = source.site
-            if not site:
-                site = source.event.site
+        if request.POST.get('form') == 'LinkSearchForm':
+            form = LinkSearchForm(request.POST)
+            if form.is_valid():
+                source = form.cleaned_data['source']  
+                utm_source_data = form.cleaned_data['utm_source']
+                utm_medium_data = form.cleaned_data['utm_medium']
                 
-            data = Links.objects.filter(utm_source=utm_source,utm_medium=utm_medium,
-                                 link__startswith=site).order_by('-date')
-            if not data:
-                data = []
+                utm_source = f"{utm_source_data.utm_source}" if utm_source_data else None
+                utm_medium = f"{utm_medium_data.utm_medium}" if utm_medium_data else None
                 
-
+                site = source.site
+                if not site:
+                    site = source.event.site
+                    
+                data = Links.objects.filter(link__startswith=site)
+                
+                params = {}
+                if utm_source:
+                    params['utm_source'] = utm_source
+                
+                if utm_medium:
+                    params['utm_medium'] = utm_medium
+                
+                if len(params):
+                    data = data.filter(**params)
+                
+                print(params)
+                    
+                if not data:
+                    data = []
+                else:
+                    data = data.order_by('-date')
+                
     context = {'data': data, 'form': form}
     return render(request, 'smm/links/links_list.html', context=context)
 
 @login_required
 def seeding_list(request):
     data = Seeding.objects.all()
+        
+    for val in data:
+        print(val.date, val.link_out, val.link_out.utm_medium.utm_medium, val.lead_count, "lead_cost", val.lead_cost)
+
+    
     context = {'data': data}
     return render(request, 'smm/links/seeding.html', context=context)
 

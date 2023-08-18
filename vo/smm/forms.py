@@ -86,14 +86,23 @@ class LinkSetForm(forms.Form):
                            widget=forms.HiddenInput())
     down_date = timezone.now() - timedelta(days=1) # end_date__gte
     update = timezone.now() + timedelta(weeks=15) # start_date__lte
-    qs = EventPlan.objects.filter(
-                                    end_date__gte=down_date,
-                                    start_date__lte=update).order_by('-start_date')
-    source = EventPlaceChoiceField(label='Для чего ссылка', 
-                          queryset=EventPlan.objects.filter(
-                                    end_date__gte=down_date,
-                                    start_date__lte=update).order_by('-start_date')
-                          )
+
+    one_time_qs = EventPlan.objects.filter(
+        Q(site__isnull=False) | Q(event__site__isnull=False),
+        is_period=False,
+        end_date__gte=down_date,
+        start_date__lte=update
+    )
+    
+    # TODO выяснить, как же вывести вместе с группой
+    qs = one_time_qs
+
+    source = EventPlaceChoiceField(
+        label='для чего ссылка',
+        queryset=qs.order_by('start_date'),
+        required=False
+    )
+    
     utm_term = forms.CharField(label='Идентификатор объявления (utm_term)',
                                max_length=100, required=False)
     utm_content = forms.CharField(label='Ключевое слово (utm_content)',
@@ -198,6 +207,43 @@ class LinkForm(forms.Form):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': 'form-control'})
+
+
+class LinkSearchForm(forms.Form):
+    form = forms.CharField(label='Что это за форма',
+                           max_length=50,
+                           initial='LinkSearchForm',
+                           widget=forms.HiddenInput())
+    down_date = timezone.now() - timedelta(days=1)# end_date__gte
+    update = timezone.now() + timedelta(weeks=15) # start_date__lte
+
+    one_time_qs = EventPlan.objects.filter(
+        Q(site__isnull=False) | Q(event__site__isnull=False),
+        is_period=False,
+        end_date__gte=down_date,
+        start_date__lte=update
+    )
+
+    qs = one_time_qs
+
+    source = EventPlaceChoiceField(
+        label='Какая ссылка',
+        queryset=qs.order_by('start_date'),
+    )
+    utm_source = forms.ModelChoiceField(label='utm_source', 
+                          queryset=UTMSource.objects.all().order_by('social'),
+                          required=False
+                          )
+    utm_medium = UTMMediumChoiceField(label='utm_medium', 
+                                      required=False,
+                                      queryset=Medium.objects.filter(
+                                      enable=True).order_by('type_source'))
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+
 
 class MailindQuickDetailForm(forms.Form):
     CHOICES_MSGRS = (

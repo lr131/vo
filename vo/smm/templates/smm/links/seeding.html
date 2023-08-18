@@ -59,7 +59,7 @@
                     <td> <a href='{{obj.link}}' target='_blank'> {{obj.summary|default_if_none:"Нет данных"}} </a> </td>
                     <td>{{obj.lead_count|default_if_none:"Нет данных"}} </td>
                     <td>{{obj.lead_cost|default_if_none:"Нет данных"}} </td>
-                    <td> {{obj.description|default_if_none:""}} </td>
+                    <td> {{obj.description|default_if_none:""|linebreaks}} </td>
                     
                   </tr>
                 {% endfor %}

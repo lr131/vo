@@ -35,6 +35,7 @@ def text_message(message):
     reply = ''
 
     if is_phone(message.text):
+        # TODO Найти, что за лид (искать именно по интенсивщикам), создать Action, найти в базе Client, сохранить Client_id в User
         screenshot_files = [f for f in os.listdir(user_path) if f.endswith(".jpg")]
 
         if screenshot_files:

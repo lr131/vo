@@ -92,7 +92,7 @@
               <tbody>
                 {% for obj in data %}
                   <tr>
-                    <th scope="row">{{obj.source}}</th>
+                    <th scope="row">{{obj.source|linebreaks}}</th>
                     <td> <a href='{{obj.link}}' target='_blank'> {{obj.link}} </a> </td>
                     <td> <a href='{{obj.short}}' target='_blank'> {{obj.short}} </a> </td>
                     <td>{{obj.utm_source}}</td>

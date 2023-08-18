@@ -3,10 +3,23 @@ from django.db.models import Q
 from .models.history import History
 import re
 
+
 def is_phone(number):
     pattern = r'^(\+7|8)[-\s]?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{2}[-\s]?\d{2}$'
     match = re.match(pattern, number)
     return bool(match)
+
+def transform_phone(number):
+    # Удаление всех символов, кроме цифр
+    cleaned_number = re.sub(r'\D', '', number)
+    
+    # Проверка, что номер соответствует формату телефона
+    if is_phone(cleaned_number):
+        # Удаление префикса "8" и добавление префикса "7"
+        transformed_number = '7' + cleaned_number[1:]
+        return transformed_number
+    else:
+        return False
 
 def get_start_text():
     return 'Поздравляем, остался всего один шаг до вступления! \

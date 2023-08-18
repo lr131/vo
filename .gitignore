@@ -93,6 +93,7 @@ media/
 .env/
 venv
 db.sqlite3
+db_reserv.sqlite3
 pip freeze > requirements.txt
 .vscode/*
 !.vscode/settings.json

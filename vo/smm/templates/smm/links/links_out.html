@@ -56,12 +56,12 @@
                   <tr>
                     <th scope="row"><a href='{{obj.link}}' target='_blank'> {{obj.name}} </a> </th>
                     <td> {{obj.date|date:"d.m.Y" }} </td>
-                    <td> {{obj.contact|default_if_none:""}} </td>
-                    <td> {{obj.conditions|default_if_none:"Нет данных"}} <br/> Актуально на {{obj.conditions_date|date:"d.m.Y" }} </td>
+                    <td> {{obj.contact|default_if_none:""|linebreaks}} </td>
+                    <td> {{obj.conditions|default_if_none:"Нет данных"|linebreaks}} <br/> Актуально на {{obj.conditions_date|date:"d.m.Y" }} </td>
                     <td>{{obj.views|default_if_none:"Нет данных"}} <br/> Актуально на {{obj.views_date|date:"d.m.Y" }}</td>
                     <td>{{obj.followers|default_if_none:"Нет данных"}} <br/> Актуально на {{obj.followers_date|date:"d.m.Y" }}</td>
                     <td>{{obj.reach|default_if_none:"Нет данных"}} <br/> Актуально на {{obj.reach_date|date:"d.m.Y" }}</td>
-                    <td> {{obj.note|default_if_none:""}} </td>
+                    <td> {{obj.note|default_if_none:""|linebreaks}} </td>
                     
                   </tr>
                 {% endfor %}
