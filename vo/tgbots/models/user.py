@@ -6,7 +6,6 @@ from .bot import TGBot
 class User(models.Model):
     tgbot = models.ForeignKey(TGBot, on_delete = models.RESTRICT, verbose_name="Телеграм бот")
     chat_id = models.IntegerField(verbose_name="Идентификатор чата")
-    bot_name = models.CharField(verbose_name="Какой бот", max_length=250)
     client = models.ForeignKey(Client, on_delete=models.SET_NULL, 
                                blank=True, null=True,
                                verbose_name="Клиент из базы")

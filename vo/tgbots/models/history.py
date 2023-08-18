@@ -16,4 +16,4 @@ class History(models.Model):
         verbose_name_plural = 'Истории сообщений'
         
     def __str__(self):
-        return f"{self.date_time} - {self.user} - {self.message[:100]}"
+        return f"{self.date_time} - {self.user} ({self.tgbot.bot_name}) - {self.message[:100]}"
