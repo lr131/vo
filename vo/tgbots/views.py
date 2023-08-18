@@ -66,8 +66,8 @@ def message_history(request, bot, user_id):
     form = HistoryForm()
     # Передаем историю сообщений в шаблон для отображения
     return render(request, 'tgbots/message_history.html', {'messages': history,
-                                                           'media_url': settings.MEDIA_URL},
-                                                           'form': form)
+                                                           'media_url': settings.MEDIA_URL,
+                                                           'form': form})
 
 
 def message_history_all(request):
