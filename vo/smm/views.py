@@ -100,6 +100,11 @@ def link_list(request):
     context = {'data': data, 'form': form}
     return render(request, 'smm/links/links_list.html', context=context)
 
+@login_required
+def seeding_list(request):
+    data = Seeding.objects.all()
+    context = {'data': data}
+    return render(request, 'smm/links/seeding.html', context=context)
 
 @login_required
 def link_out_list(request):

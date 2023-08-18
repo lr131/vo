@@ -206,20 +206,24 @@
                   <p>мы в соц.сетях</p>
                 </a>
               </li>
-
-              {% if request.user.username == 'lr131' %}
                   
-                <li class="nav-item">
-                  <a {% if active == 'sp_list_out' %} class="nav-link active"
-                  {% else %} class="nav-link"
-                  {% endif %} href="{% url 'smm:link_out_list' %}">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Внешние ресурсы</p>
-                  </a>
-                </li>
+              <li class="nav-item">
+                <a {% if active == 'links_out' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'smm:link_out_list' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Внешние ресурсы</p>
+                </a>
+              </li>
 
-              {% endif %}
-
+              <li class="nav-item">
+                <a {% if active == 'seeding' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %} href="{% url 'smm:seeding_list' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Посевы</p>
+                </a>
+              </li>
               
 
               <li class="nav-item">
@@ -228,6 +232,17 @@
                 {% endif %} href="{% url 'smm:mailing_list' %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Рассылки</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a {% if active == 'tgbots' %} class="nav-link active"
+                {% else %} class="nav-link"
+                {% endif %}  href="{% url 'tgbots:message_history_all' %}">
+                  <i class="nav-icon far fa-image"></i>
+                  <p>
+                    Telegram-боты
+                  </p>
                 </a>
               </li>
 
@@ -477,14 +492,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-image"></i>
-              <p>
-                Telegram-бот
-              </p>
-            </a>
-          </li>
+          
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-columns"></i>

@@ -5,7 +5,7 @@
 {% block content %}
   {% block menu %}
     
-    {% with unit='tgbots' active='tg' page='tg_history' %}
+    {% with unit='smm' active='tgbots' page='tg_history' %}
       {% include '_menu.html' %}
     {% endwith %}
   {% endblock %}
@@ -19,13 +19,18 @@
           <div class="col-sm-6">
             <h3> История сообщений </h3>
           </div>
-          {% comment %} <div class="col-sm-6">
+          <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Главная</a></li>
-              <li class="breadcrumb-item"><a href="#">Раздел</a></li>
-              <li class="breadcrumb-item active">Активная страница</li>
+              {% if link %}
+                
+              {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'tgbots:message_history_all' %}">К списку ботов</a></li>
+              {% endif %}
+              
+              {% comment %} <li class="breadcrumb-item"><a href="#">Раздел</a></li>
+              <li class="breadcrumb-item active">Активная страница</li> {% endcomment %}
             </ol>
-          </div> {% endcomment %}
+          </div> 
         </div>
       </div><!-- /.container-fluid -->
     </section>
@@ -47,12 +52,16 @@
                     </tr>
                     {% for message in messages %}
                     <tr>
-                        <td>{{ message.user }}</td>
+                        {% if link %}
+                            <td> <a href="{% url 'tgbots:message_history' bot=message.tgbot.pk user_id=message.user.pk %}"> {{ message.user }} </a> </td>
+                        {% else %}
+                            <td>{{ message.user }}</td>
+                        {% endif %}    
                         <td>{{ message.tgbot }}</td>
                         <td>{{ message.date_time }}</td>
                         {% if message.mtype == 'photo' %}
                         <td>
-                            <img src="{{ media_url }}{{ message.message }}" alt="скриншот" class="small-img" data-toggle="modal" data-target="#largeImgModal">
+                            <img src="{{ media_url }}{{ message.message }}" alt="скриншот" class="small-img" data-toggle="modal" data-target="#largeImgModal{{message.pk}}">
                         </td>
                         {% else %}
                             <td>{{ message.message }}</td>
@@ -64,19 +73,36 @@
 
             </div>
         </div>
+
+        <form method="post">
+            {% csrf_token %}
+          <div class="row">
+            <div class="col-5">
+                {{form}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2 mt-2">
+              <button type="submit" class="btn btn-primary">Отправить</button>
+            </div>
+          </div>
+        </form>
+
       </div>
     </section>
   </div>
- 
- <!-- Модальное окно для отображения большой версии картинки -->
-<div class="modal fade" id="largeImgModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-body">
-        <img src="{{ message.message.url }}" alt="Большая картинка" class="large-img">
-      </div>
+
+  {% for message in messages %}
+    <!-- Модальное окно для отображения большой версии картинки -->
+    <div class="modal fade" id="largeImgModal{{message.pk}}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-body">
+            <img src="{{ media_url }}{{ message.message }}" alt="скриншот" class="large-img">
+        </div>
+        </div>
     </div>
-  </div>
-</div>
+    </div>
+  {% endfor %}
   
 {% endblock %}

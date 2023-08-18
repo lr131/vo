@@ -51,13 +51,15 @@ def message_history(request, bot, user_id):
         if form.is_valid():
             history = form.save(commit=False)
             tgbot = TGBot.objects.get(pk=bot)
-            user = User.objects.get(user_id=user_id, tgbot=tgbot)
+            user = User.objects.get(pk=user_id, tgbot=tgbot)
+            msg = history.message
             history.user = user
             history.tgbot = tgbot
             history.mtype = 'text'
+            history.message = f"ВЫ: {msg}"
             history.save()
             if bot==2:
-                send_to_psy20_intensive_bot(user.chat_id,history.message)
+                send_to_psy20_intensive_bot(user.chat_id,msg)
             elif bot == 3:
                 send_to_psy20_marathon_bot(user.chat_id,history.message)
             return redirect('tgbots:message_history', bot=bot,user_id=user_id)
@@ -81,4 +83,5 @@ def message_history_all(request):
     
     # Передаем последние сообщения в шаблон для отображения
     return render(request, 'tgbots/message_history.html', {'messages': latest_messages,
-                                                           'media_url': settings.MEDIA_URL})
+                                                           'media_url': settings.MEDIA_URL,
+                                                           'link': True})
