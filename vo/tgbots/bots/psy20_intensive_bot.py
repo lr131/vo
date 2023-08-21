@@ -26,7 +26,7 @@ def start_message(message):
 def text_message(message):
     user_id = message.from_user.id
     obj, created = User.objects.get_or_create(tgbot=botPsy20intensive, user_id=user_id, chat_id = message.chat.id)
-    user_path = os.path.join(settings.MEDIA_ROOT, "bots_data", botPsy20intensive.bot_name, f"{user_id}")
+    user_path = os.path.join(settings.MEDIA_ROOT, "bots_data", botPsy20intensive.pk, f"{user_id}")
     if not os.path.exists(user_path):
         os.makedirs(user_path)
     
@@ -55,7 +55,7 @@ def text_message(message):
 def handle_photo(message):
     user_id = message.from_user.id
     obj, created = User.objects.get_or_create(tgbot=botPsy20intensive, user_id=user_id, chat_id = message.chat.id)
-    user_path = os.path.join(settings.MEDIA_ROOT, "bots_data", botPsy20intensive.bot_name, f"{user_id}")
+    user_path = os.path.join(settings.MEDIA_ROOT, "bots_data", botPsy20intensive.pk, f"{user_id}")
     
     # необходимо, чтобы сохранить относительный путь файла
     short_path = os.path.join("bots_data", botPsy20intensive.bot_name, f"{user_id}")

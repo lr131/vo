@@ -109,11 +109,7 @@ def link_list(request):
 @login_required
 def seeding_list(request):
     data = Seeding.objects.all()
-        
-    for val in data:
-        print(val.date, val.link_out, val.link_out.utm_medium.utm_medium, val.lead_count, "lead_cost", val.lead_cost)
 
-    
     context = {'data': data}
     return render(request, 'smm/links/seeding.html', context=context)
 

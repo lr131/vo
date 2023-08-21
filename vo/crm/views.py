@@ -146,11 +146,6 @@ def get_stat(request):
     tmp = Lid.objects.filter(event_id=43)
     statistics = tmp.values('utm_medium').annotate(count=Count('id')).order_by('-count')
     
-    for entry in statistics:
-        utm_medium = entry['utm_medium']
-        count = entry['count']
-        print(f"utm_medium: {utm_medium}, count: {count}")
-    
     context = {
         "statistics": statistics,
         "total": tmp.count()
