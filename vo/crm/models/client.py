@@ -16,6 +16,9 @@ class Client(models.Model):
     family = models.CharField(max_length=250, null=True)
     name = models.CharField(max_length=250, null=True)
     patr = models.CharField(max_length=250, null=True, blank=True)
+    phone = models.CharField(max_length=250, null=True)
+    email = models.CharField(max_length=250, 
+                             null=True, blank=True)
     birthday = models.DateTimeField(blank=True, null=True,
                                     default=datetime(1900, 1, 1, hour=16))
     city = models.CharField(max_length=250, null=True)

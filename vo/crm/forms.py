@@ -34,6 +34,10 @@ class PreviousListForm(forms.ModelForm):
         
         
 class LidForm(forms.ModelForm):
+    event_id = forms.ModelChoiceField(queryset=EventPlan.objects.filter(season="2023/2024", is_period=False), 
+                                           label="Выберите мероприятие",
+                                           required=False)
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:

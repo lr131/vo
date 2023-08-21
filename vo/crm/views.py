@@ -143,16 +143,7 @@ def get_lids(request):
 @login_required
 def get_stat(request):
     
-    # TODO временный вариант
-    selected_records = Lid.objects.filter(lid_code__contains='5225056')
-    
-    for record in selected_records:
-        record.event_id = 43
-        record.target = "Зайти на интенсив"
-        record.action = "Регистрация на сайте"
-        record.save()
-    
-    tmp = Lid.objects.filter(lid_code__contains='5225056')
+    tmp = Lid.objects.filter(event_id=43)
     statistics = tmp.values('utm_medium').annotate(count=Count('id')).order_by('-count')
     
     for entry in statistics:
@@ -175,24 +166,27 @@ def add_lid(request):
     context = {}
     if request.method == "POST":
         form = LidForm(request.POST)
-        print(form.is_valid())
         if form.is_valid():
-            if form.cleaned_data.get('lid_code') and form.cleaned_data.get('lid_code').startswith("5225056"):
-                form.cleaned_data['event_id'] = 43
-                form.cleaned_data['target'] = "Зайти на интенсив"
-                form.cleaned_data['action'] = "Регистрация на сайте"
-            print(form)
+            if form.cleaned_data.get('lid_code'):
+                form_name = form.cleaned_data['form_name']
+                form_name = form_name.replace('+'," ")
+                form.cleaned_data['form_name'] = form_name
             form.save()
             return redirect('crm:lids')
         else:
             print(form.errors)
     else:
+        # form = LidForm(initial={'event_id': initial_event})
         context["form"] = LidForm()
         if tdh:
-            print('tdh',tdh)
             context["tdh"] = WebHook.objects.filter(id=int(tdh)).first()
             body_s = context["tdh"].body
             body = json.loads(body_s)
+            formid = body.get('formid')
+            if formid == 'form472406355':
+                form = LidForm(initial={'event_id': 51,
+                                        'action': "Регистрация на сайте",
+                                        'target': "Оплатить онлайн-марафон и зайти в канал"})
             context.update(body)
     return render(request, "crm/add_lid.html", context)
 
