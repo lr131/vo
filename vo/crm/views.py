@@ -162,14 +162,21 @@ def add_lid(request):
     if request.method == "POST":
         form = LidForm(request.POST)
         if form.is_valid():
+            lid = form.save(commit=False)
             if form.cleaned_data.get('lid_code'):
                 form_name = form.cleaned_data['form_name']
-                form_name = form_name.replace('+'," ")
-                form.cleaned_data['form_name'] = form_name
-            form.save()
+                lid.form_name = form_name.replace('+'," ")
+            if form.cleaned_data.get('event_id'):
+                event_id = form.cleaned_data['event_id'].pk
+                print(event_id)
+                lid.event_id = form.cleaned_data['event_id'].pk
+
+            lid.save()
+            
             return redirect('crm:lids')
         else:
             print(form.errors)
+            
     else:
         # form = LidForm(initial={'event_id': initial_event})
         context["form"] = LidForm()

@@ -1,4 +1,8 @@
 from django import forms
+from django.db.models import Q
+from django.utils import timezone
+from datetime import timedelta
+
 
 from .models.client_event_history import ClientEventHistory
 from .models.previous_list import PreviousList
@@ -10,6 +14,12 @@ from .models.event_plan import EventPlan
 from .models.client import Client, State
 
 
+class EventPlanChoiceField(forms.ModelChoiceField):
+
+    def label_from_instance(self, obj):
+        return f'{obj.event.event_type.name} {obj.event.name} - {obj.start_date:%d.%m.%Y} ({obj.place})'
+
+
 class ClientEventHistoryForm(forms.ModelForm):
 
     class Meta:
@@ -17,10 +27,21 @@ class ClientEventHistoryForm(forms.ModelForm):
         fields = ('client_id', 'event_plan_id', 'note',) 
         
 class PreviousListForm(forms.ModelForm):
-    event_id = forms.ModelChoiceField(queryset=Event.objects.all(), 
+    
+    
+    down_date = timezone.now() - timedelta(days=1) # end_date__gte
+    update = timezone.now() + timedelta(days=365) # start_date__lte
+    
+    qs = EventPlan.objects.filter(
+        end_date__gte=down_date,
+        start_date__lte=update,
+        is_period=False
+    )
+    
+    event_id = forms.ModelChoiceField(queryset=Event.objects.all().order_by('name'), 
                                       label="Мероприятие без даты",
                                       required=False)
-    event_plan_id = forms.ModelChoiceField(queryset=EventPlan.objects.filter(season="2023/2024"), 
+    event_plan_id = EventPlanChoiceField(queryset=qs.order_by('start_date'), 
                                            label="Мероприятие из расписания",
                                            required=False)
     def __init__(self, *args, **kwargs):
@@ -31,10 +52,21 @@ class PreviousListForm(forms.ModelForm):
     class Meta:
         model = PreviousList
         fields = ('name', 'event_plan_id', 'event_id', 'description')
-        
+
         
 class LidForm(forms.ModelForm):
-    event_id = forms.ModelChoiceField(queryset=EventPlan.objects.filter(season="2023/2024", is_period=False), 
+    
+    down_date = timezone.now() - timedelta(days=1) # end_date__gte
+    update = timezone.now() + timedelta(weeks=15) # start_date__lte
+    
+    qs = EventPlan.objects.filter(
+        end_date__gte=down_date,
+        start_date__lte=update,
+        season="2023/2024",
+        is_period=False
+    )
+    
+    event_id = EventPlanChoiceField(queryset=qs.order_by('start_date'), 
                                            label="Выберите мероприятие",
                                            required=False)
     
@@ -45,7 +77,8 @@ class LidForm(forms.ModelForm):
     
     class Meta:
         model = Lid
-        fields = '__all__'
+        exclude = ['event_id']  # Исключаем поле 'event_id'
+        
         
         
         
