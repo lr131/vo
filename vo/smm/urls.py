@@ -20,4 +20,6 @@ urlpatterns = [
     path('link/new', views.link_new, name="link_new"),
     path('links/out', views.link_out_list, name="link_out_list"),
     path('seeding', views.seeding_list, name="seeding_list"),
+    path('seeding/<int:event_id>', views.seeding, name="seeding"),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

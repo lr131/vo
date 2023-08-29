@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+  {% block menu %}
+      
+  {% with unit='smm' active='seeding' page='seeding' %}
+    {% include '_menu.html' %}
+  {% endwith %}
+  {% endblock %}
+
+ <!-- Content Wrapper. Contains page content Хлебные крошки -->
+ <div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <h4> Статистика размещений </h4>
+      </div>
+      <div class="row mb-2">
+        <div class="col-sm-7">
+
+        </div>
+        <div class="col-sm-5">
+          <ol class="breadcrumb float-sm-right">
+            {% comment %} <li class="breadcrumb-item"><a class="btn btn-primary" href="{% url 'smm:link_new'%}">Создать </a></li> {% endcomment %}
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <section class="content">
+
+    <div class="container-fluid">
+      <div class="row">
+        
+          <div class="col-12" id='mainContainer'>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Мероприятия</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obj in data %}
+                  <tr>
+                    <th scope="row"><a href="{% url 'smm:seeding' obj.pk %}"> {{obj.event.event_type}} {{obj.event.name}} | {{obj.start_date|date:"d.m Y"}} 
+                        {% if obj.event.end_date %}
+                        -{{obj.event.end_date|date:"d.m Y"}} 
+                    {% endif %}
+                </a> 
+                    
+                    </th>
+                  </tr>
+                {% endfor %}
+              
+              </tbody>
+            </table>
+          </div>
+      </div>
+   </div>
+  </section>
+</div>
+  
+{% endblock %}
+

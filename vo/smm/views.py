@@ -9,6 +9,7 @@ import os
 from furl import furl
 import vk_api
 
+
 from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinkForm, LinkSearchForm, MailindQuickDetailForm, UploadWapicoReportForm, LinkSetForm
 
 
@@ -23,6 +24,9 @@ from .models.mailing_detail import MailingDetail
 from .models.link_out import LinkOut
 from .models.seeding import Seeding
 from .models.lid import Lid
+
+from .models.event_plan import EventPlan
+
 
 @login_required
 def mailing_new(request):
@@ -107,11 +111,22 @@ def link_list(request):
     return render(request, 'smm/links/links_list.html', context=context)
 
 @login_required
-def seeding_list(request):
-    data = Seeding.objects.all()
+def seeding(request, event_id):
+    data = Seeding.objects.filter(event__pk=event_id)
 
     context = {'data': data}
     return render(request, 'smm/links/seeding.html', context=context)
+
+@login_required
+def seeding_list(request):
+    events = Seeding.objects.values('event').distinct()
+    print(events)
+    event_list = [event['event'] for event in events]
+    print(event_list)
+
+    data = EventPlan.objects.filter(pk__in=event_list).order_by('-start_date')
+    context = {'data': data}
+    return render(request, 'smm/links/seeding_list.html', context=context)
 
 @login_required
 def link_out_list(request):

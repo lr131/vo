@@ -18,14 +18,13 @@ class Seeding(models.Model):
     event = models.ForeignKey(EventPlan, on_delete=models.RESTRICT,
                               null=True, blank=True, verbose_name="Какое мероприятие рекламируем")
     
-    # TODO количество перешедших рассчитывать динамически с вызовом по метке и сорсу из Лидов
     @property
     def lead_count(self):
         return Lid.objects.filter(event_id=self.event.pk, 
                                   utm_source=self.link_out.utm_source.utm_source,
                                   utm_medium=self.link_out.utm_medium.utm_medium).count()
     
-    # TODO стоимость лида рассчитывать автоматически как price / lead_cost 
+    # TODO добавить рассчет тех, кто дошел
 
     @property
     def lead_cost(self):
