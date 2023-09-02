@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+  {% block menu %}
+    {% with 'events' as active %}
+      {% include '_menu.html' %}
+    {% endwith %}
+  {% endblock %}
+
+  <!-- Content Wrapper. Contains page content Хлебные крошки -->
+  <div class="content-wrapper" id='mainContainer'>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h3> Добавить в расписание </h3>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <div class="row">
+
+          <form method="POST">
+            {% csrf_token %}
+            <div class="row mt-3">
+
+              <!-- Date Start -->
+              <div class="form-group col-lg-2 col-md-3 col-sm-6 col-12">
+                <label><strong>Дата начала<span class="required">*</span></strong></label>
+                <div class="input-group date datepic" id="id_start_date" data-target-input="nearest">
+                  <input type="text" class="form-control datetimepicker-input" name="start_date" data-target="#id_start_date" data-inputmask-alias="datetime" data-inputmask-inputformat="dd.mm.yyyy" data-mask="" inputmode="numeric" placeholder="dd.mm.yyyy" />
+                  <div class="input-group-append" data-target="#id_start_date" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                  </div>
+                </div>
+
+                <label><strong>Дата начала<span class="required">*</span></strong></label>
+                <div class="input-group date datepictime" id="id_start_time" data-target-input="nearest">
+                  <input type="text" class="form-control datetimepicker-input" name="start_time" data-target="#id_start_time" data-inputmask-alias="datetime" data-inputmask-inputformat="HH:MM" data-mask="" inputmode="numeric" placeholder="HH:MM" />
+                  <div class="input-group-append" data-target="#id_start_time" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Date End -->
+              <div class="form-group col-lg-2 col-md-3 col-sm-6 col-12">
+                <label><strong>Дата завершения<span class="required">*</span></strong></label>
+                <div class="input-group date datepic" id="id_end_date" data-target-input="nearest">
+                  <input type="text" class="form-control datetimepicker-input" name="end_date" data-target="#id_end_date" data-inputmask-alias="datetime" data-inputmask-inputformat="dd.mm.yyyy" data-mask="" inputmode="numeric" placeholder="dd.mm.yyyy" />
+                  <div class="input-group-append" data-target="#id_end_date" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                  </div>
+                </div>
+
+                <label><strong>Время завершения<span class="required">*</span></strong></label>
+                <div class="input-group date datepictime" id="id_end_time" data-target-input="nearest">
+                  <input type="text" class="form-control datetimepicker-input" name="end_time" data-target="#id_end_time" data-inputmask-alias="datetime" data-inputmask-inputformat="HH:MM" data-mask="" inputmode="numeric" placeholder="HH:MM" />
+                  <div class="input-group-append" data-target="#id_end_time" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                <label><strong>{{ form.season.label }}<span class='required'>*</span></strong></label>
+                {{ form.season }}
+              </div>
+
+              <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                <label><strong>{{ form.place.label }}<span class="required">*</span></strong></label>
+                {{ form.place }}
+              </div>
+
+              <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                <label><strong>{{ form.event.label }}<span class="required">*</span></strong></label>
+                {{ form.event }}
+              </div>
+              
+
+              <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                <label><strong>Ссылка</strong></label>
+                {{ form.site }}
+                <small class="form-text text-muted">Перекроет ссылку по-умолчанию</small>
+              </div>
+
+            </div>
+
+            <div class="row mt-3">
+              <div class="form-group col-sm-6 col-12">
+                <label><strong>Кто ведёт<span class="required">*</span></strong></label>
+                <select class="select2 form-control" name="user" id="id_user" multiple="multiple" data-placeholder="Выберите из списка" style="width: 100%;">
+                  
+                  {% for user in users %}
+                  
+                    <option value="{{user.pk}}">{{ user.first_name }} {{ user.last_name }}</option>
+
+                  {% endfor %}
+
+                  </select>
+              </div>
+
+              <div class="col-lg-4 col-lg-2 col-md-3 col-sm-6 col-12">
+                <div class="form-group">
+                  <label><strong>Введите период в днях</strong></label>
+                  <input type="text" name="period" data-inputmask="'alias': 'decimal', 'min': '0'" data-mask="" inputmode="decimal" class="form-control col-md-3 col-sm-3" id="id_period">
+                  <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" name="is_period" id="id_is_period">
+                    <label class="custom-control-label" for="id_is_period">Периодичное мероприятие</label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">Добавить</button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+<!-- /.content-wrapper -->
+
+
+  
+{% endblock %}
+

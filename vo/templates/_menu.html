@@ -57,10 +57,10 @@
             </ul>
           </li>
 
-          <li {% if active == 'events' %} class="nav-item menu-open"
+          <li {% if unit == 'schedule' %} class="nav-item menu-open"
           {% else %} class="nav-item"
           {% endif %}>
-            <a {% if active == 'events' %} class="nav-link active"
+            <a {% if unit == 'schedule' %} class="nav-link active"
             {% else %} class="nav-link"
             {% endif %} href="{% url 'events' %}">
               <i class="nav-icon far fa-calendar-alt"></i>
@@ -70,17 +70,36 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-                <li class="nav-item">
-                <a {% if active == 'events' %} class="nav-link active"
-                    {% else %} class="nav-link"
-                    {% endif %} href="{% url 'events' %}">
+              <li class="nav-item">
+                <a {% if active == 'upcoming' %} class="nav-link active"
+                  {% else %} class="nav-link"
+                  {% endif %} href="{% url 'upcoming' %}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Текущий сезон</p>
+                  <p>Ближайшие</p>
                 </a>
               </li>
+              
+
+                <li class="nav-item">
+                  <a {% if active == 'events' %} class="nav-link active"
+                    {% else %} class="nav-link"
+                    {% endif %} href="{% url 'events' %}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Текущий сезон</p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a {% if active == 'top_session' %} class="nav-link active"
+                    {% else %} class="nav-link"
+                    {% endif %} href="{% url 'top_session' %}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>ТОП/обучение</p>
+                  </a>
+                </li>
             </ul>
           </li>
-
+          
           {% comment %} TODO {% endcomment %}
             <li {% if active == 'crm' %} class="nav-item menu-open"
                 {% else %} class="nav-item"

@@ -16,7 +16,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h3> Добавить в расписание </h3>
+            <h3> Добавить мероприятие </h3>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -34,60 +34,81 @@
           
             <div class="col-12" id='mainContainer'>
                 <div class="table-responsive">
-                    <form>
+                    <form method="POST">
                       {% csrf_token %}
                       <div class="row mt-3">
-                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
-                          <label><strong>{{ form.start_date.label }}<span class='required'>*</span></strong></label>
-                          <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
-                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime">
-                            <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                          {% comment %} {{ form.start_date }} {% endcomment %}
-                          <input type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime" name="start_date" id="id_start_date">
-                        </div>
-      
-                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
-                          <label><strong>{{ form.end_date.label }}<span class='required'>*</span></strong></label>
-                          {{ form.end_date }}
+                        <div class="col-lg-4 col-md-5 col-sm-6 col-12">
+                          <label><strong>{{ form.name.label }}<span class='required'>*</span></strong></label>
+                          {{ form.name }}
                         </div>
 
                         <div class="col-lg-2 col-md-3 col-sm-6 col-12">
-                          <label><strong>{{ form.season.label }}<span class='required'>*</span></strong></label>
-                          {{ form.season }}
+                          <label><strong>{{ form.state.label }}<span class='required'>*</span></strong></label>
+                          {{ form.state }}
                         </div>
 
                         <div class="col-lg-2 col-md-3 col-sm-6 col-12">
-                          <label><strong>{{ form.place.label }}<span class='required'>*</span></strong></label>
-                          {{ form.place }}
+                          <label><strong>{{ form.event_type.label }}</strong></label>
+                          {{ form.event_type }}
                         </div>
 
-                        <div class="col-md-3">
-                          <label><strong>{{ form.site.label }}</strong></label>
-                          {{ form.site }}
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                          <label><strong>{{ form.sort.label }}<span class='required'>*</span></strong></label>
+                          {{ form.sort }}
                         </div>
 
                       </div>
 
                       <div class="row mt-3">
-                        <div class="col-lg-2 col-sm-4 col-12">
-                          <label><strong>{{ form.user.label }}<span class='required'>*</span></strong></label>
-                          {{ form.user }}
+
+                        <div class="col-lg-4 col-md-5 col-sm-6 col-12">
+                          <label><strong>{{ form.short.label }}</strong></label>
+                          {{ form.short }}
                         </div>
 
-                        <div class="col-lg-4 col-sm-6 col-12">
-                          <div class="form-group">
-                            <label><strong>{{ form.period.label }}</strong></label>
-                            {{form.period}}
-                            <div class="form-check">
-                              <input type="checkbox" name="is_period" class="form-check-input" id="id_is_period" checked="">
-                              <label class="form-check-label" for="id_is_period"><strong>{{form.is_period.label}}</strong></label>
-                            </div>
-                          </div>
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                          <label><strong>{{ form.payment.label }}</strong></label>
+                          {{ form.payment }}
                         </div>
+
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                          <label><strong>{{ form.continuance.label }}</strong></label>
+                          {{ form.continuance }}
+                        </div>
+
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-12">
+                          <label><strong>{{ form.country.label }}<span class='required'>*</span></strong></label>
+                          {{ form.country }}
+                        </div>
+
                       </div>
+
+                      <div class="row mt-3">
+                        <div class="col-lg-4 col-md-5 col-sm-6 col-12">
+                          <label><strong>{{ form.description.label }}</strong></label>
+                          {{ form.description }}
+                        </div>
+
+                        <div class="col-lg-4 col-md-5 col-sm-6 col-12">
+                          <label><strong>{{ form.about.label }}</strong></label>
+                          {{ form.about }}
+                        </div>
+
+                      </div>
+
+                      <div class="row mt-3">
+                        <div class="col-lg-4 col-md-5 col-sm-6 col-12">
+                          <label><strong>{{ form.prev_step.label }}</strong></label>
+                          {{ form.prev_step }}
+                        </div>
+
+                        <div class="col-lg-4 col-md-5 col-sm-6 col-12">
+                          <label><strong>{{ form.next_step.label }}</strong></label>
+                          {{ form.next_step }}
+                        </div>
+
+                      </div>
+
                       <div class="row mt-3">
                         <div class="col-md-3">
                           <button type="submit" class="btn btn-primary">Добавить</button>

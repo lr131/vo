@@ -1,7 +1,11 @@
 from django.db import models
 from .event_state import EventState
 from .event_type import EventType
-        
+
+# inner = внутренние мероприятия
+# top = топ
+# session = сессии в университете, периоды сдачи и тд
+# seminar = семинар по хакоми, травмам развития и тд        
         
 class Event(models.Model):
     name = models.CharField(max_length=200, verbose_name="Название")
@@ -17,6 +21,7 @@ class Event(models.Model):
     prev_step = models.TextField(null=True,blank=True, verbose_name="Предыдущий шаг по продуктам") # предыдущий шаг / бесплатные материалы TODO
     created_date = models.DateTimeField(auto_now_add=True, blank=True, verbose_name="Дата создания")
     site = models.CharField(max_length=500, null=True, blank=True, verbose_name="Ссылка на лендинг")
+    sort = models.CharField(default="inner", max_length=50, verbose_name="Вид")
     
     class Meta:
         verbose_name = "Мероприятие"

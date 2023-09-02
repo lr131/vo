@@ -20,23 +20,30 @@
 
   <title> Виртуальный офис "Равновесие" </title>
 
+  <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <!-- Font Awesome Icons --> 
+  <link href="{% static 'plugins/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+  
   <!-- daterange picker -->
   <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
-  <!-- iCheck for checkboxes and radio inputs -->
-  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
-  <!-- Bootstrap Color Picker -->
-  <link rel="stylesheet" href="{% static 'plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css' %}">
+  
   <!-- Tempusdominus Bootstrap 4 -->
   <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
-  
+
   <!-- Select2 -->
   <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
   <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
 
-  <link href="{% static 'styles/style.css' %}" rel="stylesheet">
-  <link href="{% static 'plugins/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- Bootstrap Color Picker -->
+  <link rel="stylesheet" href="{% static 'plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css' %}">
+  
   <link href="{% static 'styles/adminlte.min.css' %}" rel="stylesheet">
+
+  <link href="{% static 'styles/style.css' %}" rel="stylesheet">
   
 </head>
 
@@ -52,25 +59,62 @@
 </body>
 
 <!-- jQuery -->
-<script src="{% static '/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
 <!-- Bootstrap 4 -->
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- InputMask -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+<script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
+<!-- date-range-picker -->
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+
 <!-- Select2 -->
 <script src="{% static 'plugins/select2/js/select2.full.min.js'  %}"></script>
 <!-- Bootstrap4 Duallistbox -->
 <script src="{% static 'plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
-<!-- InputMask -->
-<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
-<script src="{% static 'plugins/inputmask/jquery.inputmask.min.js' %}"></script>
-<!-- date-range-picker -->
-<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
 <!-- bootstrap color picker -->
 <script src="{% static 'plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js' %}"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src={% static 'js/adminlte.min.js' %}></script>
 <!-- AdminLTE for demo purposes -->
 <script src={% static 'js/demo.js' %}></script>
+
+<script>
+  $(function () {
+
+      //Initialize Select2 Elements
+      $('.select2').select2()
+
+      //Initialize Select2 Elements
+      $('.select2bs4').select2({
+        theme: 'bootstrap4'
+      })
+
+
+     //Datemask dd/mm/yyyy
+     $('#datemask').inputmask('dd.mm.yyyy', { 'placeholder': 'dd.mm.yyyy' })
+
+     $('[data-mask]').inputmask()
+
+     //Date picker
+     $('.datepic').datetimepicker({
+        format: 'DD.MM.YYYY',
+        startOfTheWeek: 1,
+        locale: 'ru'
+    });
+
+    $('.datepictime').datetimepicker({
+      format: 'HH:mm',
+      startOfTheWeek: 1,
+      locale: 'ru'
+  });
+
+    
+  });
+
+</script>
+
 </body>
 </html>

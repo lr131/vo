@@ -88,6 +88,7 @@ __pycache__/
 local_settings.py
 config.py
 media/
+**/migrations/
 
 .office
 .env/
@@ -108,4 +109,4 @@ pip freeze > requirements.txt
 # Built Visual Studio Code Extensions
 *.vsix
 
-*.sqlilte3
+*.sqlite3
