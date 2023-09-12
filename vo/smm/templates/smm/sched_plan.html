@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% load static%}
+
+{% block content %}
+  {% block menu %}
+    {% with page as active %}
+      {% include '_menu.html' %}
+    {% endwith %}
+  {% endblock %}
+
+  <!-- Content Wrapper. Contains page content Хлебные крошки -->
+  <div class="content-wrapper" id='mainContainer'>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h3> Актуальное расписание </h3>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+
+      <div class="container-fluid">
+
+        <div class="row">
+
+          <div class="col-12">  
+            <div class="card card-primary card-outline card-outline-tabs">
+              <div class="card-header p-0 border-bottom-0">
+                <ul class="nav nav-tabs" id="social-tabs" role="tablist">
+                  {% for site, events in site_events.items %}
+                  <li class="nav-item">
+                    <a class="nav-link" id="socplace{{events.0.id}}-tab" data-toggle="pill" href="#socplace{{events.0.id}}" role="tab" aria-controls="socplace{{events.0.id}}" aria-selected="false">{{site}}</a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+
+              <div class="card-body">
+                <div class="tab-content" id="social-tabs-tabContent">
+                  {% for site, events in site_events.items %}
+                    <div class="tab-pane fade" id="socplace{{events.0.id}}" role="tabpanel" aria-labelledby="socplace{{events.0.id}}-tab">
+                      📌 РАСПИСАНИЕ НА ОСЕНЬ!
+                      {% if events.0.event.start_date|date:"m" in "12,1,2" %}
+                          ❄️🎄⛄️
+                      {% elif events.0.event.start_date|date:"m" in "3,4,5" %}
+                          🌸
+                      {% elif events.0.event.start_date|date:"m" in "6,7,8" %}
+                          🌻
+                      {% else %}
+                          🍁
+                      {% endif %}
+
+                      {% for event in events %}
+                        <p></p>
+                        <br/>
+                        <p> 
+                          {% if event.event.start_date|date:"m" in "12,1,2" %}
+                              ❄️
+                          {% elif event.event.start_date|date:"m" in "3,4,5" %}
+                              🌱
+                          {% elif event.event.start_date|date:"m" in "6,7,8" %}
+                              🌻
+                          {% else %}
+                              🍂
+                          {% endif %}
+                          {% if event.event.start_date|date:"m" == event.event.end_date|date:"m" %}
+                            {{ event.event.start_date|date:"d" }} — {{ event.event.end_date|date:"d.m" }}
+                          {% else %}  
+                              {{ event.event.start_date|date:"d.m" }} — {{ event.event.end_date|date:"d.m" }}
+                          {% endif %}
+                          <br/>
+                          {% if event.utm_source == 'tg' %}
+                            <strong>
+                            {% if event.event.place.source %}  
+                                {% if event.event.event.pk != 45 and event.event.event.pk != 46 %}
+                                  **{{ event.event.event.event_type }} «{{ event.event.event.name }}» {{ event.event.place.source|default_if_none:'' }}**
+                                {% else %}
+                                  **{{ event.event.event.name }} {{ event.event.place.source|default_if_none:'' }}**
+                                {% endif %}
+                            {% else %}
+                                {% if event.event.event.pk != 45 and event.event.event.pk != 46 %}
+                                  **{{ event.event.event.event_type }} «{{ event.event.event.name }}»**
+                                {% else %}
+                                  **{{ event.event.event.name }}**
+                                {% endif %}
+                            {% endif %}
+                            </strong>
+                          {% elif event.utm_source == 'wa' or event.utm_source == 'viber' %}
+                            <strong>
+                              {% if event.event.place.source %}  
+                                {% if event.event.event.pk != 45 and event.event.event.pk != 46 %}
+                                  *{{ event.event.event.event_type }} «{{ event.event.event.name }}» {{ event.event.place.source|default_if_none:'' }}*
+                                {% else %}
+                                  *{{ event.event.event.name }} {{ event.event.place.source|default_if_none:'' }}*
+                                {% endif %}
+                              {% else %}
+                                {% if event.event.event.pk != 45 and event.event.event.pk != 46 %}
+                                  *{{ event.event.event.event_type }} «{{ event.event.event.name }}»*
+                                {% else %}
+                                  *{{ event.event.event.name }}*
+                                {% endif %}
+                              {% endif %}
+                            </strong>
+                          {% else %}
+                            <strong> 
+                              {% if event.event.event.pk != 45 and event.event.event.pk != 46 %}
+                                {{ event.event.event.event_type }} «{{ event.event.event.name }}» {{ event.event.place.source|default_if_none:'' }}
+                              {% else %}
+                                {{ event.event.event.name }} {{ event.event.place.source|default_if_none:'' }}
+                              {% endif %}
+                            </strong>
+                          {% endif %} 
+                          <br/>
+                          {% if event.event.event.short %}
+                            {{ event.event.event.short|default_if_none:'' }}<br/>
+                          {% endif %}
+                          {% if  event.event.site %}
+                            💫 Подробнее {{ event.short }} <br/>
+                          {% elif  event.event.event.site %}
+                            💫 Подробнее {{ event.short }} <br/>
+                          {% else %}
+                            💫 Узнать подробности можно в личных сообщениях 
+                            
+                            {% if event.utm_source == 'tg' %}
+                              @ravnovesie38 
+                            {% else %}
+                              +79086434405
+                            {% endif %} </p>
+                          {% endif %}  
+                        </p>
+                      {% endfor %}                  
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.col -->
+
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+<!-- /.content-wrapper -->
+
+
+  
+{% endblock %}
+

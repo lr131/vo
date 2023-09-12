@@ -97,6 +97,16 @@
                     <p>ТОП/обучение</p>
                   </a>
                 </li>
+
+                <li class="nav-item">
+                  <a {% if active == 'lections' %} class="nav-link active"
+                    {% else %} class="nav-link"
+                    {% endif %} href="{% url 'lections' %}">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Лекторий</p>
+                  </a>
+                </li>
+
             </ul>
           </li>
           
@@ -294,6 +304,14 @@
 
               {% endif %}
 
+              <li class="nav-item">
+                <a {% if active == 'digest' %} class="nav-link active"
+                  {% else %} class="nav-link"
+                  {% endif %} href="{% url 'smm:digest' %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Дайджест</p>
+                </a>
+              </li>
 
             </ul>
           </li>

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, F, Case, When, Value, CharField
 from django.utils import timezone
 from datetime import datetime, timedelta
 from rest_framework import viewsets, serializers, generics, pagination, filters
@@ -12,6 +12,7 @@ from .serializers import EventSerializer, EventPlanSerializer, EventPlanExtraSer
 
 from .models.event import Event
 from .models.event_plan import EventPlan
+from .models.links import Links
 
 from .forms import EventForm, EventPlanForm
 
@@ -29,33 +30,64 @@ class EventPlanViewSet(viewsets.ModelViewSet):
     
 @login_required
 def get_plan(request):
-    down_date = timezone.now() - timedelta(weeks=1)# end_date__gte
+    down_date = timezone.now() - timedelta(days=2)# end_date__gte
     season = get_current_season()
+    events = EventPlan.objects.exclude(
+        is_period=True,
+        start_date__lt=down_date
+        ).filter(
+            end_date__gte=down_date,
+            season=season).order_by('start_date')
+    
     context = {
         "unit": "schedule",
         "page": 'events',
         "form": EventPlanForm(),
         "users": User.objects.filter(is_active=True),
-        "events": EventPlan.objects.filter(
-            end_date__gte=down_date,
-            season=season).order_by('start_date')
+        "events": events
     }
     return render(request, "events/events.html", context)
 
 @login_required
 def upcoming_events(request):
-    down_date = timezone.now() - timedelta(weeks=1)# end_date__gte
+    down_date = timezone.now() - timedelta(days=1)# end_date__gte
     update = timezone.now() + timedelta(weeks=14) # start_date__lte
+    events = EventPlan.objects.exclude(
+        is_period=True,
+        start_date__lt=down_date
+        ).filter(
+            end_date__gte=down_date,
+            start_date__lte=update).order_by('start_date')
     context = {
         "unit": "schedule",
         "page": 'upcoming',
         "form": EventPlanForm(),
         "users": User.objects.filter(is_active=True),
-        "events": EventPlan.objects.filter(
-            end_date__gte=down_date,
-            start_date__lte=update).order_by('start_date')
+        "events": events
     }
     return render(request, "events/events.html", context)
+
+
+@login_required
+def lection_events(request):
+    down_date = timezone.now() - timedelta(days=1)# end_date__gte
+    update = timezone.now() + timedelta(weeks=14) # start_date__lte
+    events = EventPlan.objects.exclude(
+        is_period=True,
+        start_date__lt=down_date
+        ).filter(
+            event__event_type=11,
+            end_date__gte=down_date,
+            start_date__lte=update).order_by('start_date')
+    context = {
+        "unit": "schedule",
+        "page": 'lections',
+        "form": EventPlanForm(),
+        "users": User.objects.filter(is_active=True),
+        "events": events
+    }
+    return render(request, "events/events.html", context)
+
 
 @login_required
 def top_session(request):

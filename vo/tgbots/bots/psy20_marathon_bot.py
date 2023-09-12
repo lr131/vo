@@ -7,7 +7,7 @@ from ..models.user import User
 from ..models.bot import TGBot
 from ..utils import is_phone, get_start_text980, check_phone_in_last_messages
 
-bot = telebot.TeleBot(settings.PSY20_MARATHON_TOKEN)
+bot = telebot.TeleBot(settings.PSY20_MARATHON_TOKEN, threaded=False)
 text = get_start_text980()
 
 botPsy20marathon = TGBot.objects.get(pk=3) # пока абсолютное значение

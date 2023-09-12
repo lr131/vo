@@ -7,7 +7,7 @@ from ..models.user import User
 from ..models.bot import TGBot
 from ..utils import is_phone, get_start_text, check_phone_in_last_messages
 
-bot = telebot.TeleBot(settings.LR131_TOKEN)
+bot = telebot.TeleBot(settings.LR131_TOKEN, threaded=False)
 text = get_start_text()
 
 botPsy20intensive = TGBot.objects.get(pk=1) # пока тестовое значение

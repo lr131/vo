@@ -41,6 +41,7 @@ urlpatterns = [
     path('schedule', events_views.get_plan, name="events"),
     path('schedule/upcoming', events_views.upcoming_events, name="upcoming"),
     path('schedule/education', events_views.top_session, name="top_session"),
+    path('schedule/lections', events_views.lection_events, name="lections"),
     path('schedule/add', events_views.create_or_edit_to_plan, name="schedule_add"),
     path('events/add', events_views.create_or_edit_event, name="events_add"),
     path('users', user_views.get_active_users, name='users'),

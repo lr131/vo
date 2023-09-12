@@ -17,6 +17,7 @@ class Event(models.Model):
     prev_step = models.TextField(null=True,blank=True, verbose_name="Предыдущий шаг по продуктам") # предыдущий шаг / бесплатные материалы TODO
     created_date = models.DateTimeField(auto_now_add=True, blank=True, verbose_name="Дата создания")
     site = models.CharField(max_length=500, null=True, blank=True, verbose_name="Ссылка на лендинг")
+    sort = models.CharField(default="inner", max_length=50, verbose_name="Вид")
     
     class Meta:
         managed = False

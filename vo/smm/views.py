@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db.models import Q, F, Case, When, Value, CharField
+from django.utils import timezone
+from datetime import datetime, timedelta
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.http import FileResponse, HttpResponse
@@ -8,6 +12,9 @@ import io
 import os
 from furl import furl
 import vk_api
+from functools import reduce
+from operator import or_
+import collections
 
 
 from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinkForm, LinkSearchForm, MailindQuickDetailForm, UploadWapicoReportForm, LinkSetForm
@@ -642,4 +649,86 @@ def mailing_myperson(request, pk):
     data = Mailing.objects.all()
     context = {'mailing': data}
     return render(request, 'smm/mailing/mailing_myperson.html', context=context)
+
+
+@login_required
+def digest_events(request):
+    down_date = timezone.now() - timedelta(days=1)# end_date__gte
+    update = timezone.now() + timedelta(weeks=12) # start_date__lte
+    qs = EventPlan.objects.exclude(
+        is_period=True,
+        start_date__lt=down_date
+        ).filter(
+            event__sort='inner',
+            end_date__gte=down_date,
+            start_date__lte=update).order_by('start_date')
+        
+    events = qs.exclude(is_period=True)
+    period_events = qs.exclude(is_period=False)
+    
+    site_values = events.annotate(
+        site_value=Case(
+            When(site__isnull=False, then=F('site')),
+            When(event__site__isnull=False, then=F('event__site')),
+            default=Value(None),
+            output_field=CharField(max_length=500)
+        )
+    ).values('site_value').distinct().order_by('site_value').values_list('site_value', flat=True)
+
+    social = SocialPlace.objects.all()
+    # for s in social:
+    #     if s.utm_source and s.utm_medium:
+    #         print(s, s.utm_source.utm_source, s.utm_type_source, s.utm_medium.utm_medium)
+
+    query = reduce(or_, (Q(link__startswith=sv) for sv in site_values if sv))
+    
+    site_events = collections.defaultdict(list)
+
+    for socplace in social:
+        if socplace.utm_source and socplace.utm_medium:
+            links = Links.objects.filter(
+                query,
+                utm_source=socplace.utm_source.utm_source,
+                utm_medium=socplace.utm_medium.utm_medium,
+                utm_campaign='scheduler',
+                utm_type_content='post'
+            ).order_by('utm_source', 'utm_medium')
+                        
+            for event in events:
+                site = event.site if event.site else event.event.site
+                if not site:
+                    site_events[socplace].append({
+                        'pk': event.pk,
+                        'id': socplace.pk,
+                        'event': event,
+                        'utm_source': socplace.utm_source.utm_source,
+                        'utm_medium': socplace.utm_medium.utm_medium,
+                        'name': event.event.name,
+                        'link': None,
+                        'short': None
+                    })
+                    continue
+                
+                for link_data in links:
+                    if link_data.link.startswith(site):
+                        site_events[socplace].append({
+                            'pk': event.pk,
+                            'id': socplace.pk,
+                            'event': event,
+                            'utm_source': link_data.utm_source,
+                            'utm_medium': link_data.utm_medium,
+                            'name': event.event.name,
+                            'link': site,
+                            'short': link_data.short
+                        })
+
+    context = {
+        "unit": "smm",
+        "page": 'digest',
+        "users": User.objects.filter(is_active=True),
+        "events": events,
+        "site_events": dict(site_events),
+        "period_events": period_events
+    }
+    return render(request, "smm/sched_plan.html", context)
 

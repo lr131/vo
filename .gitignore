@@ -110,3 +110,5 @@ pip freeze > requirements.txt
 *.vsix
 
 *.sqlite3
+
+non_project/*
