@@ -14,7 +14,7 @@ from .tag import Tag
     
 class Post(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    create_date = models.DateTimeField(auto_now_add=True, blank=True, verbose_name="Дата создания поста")
+    create_date = models.DateTimeField(auto_now=True, blank=True, verbose_name="Дата создания поста")
     create_user = models.CharField(max_length=200, blank=True, null=True) # TODO поменять тип
     modify_date = models.DateTimeField(auto_now_add=True, blank=True, verbose_name="Дата редактирования поста")
     modify_user = models.CharField(max_length=200, blank=True, null=True, verbose_name="Кто редактировал пост") # TODO поменять тип
@@ -34,7 +34,7 @@ class Post(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, verbose_name="Теги")
     
     class Meta:
-        verbose_name = 'База постов'
+        verbose_name = 'Пост'
         verbose_name_plural = 'База постов'
     
     def __str__(self):

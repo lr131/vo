@@ -41,9 +41,9 @@
                 <table class="table table-striped table-sm">
                   <thead>
                     <tr>
-                      <th></th>
-                      <th>Создано</th>
-                      <th>Категория</th>
+                      <th> Тема</th>
+                      <th class="d-none d-lg-table-cell">Создано</th>
+                      <th class="d-none d-lg-table-cell">Категория</th>
                       <th>Текст</th>
                       <th>Автор</th>
                     </tr>
@@ -51,10 +51,14 @@
                   <tbody>
                       {% for article in articles %}
                       <tr>
-                          <td><a href="{% url 'knbase:get_article' pk=article.pk %}">{{article.title}}</a></td>
-                          <td>{{article.data}}</td>
-                          <td>{{article.category}}</td>
-                          <td>{{article.text |truncatechars:350 }}</td>
+                          <td class="d-none d-lg-table-cell"><a href="{% url 'knbase:get_article' pk=article.pk %}">{{article.title}}</a></td>
+                          <td class="d-table-cell d-lg-none"><a href="{% url 'knbase:get_article' pk=article.pk %}">{{article.title}}</a>
+                          <br> {{article.data}} 
+                        <br> #{{article.category}}</td>
+                          <td class="d-none d-lg-table-cell">{{article.data}}</td>
+                          <td class="d-none d-lg-table-cell">{{article.category}}</td>
+                          <td class="d-none d-lg-table-cell text-break">{{article.text|linebreaks|truncatechars:350 }}</td>
+                          <td class="d-table-cell d-lg-none text-break">{{article.text|linebreaks|truncatechars:150 }}</td>
                           <td> {% for author in article.author.all %}
                               {{author.first_name}} {{author.last_name}}
                               {% endfor %}

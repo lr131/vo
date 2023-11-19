@@ -2,7 +2,7 @@ from django import forms
 from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
-from .const import MAILING_SOURCE_TYPES, MAILING_RESULT_CHOISES, SOURCE_MAILING_STATE
+from .const import MAILING_SOURCE_TYPES, MAILING_RESULT_CHOISES, SOURCE_MAILING_STATE, CHOICES_POST_STATE
 
 from .models.links import Links
 from .models.social_place import SocialPlace
@@ -21,6 +21,18 @@ from .models.utm_type_source import TypeSourceUTM
 from .models.utm_medium import Medium
 from .models.utm_campaign import CampaingUTM
 from .models.utm_type_content import TypeContentUTM
+
+from .models.post import Post
+from .models.post_type import PostType
+from .models.content_plan import PostPlan
+from .models.target import Target
+from .models.rubric import Rubric
+from .models.content_place import ContentPlace
+from .models.content_form import ContentForm
+from .models.content_format import ContentFormat
+from .models.content_type import ContentType
+
+
 
 class MailingForm(forms.ModelForm):
 
@@ -140,10 +152,7 @@ class LinkForm(forms.Form):
         is_period=True,
         end_date__gte=down_date,
         start_date__lte=update
-    ).values('event').distinct()
-    
-    print(regular_qs)
-    
+    ).values('event').distinct()    
 
     one_time_qs = EventPlan.objects.filter(
         Q(site__isnull=False) | Q(event__site__isnull=False),
@@ -152,13 +161,13 @@ class LinkForm(forms.Form):
         start_date__lte=update
     )
     
-    print(one_time_qs)
+    # print(one_time_qs)
     
-    print(regular_qs.count()) #1
-    print(one_time_qs.count()) #25
+    # print(regular_qs.count()) #1
+    # print(one_time_qs.count()) #25
 
     qs = regular_qs.union(one_time_qs)
-    print(qs) #15
+    # print(qs) #15
 
     # qs = sorted(qs, key=lambda obj: obj['start_date'], reverse=True)[:1]
 
@@ -293,6 +302,125 @@ class MailindBDForm(forms.Form):
 
     state = forms.ModelMultipleChoiceField(label='Статус клиентов',
                                            queryset=State.objects.all())
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+
+
+class PostForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+    class Meta:
+        model = Post
+        exclude = ('create_user', 'modify_user')
+        
+        
+class ContentPlanForm(forms.ModelForm):
+    pub_date = forms.DateTimeField(
+        input_formats=['%d.%m.%Y'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'дд.мм.гггг'}, format='%d.%m.%Y')
+    )
+    deadline_date = forms.DateTimeField(
+        input_formats=['%d.%m.%Y'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'дд.мм.гггг'}, format='%d.%m.%Y')
+    )
+    
+    disable_date = forms.DateTimeField(
+        input_formats=['%d.%m.%Y'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'дд.мм.гггг'}, format='%d.%m.%Y')
+    )
+    
+    pub_time = forms.DateTimeField(
+        input_formats=['%H:%M'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'HH:MM'}, format='%H:%M')
+    )
+    deadline_time = forms.DateTimeField(
+        input_formats=['%H:%M'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'HH:MM'}, format='%H:%M')
+    )
+    disable_time = forms.DateTimeField(
+        input_formats=['%H:%M'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'HH:MM'}, format='%H:%M')
+    )
+    
+    state = forms.CharField(label='Стадия поста', 
+                             widget=forms.Select(choices=CHOICES_POST_STATE), 
+                             required=True)
+
+    class Meta:
+        model = PostPlan
+        fields = ('post', 'source', 'reasons', 'is_published',)
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
+            
+
+class ContentPlanPostForm(forms.Form):
+    pub_date = forms.DateTimeField(
+        required=False,
+        input_formats=['%d.%m.%Y'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'дд.мм.гггг'}, format='%d.%m.%Y')
+    )
+    deadline_date = forms.DateTimeField(
+        required=False,
+        input_formats=['%d.%m.%Y'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'дд.мм.гггг'}, format='%d.%m.%Y')
+    )
+    
+    disable_date = forms.DateTimeField(
+        required=False,
+        input_formats=['%d.%m.%Y'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'дд.мм.гггг'}, format='%d.%m.%Y')
+    )
+    
+    pub_time = forms.DateTimeField(
+        required=False,
+        input_formats=['%H:%M'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'HH:MM'}, format='%H:%M')
+    )
+    deadline_time = forms.DateTimeField(
+        required=False,
+        input_formats=['%H:%M'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'HH:MM'}, format='%H:%M')
+    )
+    disable_time = forms.DateTimeField(
+        required=False,
+        input_formats=['%H:%M'],
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'HH:MM'}, format='%H:%M')
+    )
+    
+    state = forms.CharField(label='Стадия поста', 
+                             widget=forms.Select(choices=CHOICES_POST_STATE), 
+                             required=True)
+    title = forms.CharField(label='Заголовок', 
+                           max_length=500, required=False)
+    short_content  = forms.CharField(label='О чем пост', 
+                           max_length=500, required=True)
+    description  = forms.CharField(label='Пписание', 
+                           max_length=800, required=True)
+    text = forms.CharField(label='Сам пост', required=False, widget=forms.Textarea)
+    
+    post_type = forms.ModelMultipleChoiceField(label='Тип поста',
+                                           queryset=PostType.objects.all())
+    target_fk = forms.ModelMultipleChoiceField(label='Цель поста',
+                                           queryset=Target.objects.all())
+    rubric_fk = forms.ModelMultipleChoiceField(label='Рубрика',
+                                           queryset=Rubric.objects.all())
+    content_place_fk = forms.ModelMultipleChoiceField(label='Где размещать',
+                                           queryset=ContentPlace.objects.all())
+    content_format_fk = forms.ModelMultipleChoiceField(label='Вид контента',
+                                           queryset=ContentFormat.objects.all())
+    content_form_fk = forms.ModelMultipleChoiceField(label='Формат контента',
+                                           queryset=ContentForm.objects.all())
+    content_type_fk = forms.ModelMultipleChoiceField(label='Тип контента',
+                                           queryset=ContentType.objects.all())
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

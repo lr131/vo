@@ -8,10 +8,17 @@ var pagination_listener = function (event) {
     get_clients_list(url);
   }; 
 
-  function create_client_td(value) {
+  function create_client_td(value, classStr) {
     var td = document.createElement('td');
     if (String(value) != "null") {
       td.innerHTML = value;
+    }
+    if ((String(classStr) != "null") && (String(classStr) != "undefined")) {
+      var classArr = classStr.split(' ');
+      for (var i = 0; i < classArr.length; i++) {
+        var element = classArr[i];
+        td.classList.add(element)
+      }
     }
     return td;
   };
@@ -267,19 +274,18 @@ var pagination_listener = function (event) {
 
         mailing = resp['results'][i]['mailing'] ? resp['results'][i]['mailing'] : '';
 
-        tr.append(create_client_td(state));
-        tr.append(create_client_td([family, name, patr].join(' ')));
-        tr.append(create_client_td(birthday));
-        tr.append(create_client_td(city));
-        tr.append(create_client_td(phone.replace(';',' <br />')));
-        tr.append(create_client_td(comment));
-        tr.append(create_client_td(note));
+        tr.append(create_client_td(state, "d-none d-lg-table-cell"));
+        tr.append(create_client_td([family, name, patr, "<br />", birthday].join(' '), "d-none d-lg-table-cell"));
+        tr.append(create_client_td([family, name, patr].join(' '), "d-table-cell d-lg-none"));
+        tr.append(create_client_td([state, "<br />", "<b>Город:</b> ", city, "<br />", "<b>Контакты:</b> ", 
+                                    phone.replace(';',' <br />'), "<br />", "ДР: ", birthday].join(' '), 
+                 "d-table-cell d-lg-none"));
+        tr.append(create_client_td(city, "d-none d-lg-table-cell"));
+        tr.append(create_client_td(phone.replace(';',' <br />'), "d-none d-lg-table-cell"));
+        tr.append(create_client_td([comment, note].join('<br />')));
 
-        tr.append(create_client_td(gropus));
+        tr.append(create_client_td([ "Предпочитает: ", contact, '<br /> В каких состоит чатах:', gropus, mailing].join('<br />')));
 
-        tr.append(create_client_td(contact));
-
-        tr.append(create_client_td(mailing));
         tr.append(create_client_td(course_candidate));
 
         clientsTable.append(tr);

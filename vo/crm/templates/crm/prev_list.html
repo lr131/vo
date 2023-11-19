@@ -12,7 +12,7 @@
 {% endblock %}
 
  <!-- Content Wrapper. Contains page content Хлебные крошки -->
- <div class="content-wrapper" id='mainContainer'>
+ <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <div class="container-fluid">
@@ -59,10 +59,11 @@
                           <tr>
                             <th scope="col">Клиент</th>
                             <th scope="col">Город</th>
-                            <th scope="col">Взаимодействие </th>
-                            <th scope="col">История общения</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
+                            <th scope="col" class="d-table-cell d-lg-none">Действия </th>
+                            <th scope="col" class="d-none d-lg-table-cell">Взаимодействие </th>
+                            <th scope="col" class="d-none d-lg-table-cell">История общения</th>
+                            <th scope="col" class="d-none d-lg-table-cell"></th>
+                            <th scope="col" class="d-none d-lg-table-cell"></th>
                           </tr>
                         </thead>
                         <tbody id="clientsTable">
@@ -72,9 +73,20 @@
                               <td><a name="fio" href="{% url 'client' client.client_id %}" target="_blank">
                                 {{client.client_family}} {{client.client_name}} {{client.client_patr}} ({{client.client_state}})</a> </td>
                               <td name="city">{{client.client_city}}</td> 
-                              <td><a class="btn btn-success" href="{% url 'crm:add_action' %}?plc={{client.id}}" target="_blank"> Добавить </a></td>
-                              <td><a class="btn btn-primary" href="{% url 'crm:active'  %}?plc={{client.id}}" target="_blank"> Посмотреть </a></td>
-                              <td><form method="POST" action="{% url 'crm:remove_from_list' list.pk %}">
+
+                              <td class="d-table-cell d-lg-none"> 
+                                <div> <a class="btn btn-success btn-sm" href="{% url 'crm:add_action' %}?plc={{client.id}}" target="_blank"> Добавить </a> </div>
+                                <div class="mt-2"> <a class="btn btn-primary btn-sm" href="{% url 'crm:active'  %}?plc={{client.id}}" target="_blank"> История </a> </div>
+                                <div class="mt-2"> <form method="POST" action="{% url 'crm:remove_from_list' list.pk %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="pcl" value="{{ client.id }}">
+                                    <button type="submit" class="btn btn-warning btn-sm">Удалить</button>
+                                  </form>  </div> 
+                              </td>
+
+                              <td class="d-none d-lg-table-cell"><a class="btn btn-success" href="{% url 'crm:add_action' %}?plc={{client.id}}" target="_blank"> Добавить </a></td>
+                              <td class="d-none d-lg-table-cell"><a class="btn btn-primary" href="{% url 'crm:active'  %}?plc={{client.id}}" target="_blank"> Посмотреть </a></td>
+                              <td class="d-none d-lg-table-cell"><form method="POST" action="{% url 'crm:remove_from_list' list.pk %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="pcl" value="{{ client.id }}">
                                 <button type="submit" class="btn btn-warning">Удалить из списка</button>

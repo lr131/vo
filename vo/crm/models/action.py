@@ -30,6 +30,20 @@ class Action(models.Model):
         
     def __str__(self):
         return self.note
+    
+    # TODO
+    # сделать метод КЛИЕНТ как типа это поле такое (какой-то там декоратор)
+    # по такому же принципу сделать поле СПИОК, ДАТА, мероприятие, Плановое мероприятие, Создатель списка
+    # Лид, и тд
+
+    def pcl_client(self):
+        return f"{self.plc.client}"
+    
+    def pcl_name(self):
+        return f"{self.plc.prev_list.name}"
+    
+    def pcl_date(self):
+        return f"{self.plc.prev_list.date.strftime('%d.%m.%Y')}"
 
     @admin.display(description='Лид')
     def get_lid(self):

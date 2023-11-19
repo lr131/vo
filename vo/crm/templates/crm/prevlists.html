@@ -40,9 +40,14 @@
                 <div class="row">
                   <div class="col-md-12">
                       <a href="{% url 'crm:list_detail' pk=list.pk %}">
-                          {{list.date|date:"d.m.Y"}} {{list.name}} {{list.description}}
+                          <span class="h5 text-info">{{ list.name }} </span> <br />
+                          {% if list.description %}
+                            <small class="text-muted">{{ list.description|default_if_none:'' }}</small> <br />
+                          {% endif %}
+                          <small class="text-secondary">Создан {{ list.date|date:"d.m.y" }}</small>
                       </a>
-                      
+                      <br />
+                      <br />
                   </div>
                 </div>
 

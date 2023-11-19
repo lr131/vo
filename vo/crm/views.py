@@ -108,7 +108,7 @@ def add_prevlist(request):
 @login_required
 def get_lists(request):
     context = {
-        "lists": PreviousList.objects.all()
+        "lists": PreviousList.objects.all().order_by('-date')
     }
     return render(request, "crm/prevlists.html", context)
 
@@ -414,12 +414,13 @@ def active(request):
     lid = request.GET.get("lid")
     
     qs = Action.objects.filter(state=False)
+    # qs = Action.objects.filter(plc=plc)
     
     if lid:
         qs = qs.filter(lid=lid)
     if plc:
-        qs = qs.filter(plc=plc)
-        Action.objects.filter(state=False)
+        qs = Action.objects.filter(plc=plc)
+        # Action.objects.filter(plc=plc)
    
     if filter:
         if filter == 'all':

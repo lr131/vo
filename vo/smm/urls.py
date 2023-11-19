@@ -22,5 +22,7 @@ urlpatterns = [
     path('seeding', views.seeding_list, name="seeding_list"),
     path('seeding/<int:event_id>', views.seeding, name="seeding"),
     path('digest', views.digest_events, name="digest"),
+    path('content-plan/posts/add', views.add_post, name="add_post"),
+    
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

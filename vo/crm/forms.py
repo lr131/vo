@@ -92,12 +92,12 @@ class ActionForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['action'].widget.attrs.update({'class': 'form-control'})
-        self.fields['stage'].widget.attrs.update({'class': 'form-control'})
+        self.fields['action'].widget.attrs.update({'class': 'form-control', 'placeholder': "Рассылка, звонок, смс"})
+        self.fields['stage'].widget.attrs.update({'class': 'form-control', 'placeholder': "Приглашение, работа с возражениями и т.д."})
         self.fields['lid'].widget.attrs.update({'class': 'form-control'})
         self.fields['plc'].widget.attrs.update({'class': 'form-control'})
-        self.fields['description'].widget.attrs.update({'class': 'form-control'})
-        self.fields['note'].widget.attrs.update({'class': 'form-control'})
+        self.fields['description'].widget.attrs.update({'class': 'form-control', 'rows': 3, 'placeholder': "Коротко о течении разговора, важные ключевые, на ваш взгляд, моменты, которые нужно знать перед следующим контактом"})
+        self.fields['note'].widget.attrs.update({'class': 'form-control', 'rows': 3, 'placeholder': "К чему пришли в диалоге. Если контакт не состоялся, то так и пишем"})
         self.fields['state'].widget.attrs.update({'class': 'form-control'})
 
 

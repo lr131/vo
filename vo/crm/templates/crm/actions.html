@@ -17,6 +17,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
+
+            {% if plc %}
+              <p class="h5">Список: {{history.0.pcl_name}}</p>
+              <p class="h4 text-info">{{history.0.pcl_client}}</p> <br />
+              <p class="h6 text-muted">История взаимодействий</p> 
+              
+              {% endif %}  
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -42,47 +49,93 @@
             <div class="col-12" id='mainContainer'>
 
               <div class="row">
-                <div class="col-md-12">
-
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Список / заявка </th>
-                        <th scope="col">Этап </th>
-                        <th scope="col">Действие </th>
-                        <th scope="col">Описание </th>
-                        <th scope="col">Резюме общения</th>
-                        <th scope="col">Создано / Редактировано</th>
-                        <th scope="col">Кто работал</th>
-                        <th scope="col">Завершено</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for action in history %}
+                <div class="col-sm-12">
+                  <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                      <thead>
                         <tr>
-                          <td> {% if action.plc %} 
-                            {{action.plc|default_if_none:''}}
-                            {% endif %}
-                            {{action.lid|default_if_none:'' }}</td>
-                          <td>{{action.stage}}</td>
-                          <td>{{action.action}}</td>
-                          <td>{{action.description}}</td>
-                          <td>{{action.note}}</td>
-                          <td>{{action.cdate|date:"d.m Y"}} / {{action.mdate|date:"d.m Y"}}</td>
-                          <td>{{action.worker.first_name}} {{action.worker.last_name}}</td>
-                          <td> {% if action.state %} Да 
-                            {% else %} 
-                              {% if request.user == action.worker %}
-                                <a href="{% url 'crm:edit_action' pk=action.pk %}"> Редактировать </a>
-                              {% else %}
-                                Нет
-                              {% endif %}
-                            {% endif %} </td>
-                        
+  
+                          {% if plc or lid %}
+                          <!-- пропускаем столбец -->
+                          {% else %}
+                          <!-- Показываем, что за список -->
+                          <th scope="col">
+                            Источник
+                          </th>
+                          {% endif %}
+  
+  
+                          <th scope="col" class="d-none d-lg-table-cell">Этап </th>
+                          <th scope="col" class="d-none d-lg-table-cell">Действие </th>
+                          <th scope="col" class="d-table-cell d-lg-none">Кратко </th>
+  
+                          <th scope="col" class="d-none d-lg-table-cell">Описание </th>
+                          <th scope="col" class="d-none d-lg-table-cell">Резюме общения</th>
+                          <th scope="col" class="d-table-cell d-lg-none">Подробнее </th>
+  
+                          <th scope="col">Инфо</th>
                         </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {% for action in history %}
+                          <tr>
+                            {% if plc or lid %}
+                            <!-- пропускаем столбец -->
+                            {% else %}
+                            <!-- Показываем, что за список -->
+                            <td class="text-break"> 
+                              {% if action.plc %} 
+                              <p>{{action.pcl_client}}</p>
+                              <small> <b>Список </b> {{action.pcl_name}}
+                                <span class="text-muted">{{action.pcl_date}}</span>
+                              </small>
+                             {% endif %}
+                               {{action.lid|default_if_none:'' }}
+                              </td>
+                            {% endif %}
+  
+                            
+                            <td class="d-none d-lg-table-cell">{{action.stage|linebreaks}}</td>
+                            <td class="d-none d-lg-table-cell">{{action.action|linebreaks}}</td>
+                            <td class="d-table-cell d-lg-none text-break">
+                              <b>Этап: </b>{{action.stage}}
+                                <br />
+                              <b>Действие: </b>{{action.action}}
+                            </td>
+  
+                            <td class="d-none d-lg-table-cell text-break">{{action.description|linebreaks}}</td>
+                            <td class="d-none d-lg-table-cell text-break">{{action.note|linebreaks}}</td>
+                            <td class="d-table-cell d-lg-none text-break">
+                              <b>Описание: </b>{{action.description|linebreaks}}
+                                <br />
+                              <b>Резюме общения: </b>{{action.note|linebreaks}}
+                            </td>
+  
+                            <td><small><b>Созд. </b>{{action.cdate|date:"d.m Y"}} </small>
+                              <br /><small><b>Редакт.</b> {{action.mdate|date:"d.m Y"}}</small>
+                              <br /><small><b>Кто работал: </b> {{action.worker.first_name}} {{action.worker.last_name}}</small> <br />
+                              
+                              {% if action.state %} 
+                                <span class="badge badge-info">Завершено</span> 
+                              {% else %} 
+                                {% if request.user == action.worker %}
+                                  <a class="btn btn-secondary btn-sm" href="{% url 'crm:edit_action' pk=action.pk %}"> Редактировать </a>
+                                {% else %}
+                                  <span class="badge badge-warning">Нет</span>
+                                {% endif %}
+                              {% endif %} 
+  
+                            </td>
+                          
+                          </tr>
+                        {% empty %}
+
+                          <tr> <th> Похоже, что в базе нет нужных вам данных </th> </tr>
+  
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
 
                 </div>
 

@@ -70,9 +70,12 @@ class ClientExtraView(generics.ListAPIView):
             where=['clients_client.state_id=client_state.id',
                 'clients_client.id=client_mailing.client_id',
                 'clients_client.id=client_products.client_id']
-            ).order_by('family','name')
+            ).order_by('-mdate','family','name')
+            # ).order_by('family','name')
         if filter:
             print("filter", filter)
+            if filter == 'not_base_course':
+                qs = qs.filter(products__is_base_course=False)
             if filter == 'is_base_course':
                 qs = qs.filter(products__is_base_course=True)
             if filter == 'is_assisting':

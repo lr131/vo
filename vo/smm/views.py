@@ -17,7 +17,7 @@ from operator import or_
 import collections
 
 
-from .forms import MailingForm, MailindBDForm, MailingDetailForm, SocialPlaceForm, LinkForm, LinkSearchForm, MailindQuickDetailForm, UploadWapicoReportForm, LinkSetForm
+from .forms import MailingForm, MailindBDForm, SocialPlaceForm, LinkForm, LinkSearchForm, UploadWapicoReportForm, LinkSetForm, PostForm
 
 
 from .models.links import Links
@@ -40,10 +40,7 @@ def mailing_new(request):
     if request.method == "POST":
         form = MailingForm(request.POST)
         if form.is_valid():
-            mailing = form.save(commit=False)
-            # mailing.author = request.user
-            # mailing.published_date = timezone.now()
-            mailing.save()
+            form.save()
             return redirect('smm:mailing_list')
     else:
         form = MailingForm()
@@ -676,9 +673,6 @@ def digest_events(request):
     ).values('site_value').distinct().order_by('site_value').values_list('site_value', flat=True)
 
     social = SocialPlace.objects.all()
-    # for s in social:
-    #     if s.utm_source and s.utm_medium:
-    #         print(s, s.utm_source.utm_source, s.utm_type_source, s.utm_medium.utm_medium)
 
     query = reduce(or_, (Q(link__startswith=sv) for sv in site_values if sv))
     
@@ -732,3 +726,8 @@ def digest_events(request):
     }
     return render(request, "smm/sched_plan.html", context)
 
+@login_required
+def add_post(request):
+    # data = Mailing.objects.all()
+    context = {'form': PostForm}
+    return render(request, 'smm/content_plan/post_form.html', context=context)

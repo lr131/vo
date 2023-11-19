@@ -20,6 +20,6 @@ class PreviousList(models.Model):
         verbose_name_plural = "Списки на мероприятия"
         
     def __str__(self):
-        return (f" Список {self.name}"
+        return (f" Список {self.name} "
                 f"от {self.date.strftime('%d.%m.%Y')} " 
                 f"(by {self.cuser.first_name} {self.cuser.last_name})")

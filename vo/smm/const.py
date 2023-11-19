@@ -1,7 +1,7 @@
 MAILING_SOURCE_TYPES = (
-    ("group", "Рассылка в группы"),
     ("inner_person", "Рассылка по базе"),
-    ("outer_person", "Рассылка во вне с моей личной ссылкой")
+    # ("group", "Рассылка в группы"),
+    # ("outer_person", "Рассылка во вне с моей личной ссылкой")
 )
 
 MAILING_RESULT_CHOISES = (
@@ -20,3 +20,11 @@ SOURCE_MAILING_STATE = (
     ('actual', "актуально"),
     ('archive', "в архиве")
 )
+
+CHOICES_POST_STATE = (
+        ('wait', 'Ожидает действий'),
+        ('in_progress', 'В работе'),
+        ('published', 'Опубликован'),
+        ('not_published', 'Не опубликован'),
+        ('moved', 'Перенесен'),
+    )

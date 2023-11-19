@@ -40,7 +40,7 @@
               <li class="breadcrumb-item active"> <a href="{% url 'smm:mailing_db' pk=mailing.pk %}?filter=delivered"> Доставлено </a> </li>
               <li class="breadcrumb-item active"> <a href="{% url 'smm:mailing_db' pk=mailing.pk %}?filter=read"> Прочитано </a> </li>
               {% if request.user.username == 'lr131' %}
-              <li class="breadcrumb-item"><a class='btn btn-primary' href="{% url 'smm:wapico' pk=mailing.pk %}">Скачать для сервиса рассылок</a></li>
+                <li class="breadcrumb-item"><a class='btn btn-primary' href="{% url 'smm:wapico' pk=mailing.pk %}">Скачать для сервиса рассылок</a></li>
               {% endif %}
               
               {% comment %} <li class="breadcrumb-item"><a class='btn btn-warning' href="{% url 'smm:wapico' pk=mailing.pk %}">Сформировать новую из текущей</a></li> {% endcomment %}
@@ -65,13 +65,22 @@
       {% if clients %}
         <div class="row">
           <div class="col-12">
-            <h4> Статистика по рассылке </h4>
-            <p> Сообщений всего: <b>{{report.total}} </b></p>
-            <p> Прочитано: {{report.read}}</p>
-            <p> Получено ответов: {{report.answer}}</p>
-            <p> Доставлено: {{report.delivered}}</p>
-            <p> Отправлено в вацап: {{report.send}}</p>
-            <p> Ожидают отправки: {{report.wait}}</p>
+            <p>
+              <button class="btn btn-outline-info btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Статистика по рассылке
+              </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+              <div class="card card-block">
+                <p> Сообщений всего: <b>{{report.total}} </b></p>
+                <p> Прочитано: {{report.read}}</p>
+                <p> Получено ответов: {{report.answer}}</p>
+                <p> Доставлено: {{report.delivered}}</p>
+                <p> Отправлено в вацап: {{report.send}}</p>
+                <p> Ожидают отправки: {{report.wait}}</p>
+              </div>
+            </div>
+            
           </div>
         </div>
         {% endif %}
@@ -84,15 +93,14 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th scope="col">№</th>
+                  <th scope="col" class="d-none d-lg-table-cell">№</th>
                   <th scope="col">ФИО</th>
-                  <th scope="col">Комментарии:</th>
-                  <th scope="col">Комментарий по текущей рассылке</th>
-                  <th scope="col">Месседжеры</th>
-                  <th scope="col">Текущий месседжер</th>
-                  <th scope="col">Статус</th>
-                  <th scope="col">Позвонить</th>
-                  <th scope="col"></th>
+                  <th scope="col" class="d-none d-lg-table-cell">Заметки</th>
+                  <th scope="col" class="d-table-cell d-lg-none">Детали</th>
+                  <th scope="col" class="d-none d-lg-table-cell">Ответы</th>
+                  <th scope="col">Написать</th>
+                  <th scope="col" class="d-none d-lg-table-cell">Статус</th>
+                  <th scope="col" class="d-none d-lg-table-cell">Действия</th>
                 </tr>
               </thead>
 
@@ -100,57 +108,180 @@
               <tbody>
                   {% for client in clients %}
                   <tr>
-                      <td>{{client.pk}}</td>
-                      <td>{{client.client.fio}} <br/> (ID {{client.client.pk}}) <br/>
-                        {{client.client.state.name|default_if_none:""}} ({{client.client.city|default_if_none:""}})
-                      </td>
-                      <td>
-                        <strong> Комментарий по общению: </strong> <br/>
-
-                        {{client.client__client_mailing.comment|default_if_none:"нет комментариев"}} 
+                      <td class="d-none d-lg-table-cell">{{client.pk}}</td>
+                      <td> 
                         
-                        <br/>
-                        <br/>
-                        <strong> Комментарий по клиенту в целом: </strong> <br/>
+                        <a name="fio" href="{% url 'client' client.client.pk %}" target="_blank">
+                          {{client.client.fio}} <br/>
+                          {{client.client.state.name|default_if_none:""}} ({{client.client.city|default_if_none:""}})</a>                         
+                      </td>
+                      <td class="d-none d-lg-table-cell text-break">
+                        {% if client.client__client_mailing.comment %}
+                          <strong> Комментарий по общению: </strong> <br/>
 
-                        {{client.client.note|default_if_none:""}} <br/> {{client.client.comment|default_if_none:""}}
-
-                        <br/>
-                        <br/>
-
-
+                          {{client.client__client_mailing.comment|default_if_none:"нет комментариев"}} 
+                          <br/>
+                        {% endif %}
+                        {% if client.client.note or client.client.comment %}
+                          <strong> По клиенту: </strong>
+                          {{client.client.note|linebreaks|default_if_none:""}} 
+                          {% if client.client.note and client.client.comment %}
+                            <br />
+                          {% endif %}
+                          {{client.client.comment|linebreaks|default_if_none:""}}
+                        {% endif %}
                       
                       </td>
-                      <td>{{client.comment|default_if_none:""}}</td>
-                      <td>
-                          <a href='{{client.link_wa_pc}}' target='_blank'> Вацап WEB</a> 
-                          <br/> <br/> 
-                          <a href='{{client.link_wa}}'> Вацап</a> 
-                          <br/> <br/> 
-                          <a href='{{client.link_vi}}'> Viber</a>
-                          <br/> <br/> 
-                          <a href='{{client.link_tg}}'  target='_blank'> Telegram</a>
-                          <br/> <br/> 
-                          <a > Нет в месседжерах</a>
-                          <br/> <br/> 
+
+                      <td class="d-table-cell d-lg-none text-break">
+
+                        <strong> Статус: </strong>
+
+                        {% if client.result == 'Delivered' %}
+                          <span class="text-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
+                              <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992a.252.252 0 0 1 .02-.022zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486-.943 1.179z"/>
+                            </svg>
+                          </span>
+                          <span class="text-secondary"> Доставлено </span> 
+                        {% elif client.result == 'Read' %}
+                          <span class="text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
+                              <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992a.252.252 0 0 1 .02-.022zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486-.943 1.179z"/>
+                            </svg>
+                          </span>
+                          <span class="text-primary"> Прочитано </span> 
+                        {% elif client.result == 'Отправил' %}
+                          <span class="text-muted">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                              <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                            </svg>
+                          </span>
+                          <span class="text-ыsecondary"> Отправлено </span>
+                        {% else %} 
+                          {{client.result|default_if_none:""}}
+                        {% endif %}
+                        <br/>
+
+                        {% if client.link_messeger is not None %}
+                          <small class="badge badge-success">{{client.link_messeger}}</small> 
+                        {% endif %}
+
+                        {% if client.comment %}
+                          <br/> <strong> Ответ: </strong> <br/>
+
+                          {{client.comment|default_if_none:""}}
+                        {% endif %}
+
+                        {% if client.client__client_mailing.comment %}
+                          <strong> Комментарий по общению: </strong> <br/>
+
+                          {{client.client__client_mailing.comment|default_if_none:"нет комментариев"}} 
+                          <br/>
+                        {% endif %}
+                        {% if client.client.note or client.client.comment %}
+                          <br/>
+                          <strong> По клиенту: </strong> <br/>
+
+                          {{client.client.note|linebreaks|default_if_none:""}} <br/> {{client.client.comment|linebreaks|default_if_none:""}}
+                        {% endif %}
+                      
                       </td>
-                      <td>{{client.link_messeger|default_if_none:""}}</td>
-                      <td>{{client.result|default_if_none:""}}</td>
+
+                      <td class="d-none d-lg-table-cell">{{client.comment|default_if_none:""}}</td>
                       <td>
+                          <a href='{{client.link_wa_pc}}' target='_blank' class="btn btn-outline-success btn-sm d-none d-lg-table-cell text-success"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                              <title>whatsapp Web</title>
+                              <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                            </svg> 
+                            <small class="badge badge-info">web</small> 
+                            WhatsApp
+                          </a> 
+                          <br class="d-none d-lg-table-cell text-success"> 
+                          <a href='{{client.link_wa}}' class="btn btn-success btn-sm"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                              <title>whatsapp Mobile</title>
+                              <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                            </svg> Whatsapp
+                          </a> 
+                          <br/> <br/> 
+                          <a href='{{client.link_tg}}'  target='_blank' class="btn btn-primary btn-sm"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16">
+                              <title>Telegram</title>
+                              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"/>
+                            </svg> Telegram
+                          </a>
+                          <br/> <br/> 
+                          <a href='{{client.link_vi}}' class="btn btn-outline-danger btn-sm"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 50 50" class="bi"
+                            fill="currentColor">
+                                <path d="M 24.425781 3 C 23.0625 3.007813 21.695313 3.089844 20.316406 3.257813 C 17.679688 3.582031 15.066406 4.121094 12.558594 5.273438 C 8.570313 7.105469 5.742188 10.214844 4.921875 14.734375 C 4.574219 16.640625 4.292969 18.574219 4.132813 20.519531 C 3.824219 24.296875 4.015625 28.085938 5.085938 31.808594 C 5.929688 34.742188 7.484375 37.378906 10.207031 39.089844 C 11.359375 39.8125 12.878906 40.164063 13.671875 40.53125 C 13.894531 40.636719 13.949219 40.699219 13.960938 40.714844 C 13.972656 40.726563 14.003906 40.753906 14 40.988281 C 13.972656 43.378906 14 48.003906 14 48.003906 L 14.003906 49 L 15.789063 49 L 16.078125 48.71875 C 16.078125 48.71875 20.613281 44.355469 22.253906 42.558594 C 22.550781 42.238281 22.703125 42.058594 22.734375 42.039063 C 22.761719 42.019531 22.714844 42.007813 23.019531 42 C 25.171875 41.957031 27.320313 41.875 29.46875 41.757813 C 32.300781 41.601563 35.1875 41.332031 37.964844 40.171875 C 40.382813 39.160156 42.402344 37.507813 43.625 35.03125 C 44.875 32.492188 45.542969 29.800781 45.792969 27.015625 C 46.207031 22.378906 46.0625 17.734375 44.78125 13.15625 C 44.027344 10.472656 42.511719 8.203125 40.1875 6.601563 C 37.40625 4.6875 34.269531 3.96875 31.199219 3.511719 C 29.40625 3.246094 27.601563 3.070313 25.789063 3.015625 C 25.335938 3.003906 24.882813 2.996094 24.425781 3 Z M 25.734375 5.015625 C 27.457031 5.0625 29.179688 5.230469 30.90625 5.488281 C 33.867188 5.929688 36.660156 6.601563 39.054688 8.25 C 40.996094 9.585938 42.207031 11.390625 42.855469 13.691406 C 44.050781 17.972656 44.203125 22.359375 43.800781 26.839844 C 43.570313 29.421875 42.957031 31.855469 41.828125 34.148438 C 40.832031 36.171875 39.277344 37.457031 37.191406 38.328125 C 34.769531 39.339844 32.136719 39.609375 29.363281 39.761719 C 27.238281 39.878906 25.109375 39.957031 22.980469 40 C 22.445313 40.011719 21.921875 40.152344 21.550781 40.425781 C 21.179688 40.699219 21.011719 40.953125 20.78125 41.203125 C 19.609375 42.484375 17.273438 44.738281 16 45.972656 C 15.992188 44.480469 15.980469 42.675781 16 41.011719 C 16.007813 40.5 15.890625 39.976563 15.597656 39.5625 C 15.304688 39.148438 14.902344 38.898438 14.515625 38.71875 C 13.386719 38.195313 11.910156 37.796875 11.269531 37.394531 C 9.03125 35.988281 7.761719 33.878906 7.007813 31.253906 C 6.019531 27.820313 5.832031 24.285156 6.125 20.6875 C 6.28125 18.820313 6.550781 16.949219 6.890625 15.09375 C 7.601563 11.183594 9.835938 8.722656 13.390625 7.089844 C 15.636719 6.058594 18.035156 5.550781 20.5625 5.242188 C 22.285156 5.03125 24.007813 4.964844 25.734375 5.015625 Z M 26.15625 10 C 25.332031 10 24.53125 10.09375 23.753906 10.265625 C 23.21875 10.390625 22.878906 10.925781 23 11.464844 C 23.121094 12.003906 23.660156 12.339844 24.199219 12.21875 C 24.828125 12.074219 25.484375 12 26.15625 12 C 31.039063 12 34.976563 15.9375 34.976563 20.816406 C 34.976563 21.492188 34.902344 22.148438 34.757813 22.78125 C 34.636719 23.316406 34.972656 23.855469 35.511719 23.976563 C 36.050781 24.097656 36.585938 23.757813 36.707031 23.21875 C 36.882813 22.445313 36.976563 21.644531 36.976563 20.816406 C 36.976563 14.855469 32.121094 10 26.15625 10 Z M 16.179688 12.003906 C 16.015625 11.996094 15.847656 12.007813 15.671875 12.046875 C 13.855469 12.449219 12.050781 13.765625 12 16.117188 C 12.050781 16.445313 12.046875 16.796875 12.167969 17.09375 C 12.761719 18.546875 13.277344 20.046875 14.019531 21.421875 C 17.632813 28.101563 23.097656 32.746094 30.0625 35.695313 C 30.894531 36.046875 31.753906 36.121094 32.59375 35.769531 C 33.75 35.289063 34.730469 34.546875 35.382813 33.480469 C 36.277344 32.015625 36.289063 31 34.816406 29.917969 C 33.851563 29.207031 32.902344 28.476563 31.925781 27.78125 C 30.4375 26.726563 28.828125 26.542969 27.71875 28.394531 C 27.660156 28.488281 27.574219 28.566406 27.5 28.644531 C 26.929688 29.25 26.230469 29.398438 25.488281 29.09375 C 22.671875 27.933594 20.496094 26.0625 19.183594 23.277344 C 18.410156 21.640625 18.621094 20.820313 20.066406 19.730469 C 20.210938 19.625 20.347656 19.511719 20.480469 19.390625 C 21.113281 18.8125 21.28125 18.125 20.90625 17.347656 C 20.058594 15.574219 18.929688 13.992188 17.5 12.628906 C 17.113281 12.261719 16.671875 12.03125 16.179688 12.003906 Z M 26.140625 13 C 25.699219 13 25.261719 13.035156 24.832031 13.109375 C 24.46875 13.15625 24.160156 13.398438 24.027344 13.738281 C 23.894531 14.082031 23.960938 14.46875 24.195313 14.75 C 24.433594 15.027344 24.808594 15.15625 25.167969 15.078125 C 25.480469 15.027344 25.808594 15 26.140625 15 C 29.390625 15 32 17.609375 32 20.859375 C 32 21.191406 31.972656 21.519531 31.921875 21.832031 C 31.84375 22.191406 31.972656 22.566406 32.25 22.804688 C 32.53125 23.039063 32.917969 23.105469 33.261719 22.972656 C 33.601563 22.839844 33.84375 22.53125 33.890625 22.167969 C 33.964844 21.738281 34 21.300781 34 20.859375 C 34 16.53125 30.46875 13 26.140625 13 Z M 26 16 C 25.640625 15.996094 25.304688 16.183594 25.121094 16.496094 C 24.941406 16.808594 24.941406 17.191406 25.121094 17.503906 C 25.304688 17.816406 25.640625 18.003906 26 18 C 27.667969 18 29 19.332031 29 21 C 28.996094 21.359375 29.183594 21.695313 29.496094 21.878906 C 29.808594 22.058594 30.191406 22.058594 30.503906 21.878906 C 30.816406 21.695313 31.003906 21.359375 31 21 C 31 18.25 28.75 16 26 16 Z"></path>
+                            </svg> Viber</a>
+                          <br/> <br/> 
+                          <div class="actionButtons d-table-cell d-lg-none">
+                            <a class="btn btn-info btn-sm" href='tel:+{{client.phone}}' target='_blank'> 
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone-outbound-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511zM11 .5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V1.707l-4.146 4.147a.5.5 0 0 1-.708-.708L14.293 1H11.5a.5.5 0 0 1-.5-.5z"/>
+                              </svg>
+                              Позвонить</a> 
+                            <br/>
+                            <br/> 
+                            <form method="POST" action="{% url 'smm:remove_from_mailing' mailing.pk %}">
+                              {% csrf_token %}
+                              <input type="hidden" name="md" value="{{ client.pk }}">
+                              <button type="submit" class="btn btn-warning">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                </svg> Удалить</button>
+                            </form>
+                            <br/> 
+                          </div>
+                      </td>
+
+                      <td class="d-none d-lg-table-cell">
+                        {% if client.result == 'Delivered' %}
+                          <span class="text-secondary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
+                              <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992a.252.252 0 0 1 .02-.022zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486-.943 1.179z"/>
+                            </svg>
+                          </span>
+                          <span class="text-secondary"> Доставлено </span> 
+                        {% elif client.result == 'Read' %}
+                          <span class="text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-all" viewBox="0 0 16 16">
+                              <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992a.252.252 0 0 1 .02-.022zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486-.943 1.179z"/>
+                            </svg>
+                          </span>
+                          <span class="text-primary"> Прочитано </span> 
+                        {% elif client.result == 'Отправил' %}
+                          <span class="text-muted">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                              <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                            </svg>
+                          </span>
+                          <span class="text-ыsecondary"> Отправлено </span>
+                        {% else %} 
+                          {{client.result|default_if_none:""}}
+                        {% endif %}
+
+                        {% if client.link_messeger is not None %}
+                          в <small class="badge badge-success">{{client.link_messeger}}</small> 
+                        {% endif %}
+                      </td>
+                      <td class="d-none d-lg-table-cell">
                         <br/> 
                         <a class="btn btn-info" href='tel:+{{client.phone}}' target='_blank'> Позвонить</a> 
                         <br/>
-                    </td>
-                    <td>
-                      <br/> 
-                      <form method="POST" action="{% url 'smm:remove_from_mailing' mailing.pk %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="md" value="{{ client.pk }}">
-                        <button type="submit" class="btn btn-warning">Удалить</button>
-                      </form>
-                      <br/> 
-                    </td>
-                      
+                        <br/> 
+                        <form method="POST" action="{% url 'smm:remove_from_mailing' mailing.pk %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="md" value="{{ client.pk }}">
+                          <button type="submit" class="btn btn-warning">Удалить</button>
+                        </form>
+                        <br/> 
+                    </td>                     
                       
                   </tr>
                   {% empty %}
